@@ -1,0 +1,20 @@
+import { useCurrentRole } from "@/hooks/use-current-role";
+import { UserRole } from "@prisma/client";
+import { ReactNode } from "react";
+import { FormError } from "./form-error";
+
+interface Props {
+  children: ReactNode;
+  allowedRole: UserRole;
+}
+
+export const RoleGate = ({ allowedRole, children }: Props) => {
+  const role = useCurrentRole();
+
+  if (role !== allowedRole)
+    return (
+      <FormError message="You do not have permission to view this content!" />
+    );
+
+  return <>{children}</>;
+};
