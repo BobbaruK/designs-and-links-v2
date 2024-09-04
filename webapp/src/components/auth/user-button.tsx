@@ -13,17 +13,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useTheme } from "next-themes";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { FaUser } from "react-icons/fa";
-import { IoExitOutline } from "react-icons/io5";
-import { LogoutButton } from "./logout-button";
-import Link from "next/link";
-import { IoSettingsOutline } from "react-icons/io5";
-import { LoginButton } from "./login-button";
 import { IoIosLogIn } from "react-icons/io";
+import { IoExitOutline, IoSettingsOutline } from "react-icons/io5";
+import { LoginButton } from "./login-button";
+import { LogoutButton } from "./logout-button";
+import { cn } from "@/lib/utils";
 
 export const UserButton = () => {
   const user = useCurrentUser();
+  const pathname = usePathname();
 
   const { setTheme, theme } = useTheme();
   const [theTheme, setTheTheme] = useState(theme);
@@ -45,7 +47,12 @@ export const UserButton = () => {
             <DropdownMenuItem asChild>
               <Link
                 href={"/settings"}
-                className="flex cursor-pointer items-center justify-start gap-2 p-2"
+                className={cn(
+                  "flex cursor-pointer items-center justify-start gap-2 p-2",
+                  pathname === "/settings"
+                    ? "underline underline-offset-4"
+                    : "",
+                )}
               >
                 <IoSettingsOutline /> Settings
               </Link>
