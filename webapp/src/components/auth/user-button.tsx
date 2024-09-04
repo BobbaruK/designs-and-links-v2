@@ -17,6 +17,10 @@ import { useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { IoExitOutline } from "react-icons/io5";
 import { LogoutButton } from "./logout-button";
+import Link from "next/link";
+import { IoSettingsOutline } from "react-icons/io5";
+import { LoginButton } from "./login-button";
+import { IoIosLogIn } from "react-icons/io";
 
 export const UserButton = () => {
   const user = useCurrentUser();
@@ -37,36 +41,60 @@ export const UserButton = () => {
       <DropdownMenuContent align="end" className="w-40">
         {user && (
           <>
-            <DropdownMenuSeparator />
             <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
+            <DropdownMenuItem asChild>
+              <Link
+                href={"/settings"}
+                className="flex cursor-pointer items-center justify-start gap-2 p-2"
+              >
+                <IoSettingsOutline /> Settings
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
           </>
         )}
-        <DropdownMenuSeparator />
         <DropdownMenuLabel>Theme</DropdownMenuLabel>
         <DropdownMenuRadioGroup value={theTheme} onValueChange={setTheTheme}>
           <DropdownMenuRadioItem
             value="light"
             onClick={() => setTheme("light")}
+            className="cursor-pointer"
           >
             Light
           </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="dark" onClick={() => setTheme("dark")}>
+          <DropdownMenuRadioItem
+            value="dark"
+            onClick={() => setTheme("dark")}
+            className="cursor-pointer"
+          >
             Dark
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem
             value="system"
             onClick={() => setTheme("system")}
+            className="cursor-pointer"
           >
             System
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
-        <DropdownMenuSeparator />
-        {user && (
-          <LogoutButton>
-            <DropdownMenuItem className="flex items-center justify-start gap-3 p-2">
-              <IoExitOutline /> Logout
-            </DropdownMenuItem>
-          </LogoutButton>
+        {user ? (
+          <>
+            <DropdownMenuSeparator />
+            <LogoutButton>
+              <DropdownMenuItem className="flex cursor-pointer items-center justify-start gap-3 p-2">
+                <IoExitOutline /> Logout
+              </DropdownMenuItem>
+            </LogoutButton>
+          </>
+        ) : (
+          <>
+            <DropdownMenuSeparator />
+            <LoginButton>
+              <DropdownMenuItem className="flex cursor-pointer items-center justify-start gap-3 p-2">
+                <IoIosLogIn /> Login
+              </DropdownMenuItem>
+            </LoginButton>
+          </>
         )}
       </DropdownMenuContent>
     </DropdownMenu>
