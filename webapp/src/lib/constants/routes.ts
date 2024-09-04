@@ -6,7 +6,7 @@
 export const publicRoutes = ["/", "/auth/new-verification"];
 
 /**
- * An array of routes that are usedo for authentication
+ * An array of routes that are used for authentication
  * These routes will redirect logged in users to /settings
  * @type {string[]}
  */

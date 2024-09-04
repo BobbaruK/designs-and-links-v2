@@ -1,9 +1,8 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import React from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { UserButton } from "./auth/user-button";
 
 export const Navbar = () => {
@@ -14,6 +13,12 @@ export const Navbar = () => {
       <div className="flex gap-x-2">
         <Button asChild variant={pathname === "/" ? "default" : "outline"}>
           <Link href={"/"}>Home</Link>
+        </Button>
+        <Button
+          asChild
+          variant={pathname === "/form-validation" ? "default" : "outline"}
+        >
+          <Link href={"/form-validation"}>Form validations</Link>
         </Button>
         <Button
           asChild

@@ -13,8 +13,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Authentication and Authorization related tables
 enum UserRole {
   ADMIN
+  EDITOR
   USER
 }
 
@@ -86,4 +88,42 @@ model TwoFactorConfirmation {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
+}
+
+// Designs and Links related tables
+model DL_Topic {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String   @unique
+  description String?
+}
+
+model DL_FormValidation {
+  id          String   @id @unique @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String   @unique
+  slug        String   @unique
+  description String?
+
+  @@unique([name, slug])
+}
+
+model DL_LanguageType {
+  id          String   @id @unique @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String   @unique
+  slug        String   @unique
+  description String?
+}
+
+model DL_LandingPageType {
+  id          String   @id @unique @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String   @unique
+  slug        String   @unique
+  description String?
 }

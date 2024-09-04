@@ -1,4 +1,5 @@
 import {
+  MAX_DESCRIPTION,
   MAX_PASSWORD,
   MAX_USERNAME,
   MIN_PASSWORD,
@@ -17,6 +18,7 @@ export {
   apiAuthPrefix,
   authRoutes,
   DEFAULT_LOGIN_REDIRECT,
+  MAX_DESCRIPTION,
   MAX_PASSWORD,
   MAX_USERNAME,
   MIN_PASSWORD,
