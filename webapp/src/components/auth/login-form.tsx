@@ -94,9 +94,9 @@ export const LoginForm = ({ searchParamError, callbackUrl }: Props) => {
     <>
       <CardWrapper
         headerLabel={"Welcome back"}
-        backButtonLabel={"Don't have an account?"}
-        backButtonHref={"/auth/register/"}
-        showSocial
+        // backButtonLabel={"Don't have an account?"}
+        // backButtonHref={"/auth/register/"}
+        showSocial={true}
       >
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
