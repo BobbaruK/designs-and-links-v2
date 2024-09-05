@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 
 import { auth } from "@/auth";
 import { Header } from "@/components/header";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { SessionProvider } from "next-auth/react";
 import "./globals.css";
@@ -39,7 +39,7 @@ export default async function RootLayout({
                 <div className="container">footer</div>
               </footer>
             </div>
-            <Toaster />
+            <Toaster richColors closeButton />
           </ThemeProvider>
         </SessionProvider>
       </body>

@@ -6,7 +6,7 @@ import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
 import { DeleteDialog } from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -22,19 +22,16 @@ import { EditFormValidationSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DL_FormValidation } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { ReactNode, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 interface Props {
   formValidation: DL_FormValidation;
-  showDeleteUserButton?: boolean;
+  title: ReactNode;
 }
 
-export const EditFormValidation = ({
-  formValidation,
-  showDeleteUserButton = false,
-}: Props) => {
+export const EditFormValidation = ({ formValidation, title }: Props) => {
   const router = useRouter();
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
@@ -86,9 +83,7 @@ export const EditFormValidation = ({
 
   return (
     <Card>
-      {/* <CardHeader>
-        <p className="text-2xl font-semibold">Edit</p>
-      </CardHeader> */}
+      <CardHeader>{title}</CardHeader>
       <CardContent className="pt-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -109,7 +104,7 @@ export const EditFormValidation = ({
                     >
                       <Input
                         {...field}
-                        placeholder="Some Form Validation"
+                        placeholder="Form Validation"
                         disabled={isPending}
                       />
                     </FormControl>
@@ -126,7 +121,7 @@ export const EditFormValidation = ({
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="some-form-validation"
+                        placeholder="form-validation"
                         type="text"
                         disabled
                       />
@@ -143,7 +138,7 @@ export const EditFormValidation = ({
                     <FormLabel>Description</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="A few words about this form validation you're about to write..."
+                        placeholder="Form validation description..."
                         className="resize-none"
                         {...field}
                       />

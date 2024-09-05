@@ -78,7 +78,7 @@ const SettingsPage = () => {
     <div className="container">
       <Card>
         <CardHeader>
-          <p className="text-center text-2xl font-semibold">Settings</p>
+          <h1 className="text-4xl font-bold">Settings</h1>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -201,12 +201,12 @@ const SettingsPage = () => {
                           </FormDescription>
                         </div>
                         <FormControl>
-                          <Switch 
+                          <Switch
                             disabled={isPending}
                             checked={field.value}
                             onCheckedChange={field.onChange}
                           />
-                        </FormControl >
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}

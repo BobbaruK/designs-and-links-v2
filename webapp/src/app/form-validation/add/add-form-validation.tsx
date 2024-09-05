@@ -5,7 +5,7 @@ import { revalidate } from "@/actions/reavalidate";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -19,13 +19,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { AddFormValidationSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { ReactNode, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-interface Props {}
+interface Props {
+  title: ReactNode;
+}
 
-export const AddFormValidation = ({}: Props) => {
+export const AddFormValidation = ({ title }: Props) => {
   const router = useRouter();
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
@@ -45,8 +47,6 @@ export const AddFormValidation = ({}: Props) => {
     setError(undefined);
 
     startTransition(() => {
-      console.log(values);
-
       addFormValidation(values)
         .then((data) => {
           if (data.error) {
@@ -64,10 +64,8 @@ export const AddFormValidation = ({}: Props) => {
 
   return (
     <Card>
-      {/* <CardHeader>
-        <p className="text-2xl font-semibold">Edit</p>
-      </CardHeader> */}
-      <CardContent className="pt-6">
+      <CardHeader>{title}</CardHeader>
+      <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
@@ -87,7 +85,7 @@ export const AddFormValidation = ({}: Props) => {
                     >
                       <Input
                         {...field}
-                        placeholder="Some Form Validation"
+                        placeholder="Form Validation"
                         disabled={isPending}
                       />
                     </FormControl>
@@ -104,7 +102,7 @@ export const AddFormValidation = ({}: Props) => {
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="some-form-validation"
+                        placeholder="form-validation"
                         type="text"
                         disabled
                       />
@@ -121,7 +119,7 @@ export const AddFormValidation = ({}: Props) => {
                     <FormLabel>Description</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="A few words about this form validation you're about to write..."
+                        placeholder="Form validation description..."
                         className="resize-none"
                         {...field}
                       />

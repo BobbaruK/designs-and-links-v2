@@ -10,12 +10,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useToast } from "@/components/ui/use-toast";
 import { useCurrentRole } from "@/hooks/use-current-role";
 import { DL_FormValidation } from "@prisma/client";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface Props {
   formValidation: DL_FormValidation;
@@ -23,23 +23,31 @@ interface Props {
 
 const FormValidationRowActions = ({ formValidation }: Props) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { toast } = useToast();
   const userRole = useCurrentRole();
 
   const onDelete = () => {
     deleteFormValidation(formValidation.id).then((data) => {
       if (data.error) {
-        toast({
-          title: formValidation.name + ": Error",
-          description: `Could not delete form validation!`,
-          variant: "destructive",
-        });
+        toast.error(
+          <div className="">
+            Could not delete form validation
+            <code className="mx-1 text-nowrap rounded-md bg-secondary p-1 text-secondary-foreground">
+              {formValidation.name}
+            </code>
+            .
+          </div>,
+        );
       }
       if (data.success) {
-        toast({
-          title: formValidation.name,
-          description: `Form validation deleted!`,
-        });
+        toast.success(
+          <div>
+            Form validation
+            <code className="mx-1 text-nowrap rounded-md bg-secondary p-1 text-secondary-foreground">
+              {formValidation.name}
+            </code>
+            deleted!
+          </div>,
+        );
       }
       revalidate();
     });
@@ -90,8 +98,7 @@ const FormValidationRowActions = ({ formValidation }: Props) => {
             onClick={() => {
               navigator.clipboard.writeText(formValidation.id);
 
-              toast({
-                title: `Copied ${formValidation.name}'s ID`,
+              toast.info(`Copied ${formValidation.name}'s ID`, {
                 description: formValidation.id,
               });
             }}
