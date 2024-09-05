@@ -4,11 +4,25 @@ import db from "@/lib/db";
  * {@linkcode getFormValidationBySlug}
  *
  * @param {string} slug - search in the database by slug
+ * 
+ * It also includes `createdBy` and `updatedBy` and ommits the passwords
  * @yields a `Promise` that resolve in an formValidation `Object`
  */
 export const getAllFormValidation = async () => {
   try {
     const formValidations = await db.dL_FormValidation.findMany({
+      include: {
+        createdBy: {
+          omit: {
+            password: true,
+          },
+        },
+        updatedBy: {
+          omit: {
+            password: true,
+          },
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },

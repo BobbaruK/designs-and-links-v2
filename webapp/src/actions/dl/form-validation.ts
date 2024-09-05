@@ -1,6 +1,7 @@
 "use server";
 
 import { currentUser } from "@/lib/auth";
+import { getUserById } from "@/lib/data";
 import db from "@/lib/db";
 import { EditFormValidationSchema } from "@/lib/schemas";
 import { z } from "zod";
@@ -15,12 +16,24 @@ export const editFormValidation = async (
     return { error: "Unauthorized!" };
   }
 
+  const dbUser = await getUserById(user.id!);
+
+  if (!dbUser) {
+    return { error: "Unauthorized!" };
+  }
+
+  const userEditing = await db.user.findUnique({
+    where: {
+      id: user.id,
+    },
+  });
+
   try {
     const updatedFormValidation = await db.dL_FormValidation.update({
       where: {
         id,
       },
-      data: { ...values },
+      data: { ...values, updateUserId: userEditing?.id },
     });
 
     return {
@@ -41,9 +54,33 @@ export const addFormValidation = async (
     return { error: "Unauthorized!" };
   }
 
+  const dbUser = await getUserById(user.id!);
+
+  if (!dbUser) {
+    return { error: "Unauthorized!" };
+  }
+
+  const existingFormValidation = await db.dL_FormValidation.findUnique({
+    where: {
+      slug: values.slug,
+    },
+  });
+
+  if (existingFormValidation) return { error: "Form validation already exists!" };
+
+  const userAdding = await db.user.findUnique({
+    where: {
+      id: user.id,
+    },
+  });
+
   try {
     const addFormValidation = await db.dL_FormValidation.create({
-      data: { ...values },
+      data: {
+        ...values,
+        createdUserId: userAdding?.id,
+        updateUserId: userAdding?.id,
+      },
     });
 
     return {
@@ -59,6 +96,12 @@ export const deleteFormValidation = async (id: string) => {
   const user = await currentUser();
 
   if (!user) {
+    return { error: "Unauthorized!" };
+  }
+
+  const dbUser = await getUserById(user.id!);
+
+  if (!dbUser) {
     return { error: "Unauthorized!" };
   }
 

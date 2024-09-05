@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["omitApi"]
 }
 
 datasource db {
@@ -33,6 +34,8 @@ model User {
   updatedAt             DateTime               @updatedAt
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
+  formValidationCreated DL_FormValidation[]    @relation("formValidationCreated")
+  formValidationUpdated DL_FormValidation[]    @relation("formValidationUpdated")
 }
 
 model Account {
@@ -100,12 +103,16 @@ model DL_Topic {
 }
 
 model DL_FormValidation {
-  id          String   @id @unique @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  name        String   @unique
-  slug        String   @unique
-  description String?
+  id            String   @id @unique @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  name          String   @unique
+  slug          String   @unique
+  description   String?
+  createdBy     User?    @relation("formValidationCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdUserId String?
+  updatedBy     User?    @relation("formValidationUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updateUserId  String?
 
   @@unique([name, slug])
 }
