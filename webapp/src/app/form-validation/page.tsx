@@ -1,5 +1,5 @@
+import { IconButton } from "@/components/button-icon";
 import { DataTable } from "@/components/data-table";
-import { IconButton } from "@/components/icon-button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { currentUser } from "@/lib/auth";
 import { getAllFormValidation } from "@/lib/data/dl";

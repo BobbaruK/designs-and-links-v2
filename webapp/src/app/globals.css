@@ -66,4 +66,8 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  code {
+    @apply mx-1 text-nowrap rounded-md bg-secondary p-1 text-secondary-foreground;
+  }
 }

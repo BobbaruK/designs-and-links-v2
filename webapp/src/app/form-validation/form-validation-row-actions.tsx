@@ -31,10 +31,7 @@ const FormValidationRowActions = ({ formValidation }: Props) => {
         toast.error(
           <div className="">
             Could not delete form validation
-            <code className="mx-1 text-nowrap rounded-md bg-secondary p-1 text-secondary-foreground">
-              {formValidation.name}
-            </code>
-            .
+            <code>{formValidation.name}</code>.
           </div>,
         );
       }
@@ -42,9 +39,7 @@ const FormValidationRowActions = ({ formValidation }: Props) => {
         toast.success(
           <div>
             Form validation
-            <code className="mx-1 text-nowrap rounded-md bg-secondary p-1 text-secondary-foreground">
-              {formValidation.name}
-            </code>
+            <code>{formValidation.name}</code>
             deleted!
           </div>,
         );

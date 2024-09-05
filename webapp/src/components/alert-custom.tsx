@@ -19,6 +19,7 @@ export const CustomAlert = ({
     <Alert variant={variant}>
       {icon || <FaTerminal />}
       <AlertTitle>{title}</AlertTitle>
+      {/* <AlertDescription dangerouslySetInnerHTML={{ __html: description }} /> */}
       <AlertDescription>{description}</AlertDescription>
     </Alert>
   );
