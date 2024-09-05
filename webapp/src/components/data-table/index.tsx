@@ -31,14 +31,18 @@ import { DataTablePagination } from "./pagination";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  columnVisibilityObj?: VisibilityState;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  columnVisibilityObj,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    columnVisibilityObj || {},
+  );
 
   const table = useReactTable({
     data,

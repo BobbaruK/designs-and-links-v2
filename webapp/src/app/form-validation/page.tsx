@@ -29,7 +29,14 @@ const FormValidationsPage = async () => {
         </CardHeader>
         <CardContent className="p-0"></CardContent>
       </Card>
-      <DataTable columns={columns} data={formValidations!} />
+      <DataTable
+        columns={columns}
+        data={formValidations!}
+        columnVisibilityObj={{
+          slug: false,
+          description: false,
+        }}
+      />
     </div>
   );
 };

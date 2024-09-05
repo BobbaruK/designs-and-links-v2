@@ -1,8 +1,14 @@
 "use client";
 
+import { CustomAvatar } from "@/components/custom-avatar";
 import { Button } from "@/components/ui/button";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { cn, returnFormattedDate } from "@/lib/utils";
-import { DL_FormValidation } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import {
@@ -11,14 +17,22 @@ import {
 } from "react-icons/pi";
 import FormValidationRowActions from "./form-validation-row-actions";
 
-// type FormValidation = Prisma.FormValidationGetPayload<{
-//   include: {
-//     createdBy: true;
-//     updatedBy: true;
-//   };
-// }>;
+type FormValidation = Prisma.DL_FormValidationGetPayload<{
+  include: {
+    createdBy: {
+      omit: {
+        password: true;
+      };
+    };
+    updatedBy: {
+      omit: {
+        password: true;
+      };
+    };
+  };
+}>;
 
-export const columns: ColumnDef<DL_FormValidation>[] = [
+export const columns: ColumnDef<FormValidation>[] = [
   // Name
   {
     accessorKey: "name",
@@ -51,6 +65,7 @@ export const columns: ColumnDef<DL_FormValidation>[] = [
   // Slug
   {
     accessorKey: "slug",
+    id: "slug",
     header: ({ column }) => {
       return (
         <Button
@@ -79,6 +94,7 @@ export const columns: ColumnDef<DL_FormValidation>[] = [
   // Description
   {
     accessorKey: "description",
+    id: "description",
     enableSorting: false,
     header: ({ column }) => {
       return (
@@ -130,94 +146,90 @@ export const columns: ColumnDef<DL_FormValidation>[] = [
     sortingFn: "datetime",
   },
   // Created By
-  // {
-  //   accessorKey: "createdBy",
-  //   // enableSorting: false,
-  //   sortingFn: (rowA, rowB, columnId) => {
-  //     const rA_Username = rowA.original.createdBy.username;
-  //     const rB_Username = rowB.original.createdBy.username;
+  {
+    accessorKey: "createdBy",
+    // enableSorting: false,
+    sortingFn: (rowA, rowB, columnId) => {
+      const rA_Username = rowA.original.createdBy?.name!; // TODO: check !
+      const rB_Username = rowB.original.createdBy?.name!; // TODO: check !
 
-  //     return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
-  //   },
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         className="flex gap-2"
-  //         onClick={() => column.toggleSorting()}
-  //       >
-  //         Created By
-  //         {column.getIsSorted() === "asc" && (
-  //           <PiArrowBendRightUpDuotone size={20} />
-  //         )}
-  //         {column.getIsSorted() === "desc" && (
-  //           <PiArrowBendRightDownDuotone size={20} />
-  //         )}
-  //       </Button>
-  //     );
-  //   },
-  //   cell: ({ row }) => {
-  //     const id = row.original.createdBy.id;
-  //     const userName = row.original.createdBy.username;
-  //     const firstName = row.original.createdBy.firstName;
-  //     const lastName = row.original.createdBy.lastName;
-  //     const email = row.original.createdBy.email;
+      return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
+    },
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="flex gap-2"
+          onClick={() => column.toggleSorting()}
+        >
+          Created By
+          {column.getIsSorted() === "asc" && (
+            <PiArrowBendRightUpDuotone size={20} />
+          )}
+          {column.getIsSorted() === "desc" && (
+            <PiArrowBendRightDownDuotone size={20} />
+          )}
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const createdBy = row.original.createdBy;
+      const id = createdBy?.id;
+      const name = createdBy?.name;
+      const email = createdBy?.email;
+      const image = createdBy?.image;
 
-  //     const avatar = getUserAvatar(row.original.createdBy.avatar);
+      return (
+        <>
+          {createdBy ? (
+            <HoverCard>
+              <HoverCardTrigger
+                className="flex items-center justify-start gap-4 hover:cursor-pointer"
+                asChild
+              >
+                <Link href={`/profile/${id}`}>
+                  <CustomAvatar image={image} />
 
-  //     return (
-  //       <>
-  //         <HoverCard>
-  //           <HoverCardTrigger
-  //             className="flex items-center justify-start gap-4 hover:cursor-pointer"
-  //             asChild
-  //           >
-  //             <Link href={`/profile/${id}`}>
-  //               <Avatar>
-  //                 <AvatarImage src={avatar} />
-  //                 <AvatarFallback>
-  //                   {firstName?.charAt(0) || userName.charAt(0).toUpperCase()}
-  //                   {lastName?.charAt(0) || userName.charAt(1).toUpperCase()}
-  //                 </AvatarFallback>
-  //               </Avatar>
-
-  //               {userName}
-  //             </Link>
-  //           </HoverCardTrigger>
-  //           <HoverCardContent className="leading-relaxed">
-  //             <p>
-  //               User:{" "}
-  //               <Link className={cn("hover:underline")} href={`/profile/${id}`}>
-  //                 <strong>{userName}</strong>
-  //               </Link>
-  //             </p>
-  //             <p>
-  //               Full Name:{" "}
-  //               <strong>
-  //                 {firstName} {lastName}
-  //               </strong>
-  //             </p>
-  //             <p>
-  //               Email:{" "}
-  //               <Link
-  //                 className={cn("hover:underline")}
-  //                 href={`mailto:${email}`}
-  //               >
-  //                 <strong>{email}</strong>
-  //               </Link>
-  //             </p>
-  //             <p>
-  //               Created at:{" "}
-  //               <strong>
-  //                 {returnFormattedDate(row.original.createdAt)} (UTC)
-  //               </strong>
-  //             </p>
-  //           </HoverCardContent>
-  //         </HoverCard>
-  //       </>
-  //     );
-  //   },
-  // },
+                  {name}
+                </Link>
+              </HoverCardTrigger>
+              <HoverCardContent className="leading-relaxed">
+                <p>
+                  User:{" "}
+                  <Link
+                    className={cn("hover:underline")}
+                    href={`/profile/${id}`}
+                  >
+                    <strong>{name}</strong>
+                  </Link>
+                </p>
+                <p>
+                  Email:{" "}
+                  <Link
+                    className={cn("hover:underline")}
+                    href={`mailto:${email}`}
+                  >
+                    <strong>{email}</strong>
+                  </Link>
+                </p>
+                <p>
+                  Created at:{" "}
+                  <strong>
+                    {returnFormattedDate(row.original.createdAt)} (UTC)
+                  </strong>
+                </p>
+              </HoverCardContent>
+            </HoverCard>
+          ) : (
+            <div className="flex items-center gap-4">
+              <CustomAvatar image={null} />
+              Deleted user
+            </div>
+          )}
+        </>
+      );
+    },
+  },
   // Updated At
   {
     accessorKey: "updatedAt",
@@ -242,94 +254,92 @@ export const columns: ColumnDef<DL_FormValidation>[] = [
     sortingFn: "datetime",
   },
   // Updated By
-  // {
-  //   accessorKey: "updatedBy",
-  //   // enableSorting: false,
-  //   sortingFn: (rowA, rowB, columnId) => {
-  //     const rA_Username = rowA.original.updatedBy?.username!;
-  //     const rB_Username = rowB.original.updatedBy?.username!;
+  {
+    accessorKey: "updatedBy",
+    // enableSorting: false,
+    sortingFn: (rowA, rowB, columnId) => {
+      const rA_Username = rowA.original.updatedBy?.name!;
+      const rB_Username = rowB.original.updatedBy?.name!;
 
-  //     return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
-  //   },
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         className="flex gap-2"
-  //         onClick={() => column.toggleSorting()}
-  //       >
-  //         Updated By
-  //         {column.getIsSorted() === "asc" && (
-  //           <PiArrowBendRightUpDuotone size={20} />
-  //         )}
-  //         {column.getIsSorted() === "desc" && (
-  //           <PiArrowBendRightDownDuotone size={20} />
-  //         )}
-  //       </Button>
-  //     );
-  //   },
-  //   cell: ({ row }) => {
-  //     const id = row.original.updatedBy?.id;
-  //     const userName = row.original.updatedBy?.username;
-  //     const firstName = row.original.updatedBy?.firstName;
-  //     const lastName = row.original.updatedBy?.lastName;
-  //     const email = row.original.updatedBy?.email;
+      return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
+    },
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="flex gap-2"
+          onClick={() => column.toggleSorting()}
+        >
+          Updated By
+          {column.getIsSorted() === "asc" && (
+            <PiArrowBendRightUpDuotone size={20} />
+          )}
+          {column.getIsSorted() === "desc" && (
+            <PiArrowBendRightDownDuotone size={20} />
+          )}
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const updatedBy = row.original.updatedBy;
+      const id = updatedBy?.id;
+      const name = updatedBy?.name;
+      const email = updatedBy?.email;
+      const image = updatedBy?.image;
 
-  //     const avatar = getUserAvatar(row.original.updatedBy?.avatar);
+      return (
+        <>
+          {updatedBy ? (
+            <>
+              <HoverCard>
+                <HoverCardTrigger
+                  className="flex items-center justify-start gap-4 hover:cursor-pointer"
+                  asChild
+                >
+                  <Link href={`/profile/${id}`}>
+                    <CustomAvatar image={image} />
 
-  //     return (
-  //       <>
-  //         <HoverCard>
-  //           <HoverCardTrigger
-  //             className="flex items-center justify-start gap-4 hover:cursor-pointer"
-  //             asChild
-  //           >
-  //             <Link href={`/profile/${id}`}>
-  //               <Avatar>
-  //                 <AvatarImage src={avatar} />
-  //                 <AvatarFallback>
-  //                   {firstName?.charAt(0) || userName.charAt(0).toUpperCase()}
-  //                   {lastName?.charAt(0) || userName.charAt(1).toUpperCase()}
-  //                 </AvatarFallback>
-  //               </Avatar>
-
-  //               {userName}
-  //             </Link>
-  //           </HoverCardTrigger>
-  //           <HoverCardContent className="leading-relaxed">
-  //             <p>
-  //               User:{" "}
-  //               <Link className={cn("hover:underline")} href={`/profile/${id}`}>
-  //                 <strong>{userName}</strong>
-  //               </Link>
-  //             </p>
-  //             <p>
-  //               Full Name:{" "}
-  //               <strong>
-  //                 {firstName} {lastName}
-  //               </strong>
-  //             </p>
-  //             <p>
-  //               Email:{" "}
-  //               <Link
-  //                 className={cn("hover:underline")}
-  //                 href={`mailto:${email}`}
-  //               >
-  //                 <strong>{email}</strong>
-  //               </Link>
-  //             </p>
-  //             <p>
-  //               Created at:{" "}
-  //               <strong>
-  //                 {returnFormattedDate(row.original.updatedAt)} (UTC)
-  //               </strong>
-  //             </p>
-  //           </HoverCardContent>
-  //         </HoverCard>
-  //       </>
-  //     );
-  //   },
-  // },
+                    {name}
+                  </Link>
+                </HoverCardTrigger>
+                <HoverCardContent className="leading-relaxed">
+                  <p>
+                    User:{" "}
+                    <Link
+                      className={cn("hover:underline")}
+                      href={`/profile/${id}`}
+                    >
+                      <strong>{name}</strong>
+                    </Link>
+                  </p>
+                  <p>
+                    Email:{" "}
+                    <Link
+                      className={cn("hover:underline")}
+                      href={`mailto:${email}`}
+                    >
+                      <strong>{email}</strong>
+                    </Link>
+                  </p>
+                  <p>
+                    Created at:{" "}
+                    <strong>
+                      {returnFormattedDate(row.original.updatedAt)} (UTC)
+                    </strong>
+                  </p>
+                </HoverCardContent>
+              </HoverCard>
+            </>
+          ) : (
+            <div className="flex items-center gap-4">
+              <CustomAvatar image={null} />
+              Deleted user
+            </div>
+          )}
+        </>
+      );
+    },
+  },
   // Actions
   {
     id: "actions",
