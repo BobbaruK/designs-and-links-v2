@@ -28,6 +28,16 @@ export const editFormValidation = async (
     },
   });
 
+  const existingFormValidation = await db.dL_FormValidation.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!existingFormValidation) {
+    return { error: "Form validation does not exist" };
+  }
+
   try {
     const updatedFormValidation = await db.dL_FormValidation.update({
       where: {
@@ -66,7 +76,8 @@ export const addFormValidation = async (
     },
   });
 
-  if (existingFormValidation) return { error: "Form validation already exists!" };
+  if (existingFormValidation)
+    return { error: "Form validation already exists!" };
 
   const userAdding = await db.user.findUnique({
     where: {
