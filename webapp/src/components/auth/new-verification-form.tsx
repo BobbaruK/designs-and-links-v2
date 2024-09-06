@@ -1,10 +1,9 @@
 "use client";
 
-import { newVerification } from "@/actions";
+import { logout, newVerification } from "@/actions";
 import { CardWrapper } from "@/components/auth/card-wrapper";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
-import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
 
@@ -26,8 +25,14 @@ export const NewVerificationForm = ({ searchParamToken }: Props) => {
 
     newVerification(searchParamToken)
       .then((data) => {
-        setSuccess(data.success);
-        setError(data.error);
+        if (data.error) setError(data.error);
+
+        if (data.success) {
+          setSuccess(data.success);
+          setTimeout(() => {
+            logout();
+          }, 300);
+        }
       })
       .catch(() => {
         setError("Something went wrong!");

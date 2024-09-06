@@ -7,7 +7,10 @@ import {
 import db from "@/lib/db";
 import crypto from "crypto";
 
-export const generateVerificationToken = async (email: string) => {
+export const generateVerificationToken = async (
+  email: string,
+  emailOld?: string | null,
+) => {
   const token = uuidv4();
   const expires = new Date(new Date().getTime() + 3600 * 1000);
 
@@ -24,6 +27,7 @@ export const generateVerificationToken = async (email: string) => {
   const verificationToken = await db.verificationToken.create({
     data: {
       email,
+      emailOld,
       token,
       expires,
     },

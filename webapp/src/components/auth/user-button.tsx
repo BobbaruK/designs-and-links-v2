@@ -1,6 +1,5 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,17 +11,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { FaUser } from "react-icons/fa";
+import { GrUserAdmin } from "react-icons/gr";
 import { IoIosLogIn } from "react-icons/io";
 import { IoExitOutline, IoSettingsOutline } from "react-icons/io5";
+import { CustomAvatar } from "../custom-avatar";
 import { LoginButton } from "./login-button";
 import { LogoutButton } from "./logout-button";
-import { cn } from "@/lib/utils";
-import { CustomAvatar } from "../custom-avatar";
 
 export const UserButton = () => {
   const user = useCurrentUser();
@@ -56,6 +55,21 @@ export const UserButton = () => {
                   <IoSettingsOutline /> Settings
                 </Link>
               </DropdownMenuItem>
+              {user.role === "ADMIN" && (
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={"/admin"}
+                    className={cn(
+                      "flex cursor-pointer items-center justify-start gap-2 p-2",
+                      pathname.startsWith("/admin")
+                        ? "underline underline-offset-4"
+                        : "",
+                    )}
+                  >
+                    <GrUserAdmin /> Admin
+                  </Link>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuSeparator />
             </>
           )}
@@ -93,14 +107,14 @@ export const UserButton = () => {
               </LogoutButton>
             </>
           ) : (
-            <DropdownMenuContent>
+            <>
               <DropdownMenuSeparator />
               <LoginButton>
                 <DropdownMenuItem className="flex cursor-pointer items-center justify-start gap-3 p-2">
                   <IoIosLogIn /> Login
                 </DropdownMenuItem>
               </LoginButton>
-            </DropdownMenuContent>
+            </>
           )}
         </DropdownMenuContent>
       </DropdownMenu>

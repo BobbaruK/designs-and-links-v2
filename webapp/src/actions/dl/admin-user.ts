@@ -4,17 +4,22 @@ import { currentUser } from "@/lib/auth";
 import { getUserByEmail, getUserById } from "@/lib/data";
 import db from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/mail";
-import { SettingsSchema } from "@/lib/schemas";
+import { AdminUserEditSchema } from "@/lib/schemas";
 import { generateVerificationToken } from "@/lib/tokens";
-import bcrypt from "bcryptjs";
 import { z } from "zod";
+import bcrypt from "bcryptjs";
 
-export const settings = async (values: z.infer<typeof SettingsSchema>) => {
+export const adminEditUser = async (
+  values: z.infer<typeof AdminUserEditSchema>,
+  id: string,
+) => {
   const user = await currentUser();
 
   if (!user) {
     return { error: "Unauthorized!" };
   }
+
+  if (user.role !== "ADMIN") return { error: "Unauthorized!" };
 
   const dbUser = await getUserById(user.id!);
 
@@ -22,14 +27,26 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     return { error: "Unauthorized!" };
   }
 
-  if (user.isOAuth) {
+  const editedUser = await db.user.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      accounts: true,
+    },
+  });
+
+  if (!editedUser) {
+    return { error: "User does not exists!" };
+  }
+
+  if (editedUser.accounts.length) {
     values.email = undefined;
     values.password = undefined;
-    values.newPassword = undefined;
     values.isTwoFactorEnabled = undefined;
   }
 
-  if (values.email && values.email !== user.email) {
+  if (values.email && values.email !== editedUser.email) {
     const existingUser = await getUserByEmail(values.email);
 
     if (existingUser && existingUser.id !== user.id)
@@ -37,7 +54,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
 
     const verificationToken = await generateVerificationToken(
       values.email,
-      user?.email,
+      editedUser.email,
     );
 
     await sendVerificationEmail(
@@ -50,28 +67,32 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
     };
   }
 
-  if (values.password && values.newPassword && dbUser.password) {
+  if (values.password && editedUser.password) {
     const passwordMatch = await bcrypt.compare(
       values.password,
-      dbUser.password,
+      editedUser.password,
     );
 
-    if (!passwordMatch) return { error: "Incorrect password!" };
+    if (passwordMatch)
+      return { error: "User's new password cannot be old password!" };
 
-    const hashedPassword = await bcrypt.hash(values.newPassword, 10);
+    const hashedPassword = await bcrypt.hash(values.password, 10);
 
     values.password = hashedPassword;
-    values.newPassword = undefined;
   }
 
-  await db.user.update({
-    where: {
-      id: dbUser.id,
-    },
-    data: { ...values },
-  });
+  try {
+    await db.user.update({
+      where: {
+        id,
+      },
+      data: { ...values },
+    });
 
-  return {
-    success: "Settings Updated!",
-  };
+    return {
+      success: "User updated!",
+    };
+  } catch (error) {
+    return { error: "Could not update the user!" };
+  }
 };

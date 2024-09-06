@@ -8,7 +8,7 @@ import db from "@/lib/db";
  * It also includes `createdBy` and `updatedBy` and ommits the passwords
  * @yields a `Promise` that resolve in an formValidation `Object`
  */
-export const getAllFormValidation = async () => {
+export const getFormValidations = async () => {
   try {
     const formValidations = await db.dL_FormValidation.findMany({
       include: {

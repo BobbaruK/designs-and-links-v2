@@ -8,6 +8,7 @@ import {
 } from "@/lib/constants";
 import { z } from "zod";
 
+// Login schemas
 const passwordRefine = (password: string, ctx: z.RefinementCtx) => {
   const containsUppercase = (ch: string) => /[A-Z]/.test(ch);
   const containsLowercase = (ch: string) => /[a-z]/.test(ch);
@@ -138,6 +139,7 @@ export const SettingsSchema = z
     },
   );
 
+// Form validation schemas
 export const EditFormValidationSchema = z.object({
   name: z
     .string()
@@ -182,4 +184,23 @@ export const AddFormValidationSchema = z.object({
       message: `Description must not be longer than ${MAX_DESCRIPTION} characters.`,
     })
     .optional(),
+});
+
+// Admin user edit schema
+export const AdminUserEditSchema = z.object({
+  name: z.optional(z.string()),
+  isTwoFactorEnabled: z.optional(z.boolean()),
+  role: z.enum(userRoles()),
+  email: z.optional(z.string().email()),
+  password: z.optional(
+    z
+      .string()
+      .min(MIN_PASSWORD, {
+        message: `Password must be ${MIN_PASSWORD} or more characters long`,
+      })
+      .max(MAX_PASSWORD, {
+        message: `Password must be ${MAX_PASSWORD} or fewer characters long`,
+      })
+      .superRefine((password, ctx) => passwordRefine(password, ctx)),
+  ),
 });

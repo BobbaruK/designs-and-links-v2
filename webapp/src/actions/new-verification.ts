@@ -37,7 +37,9 @@ export const newVerification = async (token: string) => {
     };
 
   // 4
-  const existingUser = await getUserByEmail(existingToken.email);
+  const existingUser = await getUserByEmail(
+    existingToken.emailOld || existingToken.email,
+  );
 
   // 5
   if (!existingUser)
@@ -57,11 +59,17 @@ export const newVerification = async (token: string) => {
   });
 
   // 7
-  await db.verificationToken.delete({
-    where: {
-      id: existingToken.id,
-    },
-  });
+  try {
+    await db.verificationToken.delete({
+      where: {
+        id: existingToken.id,
+      },
+    });
+  } catch (error) {
+    return {
+      error: "Something went wrong while deleting the token!",
+    };
+  }
 
   // 8
   return {

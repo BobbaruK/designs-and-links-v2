@@ -53,7 +53,6 @@ export const LoginForm = ({ searchParamError, callbackUrl }: Props) => {
     startTransition(() => {
       login(values, callbackUrl)
         .then((data) => {
-          console.log(data);
           // setError(data?.error);
           // setSuccess(data?.success);
 

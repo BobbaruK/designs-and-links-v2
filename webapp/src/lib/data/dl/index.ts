@@ -1,7 +1,7 @@
 import {
-  getAllFormValidation,
+  getFormValidations,
   getFormValidationById,
   getFormValidationBySlug,
 } from "@/lib/data/dl/form-validation";
 
-export { getAllFormValidation, getFormValidationById, getFormValidationBySlug };
+export { getFormValidations as getAllFormValidation, getFormValidationById, getFormValidationBySlug };
