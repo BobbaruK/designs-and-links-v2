@@ -38,10 +38,10 @@ export const UserButton = () => {
         <DropdownMenuTrigger>
           <CustomAvatar image={image} />
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40">
+        <DropdownMenuContent align="end" className="w-auto">
           {user && (
             <>
-              <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
+              <DropdownMenuLabel>{user?.name || user.email}</DropdownMenuLabel>
               <DropdownMenuItem asChild>
                 <Link
                   href={"/settings"}

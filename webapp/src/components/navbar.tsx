@@ -9,7 +9,7 @@ export const Navbar = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="bg-secondary- flex w-full items-center justify-between rounded-xl p-4 shadow-sm">
+    <nav className="bg-secondary- flex w-full items-center justify-between rounded-xl py-4 shadow-sm">
       <div className="flex gap-x-2">
         <Button asChild variant={pathname === "/" ? "default" : "outline"}>
           <Link href={"/"}>Home</Link>

@@ -1,16 +1,20 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 import { FaUser } from "react-icons/fa";
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLSpanElement> {
   image: string | null | undefined;
 }
 
-export const CustomAvatar = ({ image }: Props) => {
+export const CustomAvatar = ({ image, ...restProps }: Props) => {
   return (
-    <Avatar className="border border-primary">
+    <Avatar
+      {...restProps}
+      className={cn(restProps.className, "border border-primary")}
+    >
       <AvatarImage src={image || ""} />
       <AvatarFallback>
-        <FaUser />
+        <FaUser className="h-[55%] w-[55%]" />
       </AvatarFallback>
     </Avatar>
   );
