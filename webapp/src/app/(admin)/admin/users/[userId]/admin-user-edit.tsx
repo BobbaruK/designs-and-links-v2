@@ -93,7 +93,6 @@ export const AdminUserEdit = ({ user }: Props) => {
 
   return (
     <Form {...form}>
-      <pre>{JSON.stringify(user, null, 2)}</pre>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
           <FormField

@@ -16,6 +16,7 @@ import {
 } from "@/lib/tokens";
 import { AuthError } from "next-auth";
 import z from "zod";
+import bcrypt from "bcryptjs";
 
 /**
  * **{@linkcode login} server function**
@@ -29,7 +30,7 @@ import z from "zod";
  *    1. Generate verification token by the users email. See {@linkcode generateVerificationToken}
  *    2. Send verification email. See {@linkcode sendVerificationEmail}
  *    3. return `{ success: "Confirmation email sent!" }`
- * 7. Check if users 2FA is enabled __and__ if user has an email
+ * 7. Check if passwords match __and__ users 2FA is enabled __and__ if user has an email
  *    1. Check if _code_ exists
  *       1. Get 2FA Token by email. See {@linkcode getTwoFactorTokenByEmail}
  *       2. If 2FA is null return `{ error: "Invalid code!" }`
@@ -87,8 +88,10 @@ export const login = async (
     return { success: "Confirmation email sent!" };
   }
 
+  const passwordMatch = await bcrypt.compare(password, existingUser.password);
+
   // 7
-  if (existingUser.isTwoFactorEnabled && existingUser.email) {
+  if (passwordMatch && existingUser.isTwoFactorEnabled && existingUser.email) {
     // 7.1
     if (code) {
       // 7.1.1
