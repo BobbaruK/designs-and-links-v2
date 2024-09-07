@@ -34,8 +34,12 @@ model User {
   updatedAt             DateTime               @updatedAt
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
+  UserAvatarCreated     UserAvatar[]           @relation("userAvatarCreated")
+  UserAvatarUpdated     UserAvatar[]           @relation("userAvatarUpdated")
   formValidationCreated DL_FormValidation[]    @relation("formValidationCreated")
   formValidationUpdated DL_FormValidation[]    @relation("formValidationUpdated")
+
+  @@index([id, email])
 }
 
 model Account {
@@ -65,6 +69,7 @@ model VerificationToken {
   expires  DateTime
 
   @@unique([email, token])
+  @@index([id, token, email])
 }
 
 model PasswordResetToken {
@@ -74,6 +79,7 @@ model PasswordResetToken {
   expires DateTime
 
   @@unique([email, token])
+  @@index([id, token, email])
 }
 
 model TwoFactorToken {
@@ -83,6 +89,7 @@ model TwoFactorToken {
   expires DateTime
 
   @@unique([email, token])
+  @@index([id, token, email])
 }
 
 model TwoFactorConfirmation {
@@ -92,6 +99,20 @@ model TwoFactorConfirmation {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
+  @@index([id, userId])
+}
+
+// Avatars
+model UserAvatar {
+  id            String   @id @unique @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  name          String
+  url           String
+  createdBy     User?    @relation("userAvatarCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdUserId String?
+  updatedBy     User?    @relation("userAvatarUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updateUserId  String?
 }
 
 // Designs and Links related tables
@@ -116,6 +137,7 @@ model DL_FormValidation {
   updateUserId  String?
 
   @@unique([name, slug])
+  @@index([id, slug])
 }
 
 model DL_LanguageType {

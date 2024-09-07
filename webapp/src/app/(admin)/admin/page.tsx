@@ -11,9 +11,12 @@ const AdminPage = () => {
             <h1 className="text-4xl font-bold">Admin area</h1>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex flex-row flex-wrap items-center justify-start gap-4">
           <Button asChild>
             <Link href={"/admin/users"}>Users</Link>
+          </Button>
+          <Button asChild>
+            <Link href={"/admin/user-avatars"}>User Avatars</Link>
           </Button>
         </CardContent>
       </Card>
