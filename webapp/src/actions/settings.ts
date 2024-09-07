@@ -12,11 +12,11 @@ import { z } from "zod";
 export const settings = async (values: z.infer<typeof SettingsSchema>) => {
   const user = await currentUser();
 
-  if (!user) {
+  if (!user || !user.id) {
     return { error: "Unauthorized!" };
   }
 
-  const dbUser = await getUserById(user.id!);
+  const dbUser = await getUserById(user.id);
 
   if (!dbUser) {
     return { error: "Unauthorized!" };

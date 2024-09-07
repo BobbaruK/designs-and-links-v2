@@ -4,6 +4,7 @@ import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { AdminUserEdit } from "./admin-user-edit";
 import { getUserById } from "@/lib/data";
 import { CustomAlert } from "@/components/alert-custom";
+import { RiProfileFill } from "react-icons/ri";
 
 interface Props {
   params: {
@@ -13,7 +14,7 @@ interface Props {
 
 const AdminUserPage = async ({ params: { userId } }: Props) => {
   const user = await getUserById(userId);
-  
+
   return (
     <div className="container flex flex-col gap-6">
       {!user ? (
@@ -39,11 +40,18 @@ const AdminUserPage = async ({ params: { userId } }: Props) => {
               <h1 className="text-4xl font-bold">
                 User: {user.name || user.email}
               </h1>
-              <IconButton
-                icon={<IoArrowBackCircleSharp size={25} />}
-                href={"/admin/users"}
-                label={"Back to users"}
-              />
+              <div className="ms-auto flex items-center justify-center gap-4">
+                <IconButton
+                  icon={<RiProfileFill size={25} />}
+                  href={`/profile/${user.id}`}
+                  label={"Go to users profile"}
+                />
+                <IconButton
+                  icon={<IoArrowBackCircleSharp size={25} />}
+                  href={"/admin/users"}
+                  label={"Back to users"}
+                />
+              </div>
             </div>
           </CardHeader>
           <CardContent>

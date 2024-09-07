@@ -65,14 +65,15 @@ export const columns: ColumnDef<DB_User>[] = [
       );
     },
     cell: ({ row }) => {
+      const id = row.original.id;
+      const name = row.original.name ? row.original.name : "-";
+      const image = row.original.image;
+
       return (
         <Button asChild variant={"link"} className={cn("p-0 text-foreground")}>
-          <Link
-            href={`/admin/users/${row.original.id}`}
-            className="flex items-center gap-2"
-          >
-            <CustomAvatar image={row.original.image} />
-            {row.original.name}
+          <Link href={`/profile/${id}`} className="flex items-center gap-2">
+            <CustomAvatar image={image} />
+            {name}
           </Link>
         </Button>
       );

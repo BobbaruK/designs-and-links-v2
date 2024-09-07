@@ -4,6 +4,7 @@ import { revalidate } from "@/actions/reavalidate";
 import { settings } from "@/actions/settings";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
+import { IconButton } from "@/components/button-icon";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -29,8 +30,10 @@ import { userRoles } from "@/lib/constants";
 import { SettingsSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { RiProfileFill } from "react-icons/ri";
 import { z } from "zod";
 
 const SettingsPage = () => {
@@ -40,6 +43,7 @@ const SettingsPage = () => {
   const [error, setError] = useState<string | undefined>();
   const { update } = useSession();
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof SettingsSchema>>({
     resolver: zodResolver(SettingsSchema),
@@ -66,6 +70,8 @@ const SettingsPage = () => {
           if (data.success) {
             update();
             setSuccess(data.success);
+
+            setTimeout(() => router.push(`/profile/${user?.id}`), 300);
           }
 
           revalidate();
@@ -77,8 +83,13 @@ const SettingsPage = () => {
   return (
     <div className="container">
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between gap-4">
           <h1 className="text-4xl font-bold">Settings</h1>
+          <IconButton
+            icon={<RiProfileFill size={25} />}
+            href={`/profile/${user?.id}`}
+            label={"Go to users profile"}
+          />
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -159,35 +170,36 @@ const SettingsPage = () => {
                     />
                   </>
                 )}
-
-                <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Role</FormLabel>
-                      <Select
-                        disabled={isPending}
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a role" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {userRoles().map((role) => (
-                            <SelectItem value={role} key={role}>
-                              {role}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {user?.role === "ADMIN" && (
+                  <FormField
+                    control={form.control}
+                    name="role"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Role</FormLabel>
+                        <Select
+                          disabled={isPending}
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a role" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {userRoles().map((role) => (
+                              <SelectItem value={role} key={role}>
+                                {role}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
                 {user?.isOAuth === false && (
                   <FormField
                     control={form.control}
