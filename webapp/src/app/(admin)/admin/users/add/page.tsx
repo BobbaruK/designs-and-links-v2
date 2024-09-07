@@ -1,6 +1,7 @@
 import { IconButton } from "@/components/button-icon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
+import { AdminUserAdd } from "./admin-user-add";
 
 const AdminAddUserPage = () => {
   return (
@@ -17,8 +18,7 @@ const AdminAddUserPage = () => {
           </div>
         </CardHeader>
         <CardContent>
-          add user form here
-          {/* <AddUser roles={roles as Role[]} avatars={avatars as Avatar[]} /> */}
+          <AdminUserAdd />
         </CardContent>
       </Card>
     </div>

@@ -5,7 +5,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const returnFormattedDate = (date: Date) => {
+export const returnFormattedDate = (date: Date, long?: boolean) => {
+  if (!date) return "-";
+
   const longMonths = [
     "January",
     "February",
@@ -35,7 +37,9 @@ export const returnFormattedDate = (date: Date) => {
     "Dec",
   ];
   const year = date.getFullYear();
-  const month = longMonths[date.getMonth()];
+  const month = long
+    ? longMonths[date.getMonth()]
+    : shortMonths[date.getMonth()];
   const day =
     date.getUTCDate() < 10 ? `0${date.getUTCDate()}` : date.getUTCDate();
 

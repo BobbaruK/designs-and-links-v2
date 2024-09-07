@@ -149,9 +149,7 @@ export const EditFormValidationSchema = z.object({
     .max(MAX_USERNAME, {
       message: `Name must be ${MAX_USERNAME} or fewer characters long`,
     }),
-
   slug: z.string(),
-
   description: z
     .string()
     // .min(10, {
@@ -172,9 +170,7 @@ export const AddFormValidationSchema = z.object({
     .max(MAX_USERNAME, {
       message: `Name must be ${MAX_USERNAME} or fewer characters long`,
     }),
-
   slug: z.string(),
-
   description: z
     .string()
     // .min(10, {
@@ -186,7 +182,7 @@ export const AddFormValidationSchema = z.object({
     .optional(),
 });
 
-// Admin user edit schema
+// Admin user schemas
 export const AdminUserEditSchema = z.object({
   name: z.optional(z.string()),
   isTwoFactorEnabled: z.optional(z.boolean()),
@@ -203,4 +199,20 @@ export const AdminUserEditSchema = z.object({
       })
       .superRefine((password, ctx) => passwordRefine(password, ctx)),
   ),
+});
+
+export const AdminUserAddSchema = z.object({
+  name: z.optional(z.string()),
+  isTwoFactorEnabled: z.optional(z.boolean()),
+  role: z.enum(userRoles()),
+  email: z.string().email(),
+  password: z
+    .string()
+    .min(MIN_PASSWORD, {
+      message: `Password must be ${MIN_PASSWORD} or more characters long`,
+    })
+    .max(MAX_PASSWORD, {
+      message: `Password must be ${MAX_PASSWORD} or fewer characters long`,
+    })
+    .superRefine((password, ctx) => passwordRefine(password, ctx)),
 });

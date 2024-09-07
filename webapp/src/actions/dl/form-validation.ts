@@ -12,17 +12,18 @@ export const addFormValidation = async (
 ) => {
   const user = await currentUser();
 
-  if (!user) {
+  const validatedFields = EditFormValidationSchema.safeParse(values);
+
+  if (!validatedFields.success) return { error: "Invalid fields!" };
+
+  if (!user || !user.id) {
     return { error: "Unauthorized!" };
   }
-  if (user.role !== "ADMIN" && user.role !== "EDITOR")
-    return { error: "Unauthorized!" };
 
-  const dbUser = await getUserById(user.id!);
+  const dbUser = await getUserById(user.id);
 
-  if (!dbUser) {
+  if (!dbUser || (user.role !== "ADMIN" && user.role !== "EDITOR"))
     return { error: "Unauthorized!" };
-  }
 
   const existingFormValidation = await db.dL_FormValidation.findUnique({
     where: {
@@ -63,17 +64,20 @@ export const editFormValidation = async (
 ) => {
   const user = await currentUser();
 
-  if (!user) {
+  const validatedFields = EditFormValidationSchema.safeParse(values);
+
+  if (!validatedFields.success) return { error: "Invalid fields!" };
+
+  const { name, slug, description } = validatedFields.data;
+
+  if (!user || !user.id) {
     return { error: "Unauthorized!" };
   }
 
-  if (user.role !== "ADMIN") return { error: "Unauthorized!" };
+  const dbUser = await getUserById(user.id);
 
-  const dbUser = await getUserById(user.id!);
-
-  if (!dbUser) {
+  if (!dbUser || (user.role !== "ADMIN" && user.role !== "EDITOR"))
     return { error: "Unauthorized!" };
-  }
 
   const userEditing = await db.user.findUnique({
     where: {
@@ -96,7 +100,7 @@ export const editFormValidation = async (
       where: {
         id,
       },
-      data: { ...values, updateUserId: userEditing?.id },
+      data: { name, slug, description, updateUserId: userEditing?.id },
     });
 
     return {
@@ -111,15 +115,14 @@ export const editFormValidation = async (
 export const deleteFormValidation = async (id: string) => {
   const user = await currentUser();
 
-  if (!user) {
+  if (!user || !user.id) {
     return { error: "Unauthorized!" };
   }
 
   const dbUser = await getUserById(user.id!);
 
-  if (!dbUser) {
+  if (!dbUser || (user.role !== "ADMIN" && user.role !== "EDITOR"))
     return { error: "Unauthorized!" };
-  }
 
   try {
     await db.dL_FormValidation.delete({

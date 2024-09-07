@@ -4,10 +4,49 @@ import { currentUser } from "@/lib/auth";
 import { getUserByEmail, getUserById } from "@/lib/data";
 import db from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/mail";
-import { AdminUserEditSchema } from "@/lib/schemas";
+import { AdminUserAddSchema, AdminUserEditSchema } from "@/lib/schemas";
 import { generateVerificationToken } from "@/lib/tokens";
-import { z } from "zod";
 import bcrypt from "bcryptjs";
+import { z } from "zod";
+
+export const adminAddUser = async (
+  values: z.infer<typeof AdminUserAddSchema>,
+) => {
+  const user = await currentUser();
+
+  const validatedFields = AdminUserAddSchema.safeParse(values);
+
+  if (!validatedFields.success) return { error: "Invalid fields!" };
+
+  const { name, password, email, role, isTwoFactorEnabled } =
+    validatedFields.data;
+
+  if (!user || !user.id) {
+    return { error: "Unauthorized!" };
+  }
+
+  const dbUser = await getUserById(user.id);
+
+  if (!dbUser || user.role !== "ADMIN") return { error: "Unauthorized!" };
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  try {
+    await db.user.create({
+      data: {
+        name,
+        password: hashedPassword,
+        email,
+        role,
+        isTwoFactorEnabled,
+      },
+    });
+
+    return { success: "User sucessfuly added!" };
+  } catch (error) {
+    return { error: "User could not be added!" };
+  }
+};
 
 export const adminEditUser = async (
   values: z.infer<typeof AdminUserEditSchema>,
@@ -15,17 +54,13 @@ export const adminEditUser = async (
 ) => {
   const user = await currentUser();
 
-  if (!user) {
+  if (!user || !user.id) {
     return { error: "Unauthorized!" };
   }
-
-  if (user.role !== "ADMIN") return { error: "Unauthorized!" };
 
   const dbUser = await getUserById(user.id!);
 
-  if (!dbUser) {
-    return { error: "Unauthorized!" };
-  }
+  if (!dbUser || user.role !== "ADMIN") return { error: "Unauthorized!" };
 
   const editedUser = await db.user.findUnique({
     where: {
@@ -94,5 +129,29 @@ export const adminEditUser = async (
     };
   } catch (error) {
     return { error: "Could not update the user!" };
+  }
+};
+
+export const adminDeleteUser = async (id: string) => {
+  const user = await currentUser();
+
+  if (!user || !user.id) {
+    return { error: "Unauthorized!" };
+  }
+
+  const dbUser = await getUserById(user.id);
+
+  if (!dbUser || user.role !== "ADMIN") return { error: "Unauthorized!" };
+
+  try {
+    await db.user.delete({
+      where: { id },
+    });
+
+    return {
+      success: "User deleted!",
+    };
+  } catch (error) {
+    return { error: "Could not delete the user!" };
   }
 };

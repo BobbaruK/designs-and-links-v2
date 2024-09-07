@@ -1,6 +1,10 @@
 "use server";
 
-import { adminEditUser } from "@/actions/dl/admin-user";
+import {
+  adminAddUser,
+  adminDeleteUser,
+  adminEditUser,
+} from "@/actions/dl/admin-user";
 import {
   addFormValidation,
   deleteFormValidation,
@@ -9,6 +13,8 @@ import {
 
 export {
   addFormValidation,
+  adminAddUser,
+  adminDeleteUser,
   adminEditUser,
   deleteFormValidation,
   editFormValidation,

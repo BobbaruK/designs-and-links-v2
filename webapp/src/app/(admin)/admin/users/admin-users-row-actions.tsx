@@ -1,4 +1,4 @@
-import { deleteFormValidation } from "@/actions/dl";
+import { adminDeleteUser } from "@/actions/dl";
 import { revalidate } from "@/actions/reavalidate";
 import { DeleteDialog } from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCurrentRole } from "@/hooks/use-current-role";
-import { DL_FormValidation, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -26,33 +26,33 @@ const AdminUsersRowActions = ({ user }: Props) => {
   const userRole = useCurrentRole();
 
   const onDelete = () => {
-    // deleteFormValidation(user.id).then((data) => {
-    //   if (data.error) {
-    //     toast.error(
-    //       <div className="">
-    //         Could not delete form validation
-    //         <code>{formValidation.name}</code>.
-    //       </div>,
-    //     );
-    //   }
-    //   if (data.success) {
-    //     toast.success(
-    //       <div>
-    //         Form validation
-    //         <code>{formValidation.name}</code>
-    //         deleted!
-    //       </div>,
-    //     );
-    //   }
-    //   revalidate();
-    // });
+    adminDeleteUser(user.id).then((data) => {
+      if (data.error) {
+        toast.error(
+          <div className="">
+            Could not delete user
+            <code>{user.name}</code>.
+          </div>,
+        );
+      }
+      if (data.success) {
+        toast.success(
+          <div>
+            User
+            <code>{user.name}</code>
+            deleted!
+          </div>,
+        );
+      }
+      revalidate();
+    });
   };
 
   return (
     <>
       <DeleteDialog
-        label={user.email}
-        asset={"form validation"}
+        label={user.name || user.email}
+        asset={"user"}
         onDelete={onDelete}
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
