@@ -9,7 +9,7 @@ const AdminAddUserPage = () => {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between gap-4">
-            <h1 className="text-4xl font-bold">Add User</h1>
+            <h1 className="text-4xl font-bold">Add user</h1>
             <IconButton
               icon={<IoArrowBackCircleSharp size={25} />}
               href={"/admin/users"}

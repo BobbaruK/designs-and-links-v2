@@ -4,7 +4,6 @@ import { currentUser } from "@/lib/auth";
 import { getUserById } from "@/lib/data";
 import db from "@/lib/db";
 import { EditFormValidationSchema } from "@/lib/schemas";
-import { use } from "react";
 import { z } from "zod";
 
 export const addFormValidation = async (
@@ -15,6 +14,8 @@ export const addFormValidation = async (
   const validatedFields = EditFormValidationSchema.safeParse(values);
 
   if (!validatedFields.success) return { error: "Invalid fields!" };
+
+  const { name, slug, description } = validatedFields.data;
 
   if (!user || !user.id) {
     return { error: "Unauthorized!" };
@@ -27,7 +28,7 @@ export const addFormValidation = async (
 
   const existingFormValidation = await db.dL_FormValidation.findUnique({
     where: {
-      slug: values.slug,
+      slug,
     },
   });
 
@@ -43,7 +44,9 @@ export const addFormValidation = async (
   try {
     const addFormValidation = await db.dL_FormValidation.create({
       data: {
-        ...values,
+        name,
+        slug,
+        description,
         createdUserId: userAdding?.id,
         updateUserId: userAdding?.id,
       },

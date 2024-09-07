@@ -1,7 +1,14 @@
 import {
-  getFormValidations,
   getFormValidationById,
   getFormValidationBySlug,
+  getFormValidations,
 } from "@/lib/data/dl/form-validation";
+import { getUserAvatarById, getUserAvatars } from "./user-avatars";
 
-export { getFormValidations as getAllFormValidation, getFormValidationById, getFormValidationBySlug };
+export {
+  getFormValidationById,
+  getFormValidationBySlug,
+  getFormValidations,
+  getUserAvatarById,
+  getUserAvatars,
+};

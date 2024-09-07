@@ -2,11 +2,10 @@ import { IconButton } from "@/components/button-icon";
 import { DataTable } from "@/components/data-table";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { getUsers } from "@/lib/data/user";
-import Link from "next/link";
 import { IoAddCircleSharp, IoArrowBackCircleSharp } from "react-icons/io5";
 import { columns } from "./columns";
 
-const UsersPage = async () => {
+const AdminUsersPage = async () => {
   const users = await getUsers();
 
   return (
@@ -36,4 +35,4 @@ const UsersPage = async () => {
   );
 };
 
-export default UsersPage;
+export default AdminUsersPage;

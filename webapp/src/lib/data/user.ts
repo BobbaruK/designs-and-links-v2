@@ -59,7 +59,7 @@ export const getUserByEmail = async (email: string) => {
 /**
  * {@linkcode getUserById}
  *
- * @param {string} id - search in the database by email
+ * @param {string} id - search in the database by id
  * @yields a `Promise` that resolve in an user `Object`
  */
 export const getUserById = async (id: string) => {
