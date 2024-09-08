@@ -4,7 +4,16 @@ import { adminAddUser } from "@/actions/dl";
 import { revalidate } from "@/actions/reavalidate";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
+import { CustomAvatar } from "@/components/custom-avatar";
 import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -16,6 +25,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -25,15 +39,38 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { userRoles } from "@/lib/constants";
 import { AdminUserAddSchema } from "@/lib/schemas";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UserRole } from "@prisma/client";
+import { Prisma, UserRole } from "@prisma/client";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export const AdminUserAdd = () => {
+type NewType = Prisma.UserAvatarGetPayload<{
+  include: {
+    createdBy: {
+      omit: {
+        password: false;
+      };
+    };
+    updatedBy: {
+      omit: {
+        password: false;
+      };
+    };
+  };
+}>;
+
+type DB_UserAvatars = NewType;
+
+interface Props {
+  avatars: DB_UserAvatars[] | null;
+}
+
+export const AdminUserAdd = ({ avatars }: Props) => {
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const { update } = useSession();
@@ -46,6 +83,7 @@ export const AdminUserAdd = () => {
       name: "",
       email: "",
       password: process.env.NEXT_PUBLIC_DEFAULT_REGISTER_PASSWORD || "",
+      image: "",
       role: UserRole.USER,
       isTwoFactorEnabled: false,
     },
@@ -70,6 +108,10 @@ export const AdminUserAdd = () => {
         })
         .catch(() => setError("Something went wrong!"));
     });
+  };
+
+  const onResetAvatar = () => {
+    form.setValue("image", "");
   };
 
   return (
@@ -125,6 +167,102 @@ export const AdminUserAdd = () => {
                     disabled={isPending}
                   />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="image"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel className="self-start">Avatar</FormLabel>
+                <div className="flex flex-row items-center gap-4">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl className="w-full">
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-[200px] justify-between",
+                            !field.value && "text-muted-foreground",
+                          )}
+                        >
+                          {field.value
+                            ? avatars?.find(
+                                (avatar) => avatar.url === field.value,
+                              )?.name
+                            : "Select avatar"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0">
+                      <Command>
+                        <CommandInput placeholder="Search avatar..." />
+                        <CommandList>
+                          <CommandEmpty>No avatar found.</CommandEmpty>
+                          <CommandGroup>
+                            {avatars
+                              ?.sort((a, b) => {
+                                const nameA = a.name.toUpperCase();
+                                const nameB = b.name.toUpperCase();
+                                if (nameA < nameB) {
+                                  return -1;
+                                }
+                                if (nameA > nameB) {
+                                  return 1;
+                                }
+
+                                return 0;
+                              })
+                              .map((avatar) => (
+                                <CommandItem
+                                  value={avatar.id}
+                                  key={avatar.id}
+                                  onSelect={() => {
+                                    form.setValue("image", avatar.url);
+                                  }}
+                                  className="flex items-center gap-0"
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      avatar.url === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0",
+                                    )}
+                                  />
+                                  <div className="flex items-center gap-4">
+                                    <CustomAvatar
+                                      image={avatar.url}
+                                      className="size-7"
+                                    />
+                                    {avatar.name}
+                                  </div>
+                                </CommandItem>
+                              ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormDescription className="flex items-center gap-4">
+                    <CustomAvatar image={form.getValues("image")} />
+                    {form.getValues("image") && (
+                      <Button
+                        size={"sm"}
+                        variant={"link"}
+                        className="text-foreground"
+                        onClick={onResetAvatar}
+                        type="button"
+                      >
+                        Delete avatar
+                      </Button>
+                    )}
+                  </FormDescription>
+                </div>
                 <FormMessage />
               </FormItem>
             )}

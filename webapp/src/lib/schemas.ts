@@ -90,8 +90,6 @@ export const NewPasswordSchema = z.object({
 export const SettingsSchema = z
   .object({
     name: z.optional(z.string()),
-    isTwoFactorEnabled: z.optional(z.boolean()),
-    role: z.enum(userRoles()),
     email: z.optional(z.string().email()),
     password: z.optional(
       z
@@ -115,6 +113,9 @@ export const SettingsSchema = z
         })
         .superRefine((password, ctx) => passwordRefine(password, ctx)),
     ),
+    image: z.optional(z.string()),
+    role: z.enum(userRoles()),
+    isTwoFactorEnabled: z.optional(z.boolean()),
   })
   .refine(
     (data) => {
@@ -185,8 +186,6 @@ export const AddFormValidationSchema = z.object({
 // Admin user schemas
 export const AdminUserEditSchema = z.object({
   name: z.optional(z.string()),
-  isTwoFactorEnabled: z.optional(z.boolean()),
-  role: z.enum(userRoles()),
   email: z.optional(z.string().email()),
   password: z.optional(
     z
@@ -199,12 +198,13 @@ export const AdminUserEditSchema = z.object({
       })
       .superRefine((password, ctx) => passwordRefine(password, ctx)),
   ),
+  image: z.optional(z.string()),
+  role: z.enum(userRoles()),
+  isTwoFactorEnabled: z.optional(z.boolean()),
 });
 
 export const AdminUserAddSchema = z.object({
   name: z.optional(z.string()),
-  isTwoFactorEnabled: z.optional(z.boolean()),
-  role: z.enum(userRoles()),
   email: z.string().email(),
   password: z
     .string()
@@ -215,6 +215,9 @@ export const AdminUserAddSchema = z.object({
       message: `Password must be ${MAX_PASSWORD} or fewer characters long`,
     })
     .superRefine((password, ctx) => passwordRefine(password, ctx)),
+  image: z.optional(z.string()),
+  role: z.enum(userRoles()),
+  isTwoFactorEnabled: z.optional(z.boolean()),
 });
 
 // Avatar schemas

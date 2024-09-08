@@ -2,8 +2,10 @@ import { IconButton } from "@/components/button-icon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { AdminUserAdd } from "./admin-user-add";
+import { getUserAvatars } from "@/lib/data/dl";
 
-const AdminAddUserPage = () => {
+const AdminAddUserPage = async () => {
+  const avatars = await getUserAvatars();
   return (
     <div className="container flex flex-col gap-6">
       <Card>
@@ -18,7 +20,7 @@ const AdminAddUserPage = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <AdminUserAdd />
+          <AdminUserAdd avatars={avatars} />
         </CardContent>
       </Card>
     </div>

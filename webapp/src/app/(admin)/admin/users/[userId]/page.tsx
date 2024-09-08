@@ -1,10 +1,11 @@
+import { CustomAlert } from "@/components/alert-custom";
 import { IconButton } from "@/components/button-icon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { IoArrowBackCircleSharp } from "react-icons/io5";
-import { AdminUserEdit } from "./admin-user-edit";
 import { getUserById } from "@/lib/data";
-import { CustomAlert } from "@/components/alert-custom";
+import { getUserAvatars } from "@/lib/data/dl";
+import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { RiProfileFill } from "react-icons/ri";
+import { AdminUserEdit } from "./admin-user-edit";
 
 interface Props {
   params: {
@@ -14,6 +15,8 @@ interface Props {
 
 const AdminUserPage = async ({ params: { userId } }: Props) => {
   const user = await getUserById(userId);
+
+  const avatars = await getUserAvatars();
 
   return (
     <div className="container flex flex-col gap-6">
@@ -55,7 +58,7 @@ const AdminUserPage = async ({ params: { userId } }: Props) => {
             </div>
           </CardHeader>
           <CardContent>
-            <AdminUserEdit user={user} />
+            <AdminUserEdit user={user} avatars={avatars} />
           </CardContent>
         </Card>
       )}

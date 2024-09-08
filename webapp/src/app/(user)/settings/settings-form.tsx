@@ -1,7 +1,7 @@
 "use client";
 
-import { adminEditUser } from "@/actions/dl";
 import { revalidate } from "@/actions/reavalidate";
+import { settings } from "@/actions/settings";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
 import { CustomAvatar } from "@/components/custom-avatar";
@@ -37,8 +37,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { userRoles } from "@/lib/constants";
-import { AdminUserEditSchema } from "@/lib/schemas";
+import db from "@/lib/db";
+import { SettingsSchema } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Prisma, UserAvatar } from "@prisma/client";
@@ -65,65 +67,37 @@ type DB_UserAvatars = Prisma.UserAvatarGetPayload<{
 }>;
 
 interface Props {
-  user: Prisma.UserGetPayload<{
-    include: {
-      accounts: {
-        omit: {
-          refresh_token: true;
-          access_token: true;
-          token_type: true;
-          id_token: true;
-          session_state: true;
-          providerAccountId: true;
-          expires_at: true;
-          scope: true;
-        };
-      };
-    };
-  }>;
-  avatars:
-    | Prisma.UserAvatarGetPayload<{
-        include: {
-          createdBy: {
-            omit: {
-              password: false;
-            };
-          };
-          updatedBy: {
-            omit: {
-              password: false;
-            };
-          };
-        };
-      }>[]
-    | null;
+  avatars: DB_UserAvatars[] | null;
 }
 
-export const AdminUserEdit = ({ user, avatars }: Props) => {
+export const SettingsForm = ({ avatars }: Props) => {
+  const user = useCurrentUser();
+
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const { update } = useSession();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof AdminUserEditSchema>>({
-    resolver: zodResolver(AdminUserEditSchema),
+  const form = useForm<z.infer<typeof SettingsSchema>>({
+    resolver: zodResolver(SettingsSchema),
     defaultValues: {
-      name: user.name || undefined,
-      email: user.email || undefined,
+      name: user?.name || undefined,
+      email: user?.email || undefined,
       password: undefined,
-      image: user.image || undefined,
-      role: user.role || undefined,
-      isTwoFactorEnabled: user.isTwoFactorEnabled,
+      newPassword: undefined,
+      image: user?.image || undefined,
+      role: user?.role || undefined,
+      isTwoFactorEnabled: user?.isTwoFactorEnabled || undefined,
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof AdminUserEditSchema>) => {
+  const onSubmit = async (values: z.infer<typeof SettingsSchema>) => {
     setSuccess(undefined);
     setError(undefined);
 
     startTransition(() => {
-      adminEditUser(values, user.id)
+      settings(values)
         .then((data) => {
           if (data.error) {
             setError(data.error);
@@ -131,8 +105,10 @@ export const AdminUserEdit = ({ user, avatars }: Props) => {
           if (data.success) {
             update();
             setSuccess(data.success);
-            setTimeout(() => router.push("/admin/users"), 300);
+
+            setTimeout(() => router.push(`/profile/${user?.id}`), 300);
           }
+
           revalidate();
         })
         .catch(() => setError("Something went wrong!"));
@@ -164,7 +140,7 @@ export const AdminUserEdit = ({ user, avatars }: Props) => {
               </FormItem>
             )}
           />
-          {!user?.accounts.length && (
+          {user?.isOAuth === false && (
             <>
               <FormField
                 control={form.control}
@@ -204,6 +180,24 @@ export const AdminUserEdit = ({ user, avatars }: Props) => {
               />
               <FormField
                 control={form.control}
+                name="newPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>New password</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="******"
+                        type="password"
+                        disabled={isPending}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="image"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
@@ -211,7 +205,7 @@ export const AdminUserEdit = ({ user, avatars }: Props) => {
                     <div className="flex flex-row items-center gap-4">
                       <Popover>
                         <PopoverTrigger asChild>
-                          <FormControl>
+                          <FormControl className="w-full">
                             <Button
                               variant="outline"
                               role="combobox"
@@ -301,35 +295,37 @@ export const AdminUserEdit = ({ user, avatars }: Props) => {
             </>
           )}
 
-          <FormField
-            control={form.control}
-            name="role"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Role</FormLabel>
-                <Select
-                  disabled={isPending}
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a role" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {userRoles().map((role) => (
-                      <SelectItem value={role} key={role}>
-                        {role}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {!user?.accounts.length && (
+          {user?.role === "ADMIN" && (
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Role</FormLabel>
+                  <Select
+                    disabled={isPending}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a role" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {userRoles().map((role) => (
+                        <SelectItem value={role} key={role}>
+                          {role}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+          {user?.isOAuth === false && (
             <FormField
               control={form.control}
               name="isTwoFactorEnabled"
@@ -356,7 +352,7 @@ export const AdminUserEdit = ({ user, avatars }: Props) => {
         </div>
         <FormSuccess message={success} />
         <FormError message={error} />
-        <Button type="submit">Update</Button>
+        <Button type="submit">Save</Button>
       </form>
     </Form>
   );

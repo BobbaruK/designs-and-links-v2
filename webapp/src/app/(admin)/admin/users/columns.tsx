@@ -66,7 +66,7 @@ export const columns: ColumnDef<DB_User>[] = [
     },
     cell: ({ row }) => {
       const id = row.original.id;
-      const name = row.original.name ? row.original.name : "-";
+      const name = row.original.name || "-";
       const image = row.original.image;
 
       return (
@@ -78,6 +78,7 @@ export const columns: ColumnDef<DB_User>[] = [
         </Button>
       );
     },
+    sortUndefined: "last",
   },
   // Email
   {
@@ -137,6 +138,7 @@ export const columns: ColumnDef<DB_User>[] = [
       );
     },
     cell: ({ row }) => returnFormattedDate(row.getValue("emailVerified")),
+    sortUndefined: "last",
     sortingFn: "datetime",
   },
   // Role

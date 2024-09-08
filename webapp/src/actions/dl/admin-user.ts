@@ -18,7 +18,7 @@ export const adminAddUser = async (
 
   if (!validatedFields.success) return { error: "Invalid fields!" };
 
-  const { name, password, email, role, isTwoFactorEnabled } =
+  const { name, password, email, role, isTwoFactorEnabled, image } =
     validatedFields.data;
 
   if (!user || !user.id) {
@@ -35,8 +35,9 @@ export const adminAddUser = async (
     await db.user.create({
       data: {
         name,
-        password: hashedPassword,
         email,
+        password: hashedPassword,
+        image,
         role,
         isTwoFactorEnabled,
       },
