@@ -107,6 +107,19 @@ export const adminDeleteUserAvatar = async (id: string) => {
 
   if (!dbUser || user.role !== "ADMIN") return { error: "Unauthorized!" };
 
+  const existingAvatar = await db.userAvatar.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!existingAvatar) return { error: "Avatar not found!" };
+
+  await db.user.updateMany({
+    where: { image: existingAvatar.url },
+    data: { image: null },
+  });
+
   try {
     await db.userAvatar.delete({
       where: { id },

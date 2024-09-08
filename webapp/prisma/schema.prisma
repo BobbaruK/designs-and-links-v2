@@ -39,7 +39,7 @@ model User {
   formValidationCreated DL_FormValidation[]    @relation("formValidationCreated")
   formValidationUpdated DL_FormValidation[]    @relation("formValidationUpdated")
 
-  @@index([id, email])
+  @@index([id, email, image])
 }
 
 model Account {
