@@ -28,10 +28,9 @@ import { z } from "zod";
 
 interface Props {
   formValidation: DL_FormValidation;
-  title: ReactNode;
 }
 
-export const EditFormValidation = ({ formValidation, title }: Props) => {
+export const EditFormValidation = ({ formValidation }: Props) => {
   const router = useRouter();
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
@@ -82,87 +81,82 @@ export const EditFormValidation = ({ formValidation, title }: Props) => {
   };
 
   return (
-    <Card>
-      <CardHeader>{title}</CardHeader>
-      <CardContent className="pt-6">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl
-                      onKeyUp={(e) => {
-                        form.setValue(
-                          "slug",
-                          field.value.toLowerCase().replaceAll(" ", "-"),
-                        );
-                      }}
-                    >
-                      <Input
-                        {...field}
-                        placeholder="Form Validation"
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="slug"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Slug</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="form-validation"
-                        type="text"
-                        disabled
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />{" "}
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Form validation description..."
-                        className="resize-none"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <FormSuccess message={success} />
-            <FormError message={error} />
-            <div className="flex gap-4">
-              <Button type="submit">Update</Button>
-              {userRole !== "USER" && (
-                <DeleteDialog
-                  label={formValidation?.name}
-                  asset={"form validation"}
-                  onDelete={onDelete}
-                />
-              )}
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl
+                  onKeyUp={(e) => {
+                    form.setValue(
+                      "slug",
+                      field.value.toLowerCase().replaceAll(" ", "-"),
+                    );
+                  }}
+                >
+                  <Input
+                    {...field}
+                    placeholder="Form Validation"
+                    disabled={isPending}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="slug"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Slug</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="form-validation"
+                    type="text"
+                    disabled
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />{" "}
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Form validation description..."
+                    className="resize-none"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <FormSuccess message={success} />
+        <FormError message={error} />
+        <div className="flex gap-4">
+          <Button type="submit">Update</Button>
+          {userRole !== "USER" && (
+            <DeleteDialog
+              label={formValidation?.name}
+              asset={"form validation"}
+              onDelete={onDelete}
+            />
+          )}
+        </div>
+      </form>
+    </Form>
   );
 };

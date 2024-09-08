@@ -18,14 +18,20 @@ const AdminUserAvatar = async ({ params: { userAvatarId } }: Props) => {
     <div className="container flex flex-col gap-6">
       {!avatar ? (
         <>
-          <div className="flex items-center justify-between gap-4">
-            <h1 className="text-4xl font-bold">User avatar: {userAvatarId}</h1>
-            <IconButton
-              icon={<IoArrowBackCircleSharp size={25} />}
-              href={"/admin/user-avatars"}
-              label={"Back to user avatars"}
-            />
-          </div>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between gap-4">
+                <h1 className="text-4xl font-bold">
+                  User avatar: {userAvatarId}
+                </h1>
+                <IconButton
+                  icon={<IoArrowBackCircleSharp size={25} />}
+                  href={"/admin/user-avatars"}
+                  label={"Back to user avatars"}
+                />
+              </div>
+            </CardHeader>{" "}
+          </Card>
           <CustomAlert
             title={"Error!"}
             description={`Seems like the user avatar that you are looking for does not exist.`}

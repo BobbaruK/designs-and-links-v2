@@ -23,14 +23,18 @@ const ProfilePage = async ({ params: { userId } }: Props) => {
     <div className="container flex flex-col gap-6">
       {!user ? (
         <>
-          <div className="flex items-center justify-between gap-4">
-            <h1 className="text-4xl font-bold">User: {userId}</h1>
-            <IconButton
-              icon={<IoArrowBackCircleSharp size={25} />}
-              href={"/"}
-              label={"Back to home"}
-            />
-          </div>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between gap-4">
+                <h1 className="text-4xl font-bold">User: {userId}</h1>
+                <IconButton
+                  icon={<IoArrowBackCircleSharp size={25} />}
+                  href={"/"}
+                  label={"Back to home"}
+                />
+              </div>
+            </CardHeader>
+          </Card>
           <CustomAlert
             title={"Error!"}
             description={`Seems like the user that you are looking for does not exist.`}
@@ -54,7 +58,7 @@ const ProfilePage = async ({ params: { userId } }: Props) => {
                         ? `/admin/users/${userId}`
                         : `/settings`
                     }
-                    label={"Edit form validation"}
+                    label={"Edit profile"}
                   />
                 </div>
               )}

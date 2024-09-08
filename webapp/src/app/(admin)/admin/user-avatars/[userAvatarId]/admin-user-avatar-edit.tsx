@@ -1,32 +1,24 @@
 "use client";
 
-import { adminEditUser, adminEditUserAvatar } from "@/actions/dl";
+import { adminDeleteUserAvatar, adminEditUserAvatar } from "@/actions/dl";
 import { revalidate } from "@/actions/reavalidate";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
+import { DeleteDialog } from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { userRoles } from "@/lib/constants";
+import { useCurrentRole } from "@/hooks/use-current-role";
 import { UserAvatarSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Prisma, UserAvatar } from "@prisma/client";
+import { UserAvatar } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -43,6 +35,7 @@ export const AdminUserAvatarEdit = ({ avatar }: Props) => {
   const { update } = useSession();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const userRole = useCurrentRole();
 
   const form = useForm<z.infer<typeof UserAvatarSchema>>({
     resolver: zodResolver(UserAvatarSchema),
@@ -70,6 +63,19 @@ export const AdminUserAvatarEdit = ({ avatar }: Props) => {
           revalidate();
         })
         .catch(() => setError("Something went wrong!"));
+    });
+  };
+
+  const onDelete = () => {
+    adminDeleteUserAvatar(avatar.id).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      }
+      if (data.success) {
+        setSuccess(data.success);
+        setTimeout(() => router.push(`/admin/user-avatars`), 300);
+      }
+      revalidate();
     });
   };
 
@@ -114,7 +120,17 @@ export const AdminUserAvatarEdit = ({ avatar }: Props) => {
         </div>
         <FormSuccess message={success} />
         <FormError message={error} />
-        <Button type="submit">Update</Button>
+
+        <div className="flex gap-4">
+          <Button type="submit">Update</Button>
+          {userRole !== "USER" && (
+            <DeleteDialog
+              label={avatar.name}
+              asset={"user avatar"}
+              onDelete={onDelete}
+            />
+          )}
+        </div>
       </form>
     </Form>
   );

@@ -23,11 +23,9 @@ import { ReactNode, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-interface Props {
-  title: ReactNode;
-}
+interface Props {}
 
-export const AddFormValidation = ({ title }: Props) => {
+export const AddFormValidation = ({}: Props) => {
   const router = useRouter();
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
@@ -63,78 +61,73 @@ export const AddFormValidation = ({ title }: Props) => {
   };
 
   return (
-    <Card>
-      <CardHeader>{title}</CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl
-                      onKeyUp={(e) => {
-                        form.setValue(
-                          "slug",
-                          field.value.toLowerCase().replaceAll(" ", "-"),
-                        );
-                      }}
-                    >
-                      <Input
-                        {...field}
-                        placeholder="Form Validation"
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="slug"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Slug</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="form-validation"
-                        type="text"
-                        disabled
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />{" "}
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Form validation description..."
-                        className="resize-none"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <FormSuccess message={success} />
-            <FormError message={error} />
-            <Button type="submit">Add</Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl
+                  onKeyUp={(e) => {
+                    form.setValue(
+                      "slug",
+                      field.value.toLowerCase().replaceAll(" ", "-"),
+                    );
+                  }}
+                >
+                  <Input
+                    {...field}
+                    placeholder="Form Validation"
+                    disabled={isPending}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="slug"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Slug</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="form-validation"
+                    type="text"
+                    disabled
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />{" "}
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Form validation description..."
+                    className="resize-none"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <FormSuccess message={success} />
+        <FormError message={error} />
+        <Button type="submit">Add</Button>
+      </form>
+    </Form>
   );
 };

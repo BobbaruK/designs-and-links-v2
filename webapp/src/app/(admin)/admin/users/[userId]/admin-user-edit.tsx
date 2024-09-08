@@ -1,10 +1,11 @@
 "use client";
 
-import { adminEditUser } from "@/actions/dl";
+import { adminDeleteUser, adminEditUser } from "@/actions/dl";
 import { revalidate } from "@/actions/reavalidate";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
 import { CustomAvatar } from "@/components/custom-avatar";
+import { DeleteDialog } from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -37,6 +38,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { useCurrentRole } from "@/hooks/use-current-role";
 import { userRoles } from "@/lib/constants";
 import { AdminUserEditSchema } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
@@ -48,21 +50,6 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-type DB_UserAvatars = Prisma.UserAvatarGetPayload<{
-  include: {
-    createdBy: {
-      omit: {
-        password: false;
-      };
-    };
-    updatedBy: {
-      omit: {
-        password: false;
-      };
-    };
-  };
-}>;
 
 interface Props {
   user: Prisma.UserGetPayload<{
@@ -105,6 +92,7 @@ export const AdminUserEdit = ({ user, avatars }: Props) => {
   const { update } = useSession();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const userRole = useCurrentRole();
 
   const form = useForm<z.infer<typeof AdminUserEditSchema>>({
     resolver: zodResolver(AdminUserEditSchema),
@@ -141,6 +129,19 @@ export const AdminUserEdit = ({ user, avatars }: Props) => {
 
   const onResetAvatar = () => {
     form.setValue("image", "");
+  };
+
+  const onDelete = () => {
+    adminDeleteUser(user.id).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      }
+      if (data.success) {
+        setSuccess(data.success);
+        setTimeout(() => router.push(`/admin/users`), 300);
+      }
+      revalidate();
+    });
   };
 
   return (
@@ -300,7 +301,6 @@ export const AdminUserEdit = ({ user, avatars }: Props) => {
               />
             </>
           )}
-
           <FormField
             control={form.control}
             name="role"
@@ -356,7 +356,16 @@ export const AdminUserEdit = ({ user, avatars }: Props) => {
         </div>
         <FormSuccess message={success} />
         <FormError message={error} />
-        <Button type="submit">Update</Button>
+        <div className="flex gap-4">
+          <Button type="submit">Update</Button>
+          {userRole !== "USER" && (
+            <DeleteDialog
+              label={user.name || user.email}
+              asset={"user avatar"}
+              onDelete={onDelete}
+            />
+          )}
+        </div>
       </form>
     </Form>
   );
