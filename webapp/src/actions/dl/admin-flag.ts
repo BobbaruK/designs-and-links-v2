@@ -3,15 +3,13 @@
 import { currentUser } from "@/lib/auth";
 import { getUserById } from "@/lib/data";
 import db from "@/lib/db";
-import { UserAvatarSchema } from "@/lib/schemas";
+import { FlagSchema } from "@/lib/schemas";
 import { z } from "zod";
 
-export const adminAddUserAvatar = async (
-  values: z.infer<typeof UserAvatarSchema>,
-) => {
+export const adminAddFlag = async (values: z.infer<typeof FlagSchema>) => {
   const user = await currentUser();
 
-  const validatedFields = UserAvatarSchema.safeParse(values);
+  const validatedFields = FlagSchema.safeParse(values);
 
   if (!validatedFields.success) return { error: "Invalid fields!" };
 
@@ -23,8 +21,7 @@ export const adminAddUserAvatar = async (
 
   const dbUser = await getUserById(user.id);
 
-  if (!dbUser || (user.role !== "ADMIN" && user.role !== "EDITOR"))
-    return { error: "Unauthorized!" };
+  if (!dbUser && user.role !== "ADMIN") return { error: "Unauthorized!" };
 
   const userAdding = await db.user.findUnique({
     where: {
@@ -33,7 +30,7 @@ export const adminAddUserAvatar = async (
   });
 
   try {
-    await db.dL_UserAvatar.create({
+    await db.dL_Flag.create({
       data: {
         name,
         url,
@@ -43,15 +40,15 @@ export const adminAddUserAvatar = async (
     });
 
     return {
-      success: "User avatar added!",
+      success: "Flag added!",
     };
   } catch (error) {
-    return { error: "Could not add user avatar!" };
+    return { error: "Could not add the flag!" };
   }
 };
 
-export const adminEditUserAvatar = async (
-  values: z.infer<typeof UserAvatarSchema>,
+export const adminEditFlag = async (
+  values: z.infer<typeof FlagSchema>,
   id: string,
 ) => {
   const user = await currentUser();
@@ -60,7 +57,7 @@ export const adminEditUserAvatar = async (
     return { error: "Unauthorized!" };
   }
 
-  const validatedFields = UserAvatarSchema.safeParse(values);
+  const validatedFields = FlagSchema.safeParse(values);
 
   if (!validatedFields.success) return { error: "Invalid fields!" };
 
@@ -81,7 +78,7 @@ export const adminEditUserAvatar = async (
   }
 
   try {
-    await db.dL_UserAvatar.update({
+    await db.dL_Flag.update({
       where: {
         id,
       },
@@ -89,14 +86,14 @@ export const adminEditUserAvatar = async (
     });
 
     return {
-      success: "User avatar updated!",
+      success: "Flag updated!",
     };
   } catch (error) {
-    return { error: "Could not update user avatar!" };
+    return { error: "Could not update the flag!" };
   }
 };
 
-export const adminDeleteUserAvatar = async (id: string) => {
+export const adminDeleteFlag = async (id: string) => {
   const user = await currentUser();
 
   if (!user || !user.id) {
@@ -107,28 +104,28 @@ export const adminDeleteUserAvatar = async (id: string) => {
 
   if (!dbUser || user.role !== "ADMIN") return { error: "Unauthorized!" };
 
-  const existingAvatar = await db.dL_UserAvatar.findUnique({
-    where: {
-      id,
-    },
-  });
+  // const existingAvatar = await db.dL_Flag.findUnique({
+  //   where: {
+  //     id,
+  //   },
+  // });
 
-  if (!existingAvatar) return { error: "Avatar not found!" };
+  // if (!existingAvatar) return { error: "Avatar not found!" };
 
-  await db.user.updateMany({
-    where: { image: existingAvatar.url },
-    data: { image: null },
-  });
+  // await db.user.updateMany({
+  //   where: { image: existingAvatar.url },
+  //   data: { image: null },
+  // });
 
   try {
-    await db.dL_UserAvatar.delete({
+    await db.dL_Flag.delete({
       where: { id },
     });
 
     return {
-      success: "User avatar deleted!",
+      success: "Flag deleted!",
     };
   } catch (error) {
-    return { error: "Could not delete user avatar!" };
+    return { error: "Could not delete the flag!" };
   }
 };

@@ -44,8 +44,8 @@ model User {
   licenseUpdated        DL_License[]           @relation("licenseUpdated")
   lpTypeCreated         DL_LandingPageType[]   @relation("lpTypeCreated")
   lpTypeUpdated         DL_LandingPageType[]   @relation("lpTypeUpdated")
-  flagsCreated          DL_Flags[]             @relation("flagsCreated")
-  flagsUpdated          DL_Flags[]             @relation("flagsUpdated")
+  flagsCreated          DL_Flag[]              @relation("flagsCreated")
+  flagsUpdated          DL_Flag[]              @relation("flagsUpdated")
 
   @@index([id, email, image])
 }
@@ -188,7 +188,7 @@ model DL_UserAvatar {
   updateUserId  String?
 }
 
-model DL_Flags {
+model DL_Flag {
   id            String   @id @unique @default(cuid())
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

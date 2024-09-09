@@ -18,6 +18,9 @@ const AdminPage = () => {
           <Button asChild>
             <Link href={"/admin/user-avatars"}>User Avatars</Link>
           </Button>
+          <Button asChild>
+            <Link href={"/admin/flags"}>Flags</Link>
+          </Button>
         </CardContent>
       </Card>
     </div>

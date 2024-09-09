@@ -1,6 +1,6 @@
 "use client";
 
-import { adminAddUserAvatar } from "@/actions/dl";
+import { adminAddFlag, adminAddUserAvatar } from "@/actions/dl";
 import { revalidate } from "@/actions/reavalidate";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { UserAvatarSchema } from "@/lib/schemas";
+import { FlagSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -22,27 +22,27 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export const AdminUserAvatarAdd = () => {
+export const AdminFlagAdd = () => {
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const { update } = useSession();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof UserAvatarSchema>>({
-    resolver: zodResolver(UserAvatarSchema),
+  const form = useForm<z.infer<typeof FlagSchema>>({
+    resolver: zodResolver(FlagSchema),
     defaultValues: {
       name: "",
       url: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof UserAvatarSchema>) => {
+  const onSubmit = async (values: z.infer<typeof FlagSchema>) => {
     setSuccess(undefined);
     setError(undefined);
 
     startTransition(() => {
-      adminAddUserAvatar(values)
+      adminAddFlag(values)
         .then((data) => {
           if (data.error) {
             setError(data.error);
@@ -50,7 +50,7 @@ export const AdminUserAvatarAdd = () => {
           if (data.success) {
             update();
             setSuccess(data.success);
-            setTimeout(() => router.push("/admin/user-avatars"), 300);
+            setTimeout(() => router.push("/admin/flags"), 300);
           }
           revalidate();
         })
@@ -69,11 +69,7 @@ export const AdminUserAvatarAdd = () => {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="Avatar 1"
-                    disabled={isPending}
-                  />
+                  <Input {...field} placeholder="Română" disabled={isPending} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

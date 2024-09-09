@@ -1,6 +1,11 @@
 "use server";
 
 import {
+  adminAddFlag,
+  adminDeleteFlag,
+  adminEditFlag,
+} from "@/actions/dl/admin-flag";
+import {
   adminAddUser,
   adminDeleteUser,
   adminEditUser,
@@ -17,7 +22,7 @@ import {
 } from "@/actions/dl/lp-type";
 import { addTopic, deleteTopic, editTopic } from "@/actions/dl/topic";
 import {
-  addUserAvatar,
+  adminAddUserAvatar,
   adminDeleteUserAvatar,
   adminEditUserAvatar,
 } from "./admin-user-avatar";
@@ -26,10 +31,13 @@ export {
   addFormValidation,
   addLandingPageType,
   addTopic,
-  addUserAvatar,
+  adminAddUserAvatar,
+  adminAddFlag,
   adminAddUser,
+  adminDeleteFlag,
   adminDeleteUser,
   adminDeleteUserAvatar,
+  adminEditFlag,
   adminEditUser,
   adminEditUserAvatar,
   deleteFormValidation,

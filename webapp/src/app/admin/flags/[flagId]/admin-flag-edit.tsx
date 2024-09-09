@@ -1,9 +1,10 @@
 "use client";
 
-import { adminAddUserAvatar } from "@/actions/dl";
+import { adminDeleteFlag, adminEditFlag } from "@/actions/dl";
 import { revalidate } from "@/actions/reavalidate";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
+import { DeleteDialog } from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,35 +15,42 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { UserAvatarSchema } from "@/lib/schemas";
+import { useCurrentRole } from "@/hooks/use-current-role";
+import { FlagSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { DL_Flag } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export const AdminUserAvatarAdd = () => {
+interface Props {
+  flag: DL_Flag;
+}
+
+export const AdminFlagEdit = ({ flag }: Props) => {
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const { update } = useSession();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const userRole = useCurrentRole();
 
-  const form = useForm<z.infer<typeof UserAvatarSchema>>({
-    resolver: zodResolver(UserAvatarSchema),
+  const form = useForm<z.infer<typeof FlagSchema>>({
+    resolver: zodResolver(FlagSchema),
     defaultValues: {
-      name: "",
-      url: "",
+      name: flag.name || undefined,
+      url: flag.url || undefined,
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof UserAvatarSchema>) => {
+  const onSubmit = async (values: z.infer<typeof FlagSchema>) => {
     setSuccess(undefined);
     setError(undefined);
 
     startTransition(() => {
-      adminAddUserAvatar(values)
+      adminEditFlag(values, flag.id)
         .then((data) => {
           if (data.error) {
             setError(data.error);
@@ -50,11 +58,24 @@ export const AdminUserAvatarAdd = () => {
           if (data.success) {
             update();
             setSuccess(data.success);
-            setTimeout(() => router.push("/admin/user-avatars"), 300);
+            setTimeout(() => router.push("/admin/flags"), 300);
           }
           revalidate();
         })
         .catch(() => setError("Something went wrong!"));
+    });
+  };
+
+  const onDelete = () => {
+    adminDeleteFlag(flag.id).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      }
+      if (data.success) {
+        setSuccess(data.success);
+        setTimeout(() => router.push(`/admin/flags`), 300);
+      }
+      revalidate();
     });
   };
 
@@ -69,11 +90,7 @@ export const AdminUserAvatarAdd = () => {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="Avatar 1"
-                    disabled={isPending}
-                  />
+                  <Input {...field} placeholder="Română" disabled={isPending} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -89,7 +106,6 @@ export const AdminUserAvatarAdd = () => {
                   <Input
                     {...field}
                     placeholder="https://site.com/image.png"
-                    type="text"
                     disabled={isPending}
                   />
                 </FormControl>
@@ -100,7 +116,17 @@ export const AdminUserAvatarAdd = () => {
         </div>
         <FormSuccess message={success} />
         <FormError message={error} />
-        <Button type="submit">Add user avatar</Button>
+
+        <div className="flex gap-4">
+          <Button type="submit">Update</Button>
+          {userRole !== "USER" && (
+            <DeleteDialog
+              label={flag.name}
+              asset={"flag"}
+              onDelete={onDelete}
+            />
+          )}
+        </div>
       </form>
     </Form>
   );

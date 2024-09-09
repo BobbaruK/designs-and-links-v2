@@ -8,6 +8,7 @@ import {
   RegisterSchema,
   ResetSchema,
 } from "@/lib/schemas/auth";
+import { FlagSchema } from "@/lib/schemas/flag";
 import { FormValidationSchema } from "@/lib/schemas/form-validation";
 import { LicenseSchema } from "@/lib/schemas/license";
 import { LandingPageTypeSchema } from "@/lib/schemas/lp-type";
@@ -18,6 +19,7 @@ import { UserAvatarSchema } from "@/lib/schemas/user-avatar";
 export {
   AdminUserAddSchema,
   AdminUserEditSchema,
+  FlagSchema,
   FormValidationSchema,
   LandingPageTypeSchema,
   LicenseSchema,
