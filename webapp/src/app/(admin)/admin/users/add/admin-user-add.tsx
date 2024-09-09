@@ -49,7 +49,7 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-type NewType = Prisma.UserAvatarGetPayload<{
+type DB_UserAvatars = Prisma.DL_UserAvatarGetPayload<{
   include: {
     createdBy: {
       omit: {
@@ -63,8 +63,6 @@ type NewType = Prisma.UserAvatarGetPayload<{
     };
   };
 }>;
-
-type DB_UserAvatars = NewType;
 
 interface Props {
   avatars: DB_UserAvatars[] | null;

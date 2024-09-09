@@ -1,4 +1,4 @@
-import { adminDeleteUser, adminDeleteUserAvatar } from "@/actions/dl";
+import { adminDeleteUserAvatar } from "@/actions/dl";
 import { revalidate } from "@/actions/reavalidate";
 import { DeleteDialog } from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
@@ -11,14 +11,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCurrentRole } from "@/hooks/use-current-role";
-import { User, UserAvatar } from "@prisma/client";
+import { DL_UserAvatar } from "@prisma/client";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
 interface Props {
-  avatar: UserAvatar;
+  avatar: DL_UserAvatar;
 }
 
 const AdminUserAvatarsRowActions = ({ avatar }: Props) => {

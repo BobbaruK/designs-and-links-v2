@@ -34,8 +34,8 @@ model User {
   updatedAt             DateTime               @updatedAt
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
-  UserAvatarCreated     UserAvatar[]           @relation("userAvatarCreated")
-  UserAvatarUpdated     UserAvatar[]           @relation("userAvatarUpdated")
+  UserAvatarCreated     DL_UserAvatar[]        @relation("userAvatarCreated")
+  UserAvatarUpdated     DL_UserAvatar[]        @relation("userAvatarUpdated")
   formValidationCreated DL_FormValidation[]    @relation("formValidationCreated")
   formValidationUpdated DL_FormValidation[]    @relation("formValidationUpdated")
   topicCreated          DL_Topic[]             @relation("topicCreated")
@@ -44,6 +44,8 @@ model User {
   licenseUpdated        DL_License[]           @relation("licenseUpdated")
   lpTypeCreated         DL_LandingPageType[]   @relation("lpTypeCreated")
   lpTypeUpdated         DL_LandingPageType[]   @relation("lpTypeUpdated")
+  flagsCreated          DL_Flags[]             @relation("flagsCreated")
+  flagsUpdated          DL_Flags[]             @relation("flagsUpdated")
 
   @@index([id, email, image])
 }
@@ -174,7 +176,7 @@ model DL_LandingPageType {
 }
 
 // Avatars related tables
-model UserAvatar {
+model DL_UserAvatar {
   id            String   @id @unique @default(cuid())
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -183,5 +185,17 @@ model UserAvatar {
   createdBy     User?    @relation("userAvatarCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
   createdUserId String?
   updatedBy     User?    @relation("userAvatarUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updateUserId  String?
+}
+
+model DL_Flags {
+  id            String   @id @unique @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  name          String
+  url           String
+  createdBy     User?    @relation("flagsCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdUserId String?
+  updatedBy     User?    @relation("flagsUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
 }

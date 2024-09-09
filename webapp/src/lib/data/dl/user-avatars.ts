@@ -10,7 +10,7 @@ import db from "@/lib/db";
  */
 export const getUserAvatars = async () => {
   try {
-    const userAvatars = await db.userAvatar.findMany({
+    const userAvatars = await db.dL_UserAvatar.findMany({
       orderBy: {
         createdAt: "desc",
       },
@@ -42,7 +42,7 @@ export const getUserAvatars = async () => {
  */
 export const getUserAvatarById = async (id: string) => {
   try {
-    const avatar = await db.userAvatar.findUnique({
+    const avatar = await db.dL_UserAvatar.findUnique({
       where: {
         id,
       },

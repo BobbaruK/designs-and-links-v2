@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { useCurrentRole } from "@/hooks/use-current-role";
 import { UserAvatarSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UserAvatar } from "@prisma/client";
+import { DL_UserAvatar } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -26,7 +26,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 interface Props {
-  avatar: UserAvatar;
+  avatar: DL_UserAvatar;
 }
 
 export const AdminUserAvatarEdit = ({ avatar }: Props) => {

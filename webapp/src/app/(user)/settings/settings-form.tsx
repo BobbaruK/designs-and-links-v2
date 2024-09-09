@@ -50,7 +50,7 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-type DB_UserAvatars = Prisma.UserAvatarGetPayload<{
+type DB_UserAvatars = Prisma.DL_UserAvatarGetPayload<{
   include: {
     createdBy: {
       omit: {

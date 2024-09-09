@@ -2,8 +2,13 @@
 
 import { CustomAvatar } from "@/components/custom-avatar";
 import { Button } from "@/components/ui/button";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { cn, returnFormattedDate } from "@/lib/utils";
-import { Prisma, UserAvatar } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import {
@@ -11,13 +16,8 @@ import {
   PiArrowBendRightUpDuotone,
 } from "react-icons/pi";
 import AdminUserAvatarsRowActions from "./admin-user-avatars-row-actions";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 
-type DB_UserAvatars = Prisma.UserAvatarGetPayload<{
+type DB_UserAvatars = Prisma.DL_UserAvatarGetPayload<{
   include: {
     createdBy: {
       omit: {

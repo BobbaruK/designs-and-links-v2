@@ -33,7 +33,7 @@ export const addUserAvatar = async (
   });
 
   try {
-    await db.userAvatar.create({
+    await db.dL_UserAvatar.create({
       data: {
         name,
         url,
@@ -81,7 +81,7 @@ export const adminEditUserAvatar = async (
   }
 
   try {
-    await db.userAvatar.update({
+    await db.dL_UserAvatar.update({
       where: {
         id,
       },
@@ -107,7 +107,7 @@ export const adminDeleteUserAvatar = async (id: string) => {
 
   if (!dbUser || user.role !== "ADMIN") return { error: "Unauthorized!" };
 
-  const existingAvatar = await db.userAvatar.findUnique({
+  const existingAvatar = await db.dL_UserAvatar.findUnique({
     where: {
       id,
     },
@@ -121,7 +121,7 @@ export const adminDeleteUserAvatar = async (id: string) => {
   });
 
   try {
-    await db.userAvatar.delete({
+    await db.dL_UserAvatar.delete({
       where: { id },
     });
 

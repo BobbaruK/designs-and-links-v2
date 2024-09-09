@@ -69,7 +69,7 @@ interface Props {
     };
   }>;
   avatars:
-    | Prisma.UserAvatarGetPayload<{
+    | Prisma.DL_UserAvatarGetPayload<{
         include: {
           createdBy: {
             omit: {
@@ -361,7 +361,7 @@ export const AdminUserEdit = ({ user, avatars }: Props) => {
           {userRole !== "USER" && (
             <DeleteDialog
               label={user.name || user.email}
-              asset={"user avatar"}
+              asset={"user"}
               onDelete={onDelete}
             />
           )}
