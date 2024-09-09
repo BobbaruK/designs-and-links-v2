@@ -12,6 +12,7 @@ import {
   DEFAULT_LOGIN_REDIRECT,
   publicRoutes,
 } from "@/lib/constants/routes";
+import { PAGINATION_ARR, PAGINATION_DEFAULT } from "@/lib/constants/table";
 import {
   PASSWORD_RESET_TOKEN_EXPIRATION,
   TWO_FACTOR_TOKEN_EXPIRATION,
@@ -28,6 +29,8 @@ export {
   MAX_USERNAME,
   MIN_PASSWORD,
   MIN_USERNAME,
+  PAGINATION_ARR,
+  PAGINATION_DEFAULT,
   PASSWORD_RESET_TOKEN_EXPIRATION,
   publicRoutes,
   TOAST_DURATION,

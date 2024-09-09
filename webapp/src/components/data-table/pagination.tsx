@@ -12,6 +12,7 @@ import {
   MdKeyboardDoubleArrowRight,
 } from "react-icons/md";
 
+import { PAGINATION_ARR } from "@/lib/constants";
 import { Button } from "../ui/button";
 
 interface DataTablePaginationProps<TData> {
@@ -42,7 +43,7 @@ export function DataTablePagination<TData>({
             </SelectTrigger>
             <SelectContent side="top">
               {/* TODO: make a constant in constants */}
-              {[10, 25, 50, 75, 100].map((pageSize) => (
+              {PAGINATION_ARR.map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>

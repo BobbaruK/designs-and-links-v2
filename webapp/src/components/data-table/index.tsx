@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PAGINATION_DEFAULT } from "@/lib/constants";
 import {
   ColumnDef,
   SortingState,
@@ -59,7 +60,7 @@ export function DataTable<TData, TValue>({
     initialState: {
       pagination: {
         pageIndex: 0, //custom initial page index
-        pageSize: 25, //custom default page size
+        pageSize: PAGINATION_DEFAULT, //custom default page size
       },
     },
   });
