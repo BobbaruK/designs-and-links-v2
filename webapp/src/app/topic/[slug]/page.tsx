@@ -2,7 +2,8 @@ import { CustomAlert } from "@/components/alert-custom";
 import { IconButton } from "@/components/button-icon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { currentUser } from "@/lib/auth";
-import { getFormValidationBySlug } from "@/lib/data/dl";
+import { getFormValidationBySlug, getTopicBySlug } from "@/lib/data/dl";
+import { ReactNode } from "react";
 import { CiEdit } from "react-icons/ci";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
 
@@ -12,29 +13,29 @@ interface Props {
   };
 }
 
-const FormValidationPage = async ({ params: { slug } }: Props) => {
-  const formValidation = await getFormValidationBySlug(slug);
+const TopicPage = async ({ params: { slug } }: Props) => {
+  const topic = await getTopicBySlug(slug);
   const user = await currentUser();
 
   return (
     <div className="container flex flex-col gap-6">
-      {!formValidation ? (
+      {!topic ? (
         <>
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold">Form validation: {slug}</h1>
+                <h1 className="text-4xl font-bold">Topic: {slug}</h1>
                 <IconButton
                   icon={<IoArrowBackCircleSharp size={25} />}
-                  href={"/form-validation"}
-                  label={"Back to form validations"}
+                  href={"/topic"}
+                  label={"Back to topics"}
                 />
               </div>
             </CardHeader>
           </Card>
           <CustomAlert
             title={"Error!"}
-            description={`Seems like the form validation that you are looking for does not exist.`}
+            description={`Seems like the topic that you are looking for does not exist.`}
             variant="destructive"
           />
         </>
@@ -42,28 +43,26 @@ const FormValidationPage = async ({ params: { slug } }: Props) => {
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between gap-4">
-              <h1 className="text-4xl font-bold">
-                Form validation: {formValidation.name}
-              </h1>
+              <h1 className="text-4xl font-bold">Topic: {topic.name}</h1>
               <div className="ms-auto flex items-center justify-center gap-4">
                 {(user?.role === "EDITOR" || user?.role === "ADMIN") && (
                   <IconButton
                     icon={<CiEdit size={25} />}
-                    href={`/form-validation/${formValidation.slug}/edit`}
-                    label={"Edit form validation"}
+                    href={`/topic/${topic.slug}/edit`}
+                    label={"Edit topic"}
                   />
                 )}
                 <IconButton
                   icon={<IoArrowBackCircleSharp size={25} />}
-                  href={"/form-validation"}
-                  label={"Back to form validations"}
+                  href={"/topic"}
+                  label={"Back to topics"}
                 />
               </div>
             </div>
           </CardHeader>
           <CardContent>
             <p>
-              {formValidation.description || (
+              {topic.description || (
                 <span className="italic">There is no description added</span>
               )}
             </p>
@@ -75,4 +74,4 @@ const FormValidationPage = async ({ params: { slug } }: Props) => {
   );
 };
 
-export default FormValidationPage;
+export default TopicPage;

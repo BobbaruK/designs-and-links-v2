@@ -94,7 +94,7 @@ export const EditFormValidation = ({ formValidation }: Props) => {
                   onKeyUp={(e) => {
                     form.setValue(
                       "slug",
-                      field.value.toLowerCase().replaceAll(" ", "-"),
+                      field.value.toLowerCase().replaceAll(/[^A-Z0-9]/ig, "-"),
                     );
                   }}
                 >

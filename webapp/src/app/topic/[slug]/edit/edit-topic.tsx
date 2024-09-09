@@ -1,9 +1,10 @@
 "use client";
 
-import { addFormValidation } from "@/actions/dl";
+import { deleteTopic, editTopic } from "@/actions/dl";
 import { revalidate } from "@/actions/reavalidate";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
+import { DeleteDialog } from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,47 +16,66 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { AddFormValidationSchema } from "@/lib/schemas";
+import { useCurrentRole } from "@/hooks/use-current-role";
+import { EditFormValidationSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { DL_Topic } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-interface Props {}
+interface Props {
+  topic: DL_Topic;
+}
 
-export const AddFormValidation = ({}: Props) => {
+export const EditTopic = ({ topic: formValidation }: Props) => {
   const router = useRouter();
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const [isPending, startTransition] = useTransition();
+  const userRole = useCurrentRole();
 
-  const form = useForm<z.infer<typeof AddFormValidationSchema>>({
-    resolver: zodResolver(AddFormValidationSchema),
+  const form = useForm<z.infer<typeof EditFormValidationSchema>>({
+    resolver: zodResolver(EditFormValidationSchema),
     defaultValues: {
-      name: "",
-      slug: "",
-      description: "",
+      name: formValidation?.name || undefined,
+      slug: formValidation?.slug || undefined,
+      description: formValidation?.description || undefined,
     },
   });
 
-  const onSubmit = (values: z.infer<typeof AddFormValidationSchema>) => {
+  const onSubmit = (values: z.infer<typeof EditFormValidationSchema>) => {
     setSuccess(undefined);
     setError(undefined);
 
     startTransition(() => {
-      addFormValidation(values)
+      editTopic(values, formValidation.id)
         .then((data) => {
           if (data.error) {
             setError(data.error);
           }
           if (data.success) {
             setSuccess(data.success);
-            setTimeout(() => router.push(`/form-validation/${data.slug}`), 300);
+
+            setTimeout(() => router.push(`/topic/${data.slug}`), 300);
           }
           revalidate();
         })
         .catch(() => setError("Something went wrong!"));
+    });
+  };
+
+  const onDelete = () => {
+    deleteTopic(formValidation.id).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      }
+      if (data.success) {
+        setSuccess(data.success);
+        setTimeout(() => router.push(`/topic`), 300);
+      }
+      revalidate();
     });
   };
 
@@ -73,7 +93,7 @@ export const AddFormValidation = ({}: Props) => {
                   onKeyUp={(e) => {
                     form.setValue(
                       "slug",
-                      field.value.toLowerCase().replaceAll(/[^A-Z0-9]/ig, "-"),
+                      field.value.toLowerCase().replaceAll(/[^A-Z0-9]/gi, "-"),
                     );
                   }}
                 >
@@ -94,12 +114,7 @@ export const AddFormValidation = ({}: Props) => {
               <FormItem>
                 <FormLabel>Slug</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="form-validation"
-                    type="text"
-                    disabled
-                  />
+                  <Input {...field} placeholder="topic" type="text" disabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -113,7 +128,7 @@ export const AddFormValidation = ({}: Props) => {
                 <FormLabel>Description</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Form validation description..."
+                    placeholder="Topic description..."
                     className="resize-none"
                     {...field}
                   />
@@ -125,7 +140,16 @@ export const AddFormValidation = ({}: Props) => {
         </div>
         <FormSuccess message={success} />
         <FormError message={error} />
-        <Button type="submit">Add</Button>
+        <div className="flex gap-4">
+          <Button type="submit">Update</Button>
+          {userRole !== "USER" && (
+            <DeleteDialog
+              label={formValidation?.name}
+              asset={"topic"}
+              onDelete={onDelete}
+            />
+          )}
+        </div>
       </form>
     </Form>
   );

@@ -10,6 +10,7 @@ import {
   deleteFormValidation,
   editFormValidation,
 } from "@/actions/dl/form-validation";
+import { addTopic, deleteTopic, editTopic } from "@/actions/dl/topic";
 import {
   addUserAvatar,
   adminDeleteUserAvatar,
@@ -18,6 +19,7 @@ import {
 
 export {
   addFormValidation,
+  addTopic,
   addUserAvatar,
   adminAddUser,
   adminDeleteUser,
@@ -25,5 +27,7 @@ export {
   adminEditUser,
   adminEditUserAvatar,
   deleteFormValidation,
+  deleteTopic,
   editFormValidation,
+  editTopic,
 };

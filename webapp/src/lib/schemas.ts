@@ -140,6 +140,8 @@ export const SettingsSchema = z
     },
   );
 
+// TODO: edit/add la form validation si topic sunt la fel
+
 // Form validation schemas
 export const EditFormValidationSchema = z.object({
   name: z
@@ -163,6 +165,49 @@ export const EditFormValidationSchema = z.object({
 });
 
 export const AddFormValidationSchema = z.object({
+  name: z
+    .string()
+    .min(MIN_USERNAME, {
+      message: `Name must be ${MIN_USERNAME} or more characters long`,
+    })
+    .max(MAX_USERNAME, {
+      message: `Name must be ${MAX_USERNAME} or fewer characters long`,
+    }),
+  slug: z.string(),
+  description: z
+    .string()
+    // .min(10, {
+    //   message: "Description must be at least 10 characters.",
+    // })
+    .max(MAX_DESCRIPTION, {
+      message: `Description must not be longer than ${MAX_DESCRIPTION} characters.`,
+    })
+    .optional(),
+});
+
+// Topic schemas
+export const EditTopicSchema = z.object({
+  name: z
+    .string()
+    .min(MIN_USERNAME, {
+      message: `Name must be ${MIN_USERNAME} or more characters long`,
+    })
+    .max(MAX_USERNAME, {
+      message: `Name must be ${MAX_USERNAME} or fewer characters long`,
+    }),
+  slug: z.string(),
+  description: z
+    .string()
+    // .min(10, {
+    //   message: "Description must be at least 10 characters.",
+    // })
+    .max(MAX_DESCRIPTION, {
+      message: `Description must not be longer than ${MAX_DESCRIPTION} characters.`,
+    })
+    .optional(),
+});
+
+export const AddTopicSchema = z.object({
   name: z
     .string()
     .min(MIN_USERNAME, {

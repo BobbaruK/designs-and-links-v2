@@ -3,18 +3,13 @@
 import { currentUser } from "@/lib/auth";
 import { getUserById } from "@/lib/data";
 import db from "@/lib/db";
-import {
-  AddFormValidationSchema,
-  EditFormValidationSchema,
-} from "@/lib/schemas";
+import { AddTopicSchema, EditTopicSchema } from "@/lib/schemas";
 import { z } from "zod";
 
-export const addFormValidation = async (
-  values: z.infer<typeof AddFormValidationSchema>,
-) => {
+export const addTopic = async (values: z.infer<typeof AddTopicSchema>) => {
   const user = await currentUser();
 
-  const validatedFields = AddFormValidationSchema.safeParse(values);
+  const validatedFields = AddTopicSchema.safeParse(values);
 
   if (!validatedFields.success) return { error: "Invalid fields!" };
 
@@ -29,14 +24,13 @@ export const addFormValidation = async (
   if (!dbUser || (user.role !== "ADMIN" && user.role !== "EDITOR"))
     return { error: "Unauthorized!" };
 
-  const existingFormValidation = await db.dL_FormValidation.findUnique({
+  const existingTopic = await db.dL_Topic.findUnique({
     where: {
       slug,
     },
   });
 
-  if (existingFormValidation)
-    return { error: "Form validation already exists!" };
+  if (existingTopic) return { error: "Topic already exists!" };
 
   const userAdding = await db.user.findUnique({
     where: {
@@ -45,7 +39,7 @@ export const addFormValidation = async (
   });
 
   try {
-    const addFormValidation = await db.dL_FormValidation.create({
+    const addTopic = await db.dL_Topic.create({
       data: {
         name,
         slug,
@@ -56,21 +50,21 @@ export const addFormValidation = async (
     });
 
     return {
-      success: "Form validation added!",
-      slug: addFormValidation.slug,
+      success: "Topic added!",
+      slug: addTopic.slug,
     };
   } catch (error) {
-    return { error: "Could not add form validation!" };
+    return { error: "Could not add topic!" };
   }
 };
 
-export const editFormValidation = async (
-  values: z.infer<typeof EditFormValidationSchema>,
+export const editTopic = async (
+  values: z.infer<typeof EditTopicSchema>,
   id: string,
 ) => {
   const user = await currentUser();
 
-  const validatedFields = EditFormValidationSchema.safeParse(values);
+  const validatedFields = EditTopicSchema.safeParse(values);
 
   if (!validatedFields.success) return { error: "Invalid fields!" };
 
@@ -91,18 +85,18 @@ export const editFormValidation = async (
     },
   });
 
-  const existingFormValidation = await db.dL_FormValidation.findUnique({
+  const existingTopic = await db.dL_Topic.findUnique({
     where: {
       id,
     },
   });
 
-  if (!existingFormValidation) {
-    return { error: "Form validation does not exist" };
+  if (!existingTopic) {
+    return { error: "Topic does not exist" };
   }
 
   try {
-    const updatedFormValidation = await db.dL_FormValidation.update({
+    const updatedTopic = await db.dL_Topic.update({
       where: {
         id,
       },
@@ -110,15 +104,15 @@ export const editFormValidation = async (
     });
 
     return {
-      success: "Form validation updated!",
-      slug: updatedFormValidation.slug,
+      success: "Topic updated!",
+      slug: updatedTopic.slug,
     };
   } catch (error) {
-    return { error: "Could not update form validation!" };
+    return { error: "Could not update topic!" };
   }
 };
 
-export const deleteFormValidation = async (id: string) => {
+export const deleteTopic = async (id: string) => {
   const user = await currentUser();
 
   if (!user || !user.id) {
@@ -131,14 +125,14 @@ export const deleteFormValidation = async (id: string) => {
     return { error: "Unauthorized!" };
 
   try {
-    await db.dL_FormValidation.delete({
+    await db.dL_Topic.delete({
       where: { id },
     });
 
     return {
-      success: "Form validation deleted!",
+      success: "Topic deleted!",
     };
   } catch (error) {
-    return { error: "Could not delete form validation!" };
+    return { error: "Could not delete topic!" };
   }
 };

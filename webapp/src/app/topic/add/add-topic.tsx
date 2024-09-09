@@ -1,6 +1,6 @@
 "use client";
 
-import { addFormValidation } from "@/actions/dl";
+import { addTopic } from "@/actions/dl";
 import { revalidate } from "@/actions/reavalidate";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { AddFormValidationSchema } from "@/lib/schemas";
+import { AddTopicSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -24,14 +24,14 @@ import { z } from "zod";
 
 interface Props {}
 
-export const AddFormValidation = ({}: Props) => {
+export const AddTopic = ({}: Props) => {
   const router = useRouter();
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof AddFormValidationSchema>>({
-    resolver: zodResolver(AddFormValidationSchema),
+  const form = useForm<z.infer<typeof AddTopicSchema>>({
+    resolver: zodResolver(AddTopicSchema),
     defaultValues: {
       name: "",
       slug: "",
@@ -39,19 +39,19 @@ export const AddFormValidation = ({}: Props) => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof AddFormValidationSchema>) => {
+  const onSubmit = (values: z.infer<typeof AddTopicSchema>) => {
     setSuccess(undefined);
     setError(undefined);
 
     startTransition(() => {
-      addFormValidation(values)
+      addTopic(values)
         .then((data) => {
           if (data.error) {
             setError(data.error);
           }
           if (data.success) {
             setSuccess(data.success);
-            setTimeout(() => router.push(`/form-validation/${data.slug}`), 300);
+            setTimeout(() => router.push(`/topic/${data.slug}`), 300);
           }
           revalidate();
         })
@@ -77,11 +77,7 @@ export const AddFormValidation = ({}: Props) => {
                     );
                   }}
                 >
-                  <Input
-                    {...field}
-                    placeholder="Form Validation"
-                    disabled={isPending}
-                  />
+                  <Input {...field} placeholder="Topic" disabled={isPending} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -94,12 +90,7 @@ export const AddFormValidation = ({}: Props) => {
               <FormItem>
                 <FormLabel>Slug</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="form-validation"
-                    type="text"
-                    disabled
-                  />
+                  <Input {...field} placeholder="topic" type="text" disabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -113,7 +104,7 @@ export const AddFormValidation = ({}: Props) => {
                 <FormLabel>Description</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Form validation description..."
+                    placeholder="Topic description..."
                     className="resize-none"
                     {...field}
                   />

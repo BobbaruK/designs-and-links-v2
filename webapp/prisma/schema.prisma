@@ -38,6 +38,8 @@ model User {
   UserAvatarUpdated     UserAvatar[]           @relation("userAvatarUpdated")
   formValidationCreated DL_FormValidation[]    @relation("formValidationCreated")
   formValidationUpdated DL_FormValidation[]    @relation("formValidationUpdated")
+  topicCreated          DL_Topic[]             @relation("topicCreated")
+  topicUpdated          DL_Topic[]             @relation("topicUpdated")
 
   @@index([id, email, image])
 }
@@ -102,26 +104,18 @@ model TwoFactorConfirmation {
   @@index([id, userId])
 }
 
-// Avatars
-model UserAvatar {
-  id            String   @id @unique @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  name          String
-  url           String
-  createdBy     User?    @relation("userAvatarCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
-  createdUserId String?
-  updatedBy     User?    @relation("userAvatarUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
-  updateUserId  String?
-}
-
 // Designs and Links related tables
 model DL_Topic {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  name        String   @unique
-  description String?
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  name          String   @unique
+  slug          String   @unique
+  description   String?
+  createdBy     User?    @relation("topicCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdUserId String?
+  updatedBy     User?    @relation("topicUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updateUserId  String?
 }
 
 model DL_FormValidation {
@@ -156,4 +150,17 @@ model DL_LandingPageType {
   name        String   @unique
   slug        String   @unique
   description String?
+}
+
+// Avatars related tables
+model UserAvatar {
+  id            String   @id @unique @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  name          String
+  url           String
+  createdBy     User?    @relation("userAvatarCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdUserId String?
+  updatedBy     User?    @relation("userAvatarUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updateUserId  String?
 }
