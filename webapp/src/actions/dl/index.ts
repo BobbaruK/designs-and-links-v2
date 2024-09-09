@@ -10,6 +10,11 @@ import {
   deleteFormValidation,
   editFormValidation,
 } from "@/actions/dl/form-validation";
+import {
+  addLandingPageType,
+  deleteLandingPageType,
+  editLandingPageType,
+} from "@/actions/dl/lp-type";
 import { addTopic, deleteTopic, editTopic } from "@/actions/dl/topic";
 import {
   addUserAvatar,
@@ -19,6 +24,7 @@ import {
 
 export {
   addFormValidation,
+  addLandingPageType,
   addTopic,
   addUserAvatar,
   adminAddUser,
@@ -27,7 +33,9 @@ export {
   adminEditUser,
   adminEditUserAvatar,
   deleteFormValidation,
+  deleteLandingPageType,
   deleteTopic,
   editFormValidation,
+  editLandingPageType,
   editTopic,
 };

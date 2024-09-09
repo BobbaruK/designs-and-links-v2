@@ -36,6 +36,12 @@ export const Navbar = () => {
         </Button>
         <Button
           asChild
+          variant={pathname.startsWith("/lp-type") ? "default" : "outline"}
+        >
+          <Link href={"/lp-type"}>Landing page type</Link>
+        </Button>
+        <Button
+          asChild
           variant={pathname === "/test-server" ? "default" : "outline"}
         >
           <Link href={"/test-server"}>Server</Link>

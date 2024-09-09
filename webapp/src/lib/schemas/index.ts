@@ -10,6 +10,7 @@ import {
 } from "@/lib/schemas/auth";
 import { FormValidationSchema } from "@/lib/schemas/form-validation";
 import { LicenseSchema } from "@/lib/schemas/license";
+import { LandingPageTypeSchema } from "@/lib/schemas/lp-type";
 import { SettingsSchema } from "@/lib/schemas/settings";
 import { TopicSchema } from "@/lib/schemas/topic";
 import { UserAvatarSchema } from "@/lib/schemas/user-avatar";
@@ -18,6 +19,7 @@ export {
   AdminUserAddSchema,
   AdminUserEditSchema,
   FormValidationSchema,
+  LandingPageTypeSchema,
   LicenseSchema,
   LoginSchema,
   NewPasswordSchema,

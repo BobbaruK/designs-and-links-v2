@@ -42,6 +42,8 @@ model User {
   topicUpdated          DL_Topic[]             @relation("topicUpdated")
   licenseCreated        DL_License[]           @relation("licenseCreated")
   licenseUpdated        DL_License[]           @relation("licenseUpdated")
+  lpTypeCreated         DL_LandingPageType[]   @relation("lpTypeCreated")
+  lpTypeUpdated         DL_LandingPageType[]   @relation("lpTypeUpdated")
 
   @@index([id, email, image])
 }
@@ -150,15 +152,25 @@ model DL_License {
   createdUserId String?
   updatedBy     User?    @relation("licenseUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
+
+  @@unique([name, slug])
+  @@index([id, slug])
 }
 
 model DL_LandingPageType {
-  id          String   @id @unique @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  name        String   @unique
-  slug        String   @unique
-  description String?
+  id            String   @id @unique @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  name          String   @unique
+  slug          String   @unique
+  description   String?
+  createdBy     User?    @relation("lpTypeCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdUserId String?
+  updatedBy     User?    @relation("lpTypeUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updateUserId  String?
+
+  @@unique([name, slug])
+  @@index([id, slug])
 }
 
 // Avatars related tables
