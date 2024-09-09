@@ -35,9 +35,7 @@ const AddLicensePage = async () => {
         </>
       ) : (
         <>
-          <Card>
-            <CardHeader>{header}</CardHeader>
-          </Card>
+          <Card>{header}</Card>
           <CustomAlert
             title={"Heads up!"}
             description={"You do not have permission to access this content"}
