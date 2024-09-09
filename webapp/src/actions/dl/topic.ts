@@ -3,13 +3,13 @@
 import { currentUser } from "@/lib/auth";
 import { getUserById } from "@/lib/data";
 import db from "@/lib/db";
-import { AddTopicSchema, EditTopicSchema } from "@/lib/schemas";
+import { TopicSchema } from "@/lib/schemas";
 import { z } from "zod";
 
-export const addTopic = async (values: z.infer<typeof AddTopicSchema>) => {
+export const addTopic = async (values: z.infer<typeof TopicSchema>) => {
   const user = await currentUser();
 
-  const validatedFields = AddTopicSchema.safeParse(values);
+  const validatedFields = TopicSchema.safeParse(values);
 
   if (!validatedFields.success) return { error: "Invalid fields!" };
 
@@ -59,12 +59,12 @@ export const addTopic = async (values: z.infer<typeof AddTopicSchema>) => {
 };
 
 export const editTopic = async (
-  values: z.infer<typeof EditTopicSchema>,
+  values: z.infer<typeof TopicSchema>,
   id: string,
 ) => {
   const user = await currentUser();
 
-  const validatedFields = EditTopicSchema.safeParse(values);
+  const validatedFields = TopicSchema.safeParse(values);
 
   if (!validatedFields.success) return { error: "Invalid fields!" };
 

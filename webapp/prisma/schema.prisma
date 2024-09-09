@@ -116,6 +116,9 @@ model DL_Topic {
   createdUserId String?
   updatedBy     User?    @relation("topicUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
+
+  @@unique([name, slug])
+  @@index([id, slug])
 }
 
 model DL_FormValidation {

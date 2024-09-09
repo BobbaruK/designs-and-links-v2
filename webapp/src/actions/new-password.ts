@@ -1,10 +1,10 @@
 "use server";
 
 import { getPasswordResetTokenByToken, getUserByEmail } from "@/lib/data";
-import { NewPasswordSchema } from "@/lib/schemas";
-import z from "zod";
-import bcrypt from "bcryptjs";
 import db from "@/lib/db";
+import { NewPasswordSchema } from "@/lib/schemas";
+import bcrypt from "bcryptjs";
+import z from "zod";
 
 /**
  * **{@linkcode newPassword} server function**
@@ -16,7 +16,7 @@ import db from "@/lib/db";
  * 5. Get password reset Token. See {@linkcode getPasswordResetTokenByToken}
  * 6. If password reset Token does not exists return `{ error: "Invalid token!" }`
  * 7. Check if Token is expired. If yes return `{ error: "Token has expired!" }`
- * 8. Get user by email. See {@linkcode getUserByEmail} 
+ * 8. Get user by email. See {@linkcode getUserByEmail}
  * 9. If user does __not__ exists return `{ error: "Email does note exist!" }`
  * 10. Hash the password
  * 11. Update the user

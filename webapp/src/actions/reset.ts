@@ -1,10 +1,10 @@
 "use server";
 
-import { ResetSchema } from "@/lib/schemas";
 import { getUserByEmail } from "@/lib/data";
-import z from "zod";
-import { generatePasswordResetToken } from "@/lib/tokens";
 import { sendPasswordResetEmail } from "@/lib/mail";
+import { ResetSchema } from "@/lib/schemas";
+import { generatePasswordResetToken } from "@/lib/tokens";
+import z from "zod";
 
 /**
  * **{@linkcode reset} server function**

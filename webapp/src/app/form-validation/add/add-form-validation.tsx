@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { AddFormValidationSchema } from "@/lib/schemas";
+import { FormValidationSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -30,8 +30,8 @@ export const AddFormValidation = ({}: Props) => {
   const [error, setError] = useState<string | undefined>();
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof AddFormValidationSchema>>({
-    resolver: zodResolver(AddFormValidationSchema),
+  const form = useForm<z.infer<typeof FormValidationSchema>>({
+    resolver: zodResolver(FormValidationSchema),
     defaultValues: {
       name: "",
       slug: "",
@@ -39,7 +39,7 @@ export const AddFormValidation = ({}: Props) => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof AddFormValidationSchema>) => {
+  const onSubmit = (values: z.infer<typeof FormValidationSchema>) => {
     setSuccess(undefined);
     setError(undefined);
 
@@ -73,7 +73,7 @@ export const AddFormValidation = ({}: Props) => {
                   onKeyUp={(e) => {
                     form.setValue(
                       "slug",
-                      field.value.toLowerCase().replaceAll(/[^A-Z0-9]/ig, "-"),
+                      field.value.toLowerCase().replaceAll(/[^A-Z0-9]/gi, "-"),
                     );
                   }}
                 >

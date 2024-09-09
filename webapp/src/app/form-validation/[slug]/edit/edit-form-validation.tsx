@@ -6,7 +6,6 @@ import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
 import { DeleteDialog } from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -18,11 +17,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentRole } from "@/hooks/use-current-role";
-import { EditFormValidationSchema } from "@/lib/schemas";
+import { FormValidationSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DL_FormValidation } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { ReactNode, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -37,8 +36,8 @@ export const EditFormValidation = ({ formValidation }: Props) => {
   const [isPending, startTransition] = useTransition();
   const userRole = useCurrentRole();
 
-  const form = useForm<z.infer<typeof EditFormValidationSchema>>({
-    resolver: zodResolver(EditFormValidationSchema),
+  const form = useForm<z.infer<typeof FormValidationSchema>>({
+    resolver: zodResolver(FormValidationSchema),
     defaultValues: {
       name: formValidation?.name || undefined,
       slug: formValidation?.slug || undefined,
@@ -46,7 +45,7 @@ export const EditFormValidation = ({ formValidation }: Props) => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof EditFormValidationSchema>) => {
+  const onSubmit = (values: z.infer<typeof FormValidationSchema>) => {
     setSuccess(undefined);
     setError(undefined);
 
@@ -94,7 +93,7 @@ export const EditFormValidation = ({ formValidation }: Props) => {
                   onKeyUp={(e) => {
                     form.setValue(
                       "slug",
-                      field.value.toLowerCase().replaceAll(/[^A-Z0-9]/ig, "-"),
+                      field.value.toLowerCase().replaceAll(/[^A-Z0-9]/gi, "-"),
                     );
                   }}
                 >

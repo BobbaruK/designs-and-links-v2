@@ -39,11 +39,10 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { userRoles } from "@/lib/constants";
-import db from "@/lib/db";
 import { SettingsSchema } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Prisma, UserAvatar } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";

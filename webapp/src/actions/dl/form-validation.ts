@@ -3,18 +3,15 @@
 import { currentUser } from "@/lib/auth";
 import { getUserById } from "@/lib/data";
 import db from "@/lib/db";
-import {
-  AddFormValidationSchema,
-  EditFormValidationSchema,
-} from "@/lib/schemas";
+import { FormValidationSchema } from "@/lib/schemas";
 import { z } from "zod";
 
 export const addFormValidation = async (
-  values: z.infer<typeof AddFormValidationSchema>,
+  values: z.infer<typeof FormValidationSchema>,
 ) => {
   const user = await currentUser();
 
-  const validatedFields = AddFormValidationSchema.safeParse(values);
+  const validatedFields = FormValidationSchema.safeParse(values);
 
   if (!validatedFields.success) return { error: "Invalid fields!" };
 
@@ -65,12 +62,12 @@ export const addFormValidation = async (
 };
 
 export const editFormValidation = async (
-  values: z.infer<typeof EditFormValidationSchema>,
+  values: z.infer<typeof FormValidationSchema>,
   id: string,
 ) => {
   const user = await currentUser();
 
-  const validatedFields = EditFormValidationSchema.safeParse(values);
+  const validatedFields = FormValidationSchema.safeParse(values);
 
   if (!validatedFields.success) return { error: "Invalid fields!" };
 

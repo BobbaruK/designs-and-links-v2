@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentRole } from "@/hooks/use-current-role";
-import { EditFormValidationSchema } from "@/lib/schemas";
+import { TopicSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DL_Topic } from "@prisma/client";
 import { useRouter } from "next/navigation";
@@ -29,28 +29,28 @@ interface Props {
   topic: DL_Topic;
 }
 
-export const EditTopic = ({ topic: formValidation }: Props) => {
+export const EditTopic = ({ topic }: Props) => {
   const router = useRouter();
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const [isPending, startTransition] = useTransition();
   const userRole = useCurrentRole();
 
-  const form = useForm<z.infer<typeof EditFormValidationSchema>>({
-    resolver: zodResolver(EditFormValidationSchema),
+  const form = useForm<z.infer<typeof TopicSchema>>({
+    resolver: zodResolver(TopicSchema),
     defaultValues: {
-      name: formValidation?.name || undefined,
-      slug: formValidation?.slug || undefined,
-      description: formValidation?.description || undefined,
+      name: topic?.name || undefined,
+      slug: topic?.slug || undefined,
+      description: topic?.description || undefined,
     },
   });
 
-  const onSubmit = (values: z.infer<typeof EditFormValidationSchema>) => {
+  const onSubmit = (values: z.infer<typeof TopicSchema>) => {
     setSuccess(undefined);
     setError(undefined);
 
     startTransition(() => {
-      editTopic(values, formValidation.id)
+      editTopic(values, topic.id)
         .then((data) => {
           if (data.error) {
             setError(data.error);
@@ -67,7 +67,7 @@ export const EditTopic = ({ topic: formValidation }: Props) => {
   };
 
   const onDelete = () => {
-    deleteTopic(formValidation.id).then((data) => {
+    deleteTopic(topic.id).then((data) => {
       if (data.error) {
         setError(data.error);
       }
@@ -144,7 +144,7 @@ export const EditTopic = ({ topic: formValidation }: Props) => {
           <Button type="submit">Update</Button>
           {userRole !== "USER" && (
             <DeleteDialog
-              label={formValidation?.name}
+              label={topic?.name}
               asset={"topic"}
               onDelete={onDelete}
             />

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { AddTopicSchema } from "@/lib/schemas";
+import { TopicSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -30,8 +30,8 @@ export const AddTopic = ({}: Props) => {
   const [error, setError] = useState<string | undefined>();
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof AddTopicSchema>>({
-    resolver: zodResolver(AddTopicSchema),
+  const form = useForm<z.infer<typeof TopicSchema>>({
+    resolver: zodResolver(TopicSchema),
     defaultValues: {
       name: "",
       slug: "",
@@ -39,7 +39,7 @@ export const AddTopic = ({}: Props) => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof AddTopicSchema>) => {
+  const onSubmit = (values: z.infer<typeof TopicSchema>) => {
     setSuccess(undefined);
     setError(undefined);
 
@@ -73,7 +73,7 @@ export const AddTopic = ({}: Props) => {
                   onKeyUp={(e) => {
                     form.setValue(
                       "slug",
-                      field.value.toLowerCase().replaceAll(/[^A-Z0-9]/ig, "-"),
+                      field.value.toLowerCase().replaceAll(/[^A-Z0-9]/gi, "-"),
                     );
                   }}
                 >
