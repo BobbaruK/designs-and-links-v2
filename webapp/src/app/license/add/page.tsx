@@ -2,20 +2,21 @@ import { CustomAlert } from "@/components/alert-custom";
 import { IconButton } from "@/components/button-icon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { currentUser } from "@/lib/auth";
+import { ReactNode } from "react";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
-import { AddFormValidation } from "./add-form-validation";
+import { AddLicense } from "./add-license";
 
-const AddFormValidationPage = async () => {
+const AddLicensePage = async () => {
   const user = await currentUser();
 
-  const header = (
+  const header: ReactNode = (
     <CardHeader>
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-4xl font-bold">Add Form Validation</h1>
+        <h1 className="text-4xl font-bold">Add License</h1>
         <IconButton
           icon={<IoArrowBackCircleSharp size={25} />}
-          href={"/form-validation"}
-          label={"Back to form validations"}
+          href={"/topic"}
+          label={"Back to topics"}
         />
       </div>
     </CardHeader>
@@ -28,13 +29,15 @@ const AddFormValidationPage = async () => {
           <Card>
             {header}
             <CardContent>
-              <AddFormValidation />
+              <AddLicense />
             </CardContent>
           </Card>
         </>
       ) : (
         <>
-          <Card>{header}</Card>
+          <Card>
+            <CardHeader>{header}</CardHeader>
+          </Card>
           <CustomAlert
             title={"Heads up!"}
             description={"You do not have permission to access this content"}
@@ -46,4 +49,4 @@ const AddFormValidationPage = async () => {
   );
 };
 
-export default AddFormValidationPage;
+export default AddLicensePage;

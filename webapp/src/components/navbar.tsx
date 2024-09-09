@@ -30,6 +30,12 @@ export const Navbar = () => {
         </Button>
         <Button
           asChild
+          variant={pathname.startsWith("/license") ? "default" : "outline"}
+        >
+          <Link href={"/license"}>License</Link>
+        </Button>
+        <Button
+          asChild
           variant={pathname === "/test-server" ? "default" : "outline"}
         >
           <Link href={"/test-server"}>Server</Link>

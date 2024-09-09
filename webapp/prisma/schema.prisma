@@ -40,6 +40,8 @@ model User {
   formValidationUpdated DL_FormValidation[]    @relation("formValidationUpdated")
   topicCreated          DL_Topic[]             @relation("topicCreated")
   topicUpdated          DL_Topic[]             @relation("topicUpdated")
+  licenseCreated        DL_License[]           @relation("licenseCreated")
+  licenseUpdated        DL_License[]           @relation("licenseUpdated")
 
   @@index([id, email, image])
 }
@@ -137,13 +139,17 @@ model DL_FormValidation {
   @@index([id, slug])
 }
 
-model DL_LanguageType {
-  id          String   @id @unique @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  name        String   @unique
-  slug        String   @unique
-  description String?
+model DL_License {
+  id            String   @id @unique @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  name          String   @unique
+  slug          String   @unique
+  description   String?
+  createdBy     User?    @relation("licenseCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdUserId String?
+  updatedBy     User?    @relation("licenseUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updateUserId  String?
 }
 
 model DL_LandingPageType {

@@ -9,6 +9,7 @@ import {
   ResetSchema,
 } from "@/lib/schemas/auth";
 import { FormValidationSchema } from "@/lib/schemas/form-validation";
+import { LicenseSchema } from "@/lib/schemas/license";
 import { SettingsSchema } from "@/lib/schemas/settings";
 import { TopicSchema } from "@/lib/schemas/topic";
 import { UserAvatarSchema } from "@/lib/schemas/user-avatar";
@@ -17,6 +18,7 @@ export {
   AdminUserAddSchema,
   AdminUserEditSchema,
   FormValidationSchema,
+  LicenseSchema,
   LoginSchema,
   NewPasswordSchema,
   RegisterSchema,
