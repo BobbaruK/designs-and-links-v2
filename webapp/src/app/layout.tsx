@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 
 import { auth } from "@/auth";
 import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { SessionProvider } from "next-auth/react";
@@ -35,9 +36,7 @@ export default async function RootLayout({
             <div className="grid min-h-[100vh] grid-rows-siteGrid gap-10">
               <Header />
               <main>{children}</main>
-              <footer>
-                <div className="container">footer</div>
-              </footer>
+              <Footer />
             </div>
             <Toaster richColors closeButton />
           </ThemeProvider>
