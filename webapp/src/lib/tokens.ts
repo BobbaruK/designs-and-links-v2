@@ -1,4 +1,8 @@
-import { v4 as uuidv4 } from "uuid";
+import {
+  PASSWORD_RESET_TOKEN_EXPIRATION,
+  TWO_FACTOR_TOKEN_EXPIRATION,
+  VERIFICATION_TOKEN_EXPIRATION,
+} from "@/lib/constants";
 import {
   getPasswordResetTokenByEmail,
   getTwoFactorTokenByEmail,
@@ -6,13 +10,16 @@ import {
 } from "@/lib/data";
 import db from "@/lib/db";
 import crypto from "crypto";
+import { v4 as uuidv4 } from "uuid";
 
 export const generateVerificationToken = async (
   email: string,
   emailOld?: string | null,
 ) => {
   const token = uuidv4();
-  const expires = new Date(new Date().getTime() + 3600 * 1000);
+  const expires = new Date(
+    new Date().getTime() + VERIFICATION_TOKEN_EXPIRATION,
+  );
 
   const existingToken = await getVerificationTokenByEmail(email);
 
@@ -38,7 +45,9 @@ export const generateVerificationToken = async (
 
 export const generatePasswordResetToken = async (email: string) => {
   const token = uuidv4();
-  const expires = new Date(new Date().getTime() + 3600 * 1000);
+  const expires = new Date(
+    new Date().getTime() + PASSWORD_RESET_TOKEN_EXPIRATION,
+  );
 
   const existingToken = await getPasswordResetTokenByEmail(email);
 
@@ -61,7 +70,7 @@ export const generatePasswordResetToken = async (email: string) => {
 
 export const generateTwoFactorToken = async (email: string) => {
   const token = crypto.randomInt(100_000, 1_000_000).toString();
-  const expires = new Date(new Date().getTime() + 5 * 60 * 1000); // 5 min
+  const expires = new Date(new Date().getTime() + TWO_FACTOR_TOKEN_EXPIRATION);
 
   const existingToken = await getTwoFactorTokenByEmail(email);
 
