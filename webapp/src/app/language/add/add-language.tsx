@@ -1,19 +1,10 @@
 "use client";
 
-import { adminAddUser } from "@/actions/dl";
+import { addLanguage } from "@/actions/dl";
 import { revalidate } from "@/actions/reavalidate";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
-import { CustomAvatar } from "@/components/custom-avatar";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -29,29 +20,29 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { userRoles } from "@/lib/constants";
-import { AdminUserAddSchema } from "@/lib/schemas";
+import { Textarea } from "@/components/ui/textarea";
+import { LanguageSchema } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Prisma, UserRole } from "@prisma/client";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Prisma, UserRole } from "@prisma/client";
+import { Check, ChevronsUpDown } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { CustomAvatar } from "@/components/custom-avatar";
 
 interface Props {
-  avatars:
-    | Prisma.DL_UserAvatarGetPayload<{
+  flags:
+    | Prisma.DL_FlagGetPayload<{
         include: {
           createdBy: {
             omit: {
@@ -68,39 +59,36 @@ interface Props {
     | null;
 }
 
-export const AdminUserAdd = ({ avatars }: Props) => {
+export const AddLanguage = ({ flags }: Props) => {
+  const router = useRouter();
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
-  const { update } = useSession();
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
 
-  const form = useForm<z.infer<typeof AdminUserAddSchema>>({
-    resolver: zodResolver(AdminUserAddSchema),
+  const form = useForm<z.infer<typeof LanguageSchema>>({
+    resolver: zodResolver(LanguageSchema),
     defaultValues: {
       name: "",
-      email: "",
-      password: process.env.NEXT_PUBLIC_DEFAULT_REGISTER_PASSWORD || "",
-      image: "",
-      role: UserRole.USER,
-      isTwoFactorEnabled: false,
+      englishName: "",
+      iso_639_1: "",
+      iso_3166_1: "",
+      flag: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof AdminUserAddSchema>) => {
+  const onSubmit = (values: z.infer<typeof LanguageSchema>) => {
     setSuccess(undefined);
     setError(undefined);
 
     startTransition(() => {
-      adminAddUser(values)
+      addLanguage(values)
         .then((data) => {
           if (data.error) {
             setError(data.error);
           }
           if (data.success) {
-            update();
             setSuccess(data.success);
-            setTimeout(() => router.push("/admin/users"), 300);
+            setTimeout(() => router.push(`/language/${data.slug}`), 300);
           }
           revalidate();
         })
@@ -109,8 +97,10 @@ export const AdminUserAdd = ({ avatars }: Props) => {
   };
 
   const onResetAvatar = () => {
-    form.setValue("image", "");
+    form.setValue("flag", "");
   };
+
+  console.log(form.getValues("flag"));
 
   return (
     <Form {...form}>
@@ -123,11 +113,7 @@ export const AdminUserAdd = ({ avatars }: Props) => {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="John Doe"
-                    disabled={isPending}
-                  />
+                  <Input {...field} placeholder="Română" disabled={isPending} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -135,15 +121,14 @@ export const AdminUserAdd = ({ avatars }: Props) => {
           />
           <FormField
             control={form.control}
-            name="email"
+            name="englishName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>English name</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="john.doe@example.com"
-                    type="email"
+                    placeholder="Romanian"
                     disabled={isPending}
                   />
                 </FormControl>
@@ -153,17 +138,12 @@ export const AdminUserAdd = ({ avatars }: Props) => {
           />
           <FormField
             control={form.control}
-            name="password"
+            name="iso_639_1"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>ISO 639 1</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="******"
-                    type="password"
-                    disabled={isPending}
-                  />
+                  <Input {...field} placeholder="ro" disabled={isPending} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -171,10 +151,23 @@ export const AdminUserAdd = ({ avatars }: Props) => {
           />
           <FormField
             control={form.control}
-            name="image"
+            name="iso_3166_1"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>ISO 3166 1</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="RO" disabled={isPending} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="flag"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel className="self-start">Avatar</FormLabel>
+                <FormLabel className="self-start">Flag</FormLabel>
                 <div className="flex flex-row items-center gap-4">
                   <Popover>
                     <PopoverTrigger asChild>
@@ -188,21 +181,20 @@ export const AdminUserAdd = ({ avatars }: Props) => {
                           )}
                         >
                           {field.value
-                            ? avatars?.find(
-                                (avatar) => avatar.url === field.value,
-                              )?.name
-                            : "Select avatar"}
+                            ? flags?.find((flag) => flag.url === field.value)
+                                ?.name
+                            : "Select flag"}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-[200px] p-0">
                       <Command>
-                        <CommandInput placeholder="Search avatar..." />
+                        <CommandInput placeholder="Search flag..." />
                         <CommandList>
-                          <CommandEmpty>No avatar found.</CommandEmpty>
+                          <CommandEmpty>No flag found.</CommandEmpty>
                           <CommandGroup>
-                            {avatars
+                            {flags
                               ?.sort((a, b) => {
                                 const nameA = a.name.toUpperCase();
                                 const nameB = b.name.toUpperCase();
@@ -215,29 +207,29 @@ export const AdminUserAdd = ({ avatars }: Props) => {
 
                                 return 0;
                               })
-                              .map((avatar) => (
+                              .map((flag) => (
                                 <CommandItem
-                                  value={avatar.id}
-                                  key={avatar.id}
+                                  value={flag.name}
+                                  key={flag.id}
                                   onSelect={() => {
-                                    form.setValue("image", avatar.url);
+                                    form.setValue("flag", flag.url);
                                   }}
                                   className="flex items-center gap-0"
                                 >
                                   <Check
                                     className={cn(
                                       "mr-2 h-4 w-4",
-                                      avatar.url === field.value
+                                      flag.url === field.value
                                         ? "opacity-100"
                                         : "opacity-0",
                                     )}
                                   />
                                   <div className="flex items-center gap-4">
                                     <CustomAvatar
-                                      image={avatar.url}
+                                      image={flag.url}
                                       className="size-7"
                                     />
-                                    {avatar.name}
+                                    {flag.name}
                                   </div>
                                 </CommandItem>
                               ))}
@@ -247,8 +239,8 @@ export const AdminUserAdd = ({ avatars }: Props) => {
                     </PopoverContent>
                   </Popover>
                   <FormDescription className="flex items-center gap-4">
-                    <CustomAvatar image={form.getValues("image")} />
-                    {form.getValues("image") && (
+                    <CustomAvatar image={form.getValues("flag")} />
+                    {form.getValues("flag") && (
                       <Button
                         size={"sm"}
                         variant={"link"}
@@ -256,7 +248,7 @@ export const AdminUserAdd = ({ avatars }: Props) => {
                         onClick={onResetAvatar}
                         type="button"
                       >
-                        Delete avatar
+                        Delete flag
                       </Button>
                     )}
                   </FormDescription>
@@ -265,60 +257,10 @@ export const AdminUserAdd = ({ avatars }: Props) => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="role"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Role</FormLabel>
-                <Select
-                  disabled={isPending}
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a role" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {userRoles().map((role) => (
-                      <SelectItem value={role} key={role}>
-                        {role}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="isTwoFactorEnabled"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-md border p-3 shadow-sm">
-                <div className="space-y-0.5">
-                  <FormLabel>Two Factor Authentication</FormLabel>
-                  <FormDescription>
-                    Enable 2FA for your account.
-                  </FormDescription>
-                </div>
-                <FormControl>
-                  <Switch
-                    disabled={isPending}
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
         <FormSuccess message={success} />
         <FormError message={error} />
-        <Button type="submit">Add user</Button>
+        <Button type="submit">Add</Button>
       </form>
     </Form>
   );

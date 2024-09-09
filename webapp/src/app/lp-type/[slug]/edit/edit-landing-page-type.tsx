@@ -26,10 +26,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 interface Props {
-  topic: DL_Topic;
+  lpType: DL_Topic;
 }
 
-export const EditLandingPageType = ({ topic }: Props) => {
+export const EditLandingPageType = ({ lpType }: Props) => {
   const router = useRouter();
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
@@ -39,9 +39,9 @@ export const EditLandingPageType = ({ topic }: Props) => {
   const form = useForm<z.infer<typeof LandingPageTypeSchema>>({
     resolver: zodResolver(LandingPageTypeSchema),
     defaultValues: {
-      name: topic?.name || undefined,
-      slug: topic?.slug || undefined,
-      description: topic?.description || undefined,
+      name: lpType?.name || undefined,
+      slug: lpType?.slug || undefined,
+      description: lpType?.description || undefined,
     },
   });
 
@@ -50,7 +50,7 @@ export const EditLandingPageType = ({ topic }: Props) => {
     setError(undefined);
 
     startTransition(() => {
-      editLandingPageType(values, topic.id)
+      editLandingPageType(values, lpType.id)
         .then((data) => {
           if (data.error) {
             setError(data.error);
@@ -67,7 +67,7 @@ export const EditLandingPageType = ({ topic }: Props) => {
   };
 
   const onDelete = () => {
-    deleteLandingPageType(topic.id).then((data) => {
+    deleteLandingPageType(lpType.id).then((data) => {
       if (data.error) {
         setError(data.error);
       }
@@ -114,7 +114,7 @@ export const EditLandingPageType = ({ topic }: Props) => {
               <FormItem>
                 <FormLabel>Slug</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="topic" type="text" disabled />
+                  <Input {...field} placeholder="landing page type" type="text" disabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -144,8 +144,8 @@ export const EditLandingPageType = ({ topic }: Props) => {
           <Button type="submit">Update</Button>
           {userRole !== "USER" && (
             <DeleteDialog
-              label={topic?.name}
-              asset={"topic"}
+              label={lpType?.name}
+              asset={"landing page type"}
               onDelete={onDelete}
             />
           )}

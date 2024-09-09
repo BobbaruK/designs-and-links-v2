@@ -1,4 +1,4 @@
-import { deleteLandingPageType } from "@/actions/dl";
+import { deleteLanguage, deleteTopic } from "@/actions/dl";
 import { revalidate } from "@/actions/reavalidate";
 import { DeleteDialog } from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
@@ -11,35 +11,35 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCurrentRole } from "@/hooks/use-current-role";
-import { DL_LandingPageType } from "@prisma/client";
+import { DL_Language, DL_Topic } from "@prisma/client";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
 interface Props {
-  lpType: DL_LandingPageType;
+  language: DL_Language;
 }
 
-const LandingPageTypeRowActions = ({ lpType }: Props) => {
+const LanguageRowActions = ({ language }: Props) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const userRole = useCurrentRole();
 
   const onDelete = () => {
-    deleteLandingPageType(lpType.id).then((data) => {
+    deleteLanguage(language.id).then((data) => {
       if (data.error) {
         toast.error(
           <div className="">
-            Could not delete landing page type
-            <code>{lpType.name}</code>.
+            Could not delete language
+            <code>{language.englishName}</code>.
           </div>,
         );
       }
       if (data.success) {
         toast.success(
           <div>
-            Topic
-            <code>{lpType.name}</code>
+            Language
+            <code>{language.englishName}</code>
             deleted!
           </div>,
         );
@@ -51,8 +51,8 @@ const LandingPageTypeRowActions = ({ lpType }: Props) => {
   return (
     <>
       <DeleteDialog
-        label={lpType?.name}
-        asset={"landing page type"}
+        label={language?.englishName}
+        asset={"language"}
         onDelete={onDelete}
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
@@ -71,9 +71,9 @@ const LandingPageTypeRowActions = ({ lpType }: Props) => {
           {userRole !== "USER" && (
             <>
               <DropdownMenuItem asChild>
-                <Link href={`/lp-type/${lpType.slug}/edit`}>
+                <Link href={`/language/${language.iso_639_1}/edit`}>
                   <span>
-                    Edit landing page type <strong>{lpType?.name}</strong>
+                    Edit language <strong>{language?.englishName}</strong>
                   </span>
                 </Link>
               </DropdownMenuItem>
@@ -83,7 +83,7 @@ const LandingPageTypeRowActions = ({ lpType }: Props) => {
                 }}
               >
                 <span>
-                  Delete landing page type <strong>{lpType?.name}</strong>
+                  Delete language <strong>{language?.englishName}</strong>
                 </span>
               </DropdownMenuItem>
             </>
@@ -91,15 +91,15 @@ const LandingPageTypeRowActions = ({ lpType }: Props) => {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => {
-              navigator.clipboard.writeText(lpType.id);
+              navigator.clipboard.writeText(language.id);
 
-              toast.info(`Copied ${lpType.name}'s ID`, {
-                description: lpType.id,
+              toast.info(`Copied ${language.englishName}'s ID`, {
+                description: language.id,
               });
             }}
           >
             <span>
-              Copy <strong>{lpType.name}</strong> ID
+              Copy <strong>{language.englishName}</strong> ID
             </span>
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -108,4 +108,4 @@ const LandingPageTypeRowActions = ({ lpType }: Props) => {
   );
 };
 
-export default LandingPageTypeRowActions;
+export default LanguageRowActions;

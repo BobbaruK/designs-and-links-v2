@@ -40,6 +40,12 @@ export const Navbar = () => {
         >
           <Link href={"/lp-type"}>Landing page type</Link>
         </Button>
+        <Button
+          asChild
+          variant={pathname.startsWith("/language") ? "default" : "outline"}
+        >
+          <Link href={"/language"}>Languages</Link>
+        </Button>
       </div>
       <UserButton />
     </nav>

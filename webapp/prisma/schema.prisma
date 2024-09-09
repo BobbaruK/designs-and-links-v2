@@ -46,6 +46,8 @@ model User {
   lpTypeUpdated         DL_LandingPageType[]   @relation("lpTypeUpdated")
   flagsCreated          DL_Flag[]              @relation("flagsCreated")
   flagsUpdated          DL_Flag[]              @relation("flagsUpdated")
+  languageCreated       DL_Language[]          @relation("languageCreated")
+  languageUpdated       DL_Language[]          @relation("languageUpdated")
 
   @@index([id, email, image])
 }
@@ -173,6 +175,23 @@ model DL_LandingPageType {
 
   @@unique([name, slug])
   @@index([id, slug])
+}
+
+model DL_Language {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  name          String   @unique
+  englishName   String   @unique
+  iso_639_1     String   @unique
+  iso_3166_1    String?
+  flag          String?
+  createdBy     User?    @relation("languageCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdUserId String?
+  updatedBy     User?    @relation("languageUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updateUserId  String?
+
+  @@index([id, iso_639_1])
 }
 
 // Avatars related tables

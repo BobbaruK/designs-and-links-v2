@@ -104,18 +104,18 @@ export const adminDeleteFlag = async (id: string) => {
 
   if (!dbUser || user.role !== "ADMIN") return { error: "Unauthorized!" };
 
-  // const existingAvatar = await db.dL_Flag.findUnique({
-  //   where: {
-  //     id,
-  //   },
-  // });
+  const existingFlag = await db.dL_Flag.findUnique({
+    where: {
+      id,
+    },
+  });
 
-  // if (!existingAvatar) return { error: "Avatar not found!" };
+  if (!existingFlag) return { error: "Flag not found!" };
 
-  // await db.user.updateMany({
-  //   where: { image: existingAvatar.url },
-  //   data: { image: null },
-  // });
+  await db.dL_Language.updateMany({
+    where: { flag: existingFlag.url },
+    data: { flag: null },
+  });
 
   try {
     await db.dL_Flag.delete({

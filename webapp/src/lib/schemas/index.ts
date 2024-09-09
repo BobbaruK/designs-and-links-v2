@@ -10,6 +10,7 @@ import {
 } from "@/lib/schemas/auth";
 import { FlagSchema } from "@/lib/schemas/flag";
 import { FormValidationSchema } from "@/lib/schemas/form-validation";
+import { LanguageSchema } from "@/lib/schemas/language";
 import { LicenseSchema } from "@/lib/schemas/license";
 import { LandingPageTypeSchema } from "@/lib/schemas/lp-type";
 import { SettingsSchema } from "@/lib/schemas/settings";
@@ -22,6 +23,7 @@ export {
   FlagSchema,
   FormValidationSchema,
   LandingPageTypeSchema,
+  LanguageSchema,
   LicenseSchema,
   LoginSchema,
   NewPasswordSchema,
