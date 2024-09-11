@@ -12,9 +12,9 @@ import {
   PiArrowBendRightDownDuotone,
   PiArrowBendRightUpDuotone,
 } from "react-icons/pi";
-import AdminBrandLogosRowActions from "./admin-brand-logos-row-actions";
+import BrandRowActions from "./brand-row-actions";
 
-type DB_BrandLogos = Prisma.DL_BrandLogoGetPayload<{
+type Brand = Prisma.DL_BrandGetPayload<{
   include: {
     createdBy: {
       omit: {
@@ -29,7 +29,7 @@ type DB_BrandLogos = Prisma.DL_BrandLogoGetPayload<{
   };
 }>;
 
-export const columns: ColumnDef<DB_BrandLogos>[] = [
+export const columns: ColumnDef<Brand>[] = [
   // Name
   {
     accessorKey: "name",
@@ -55,17 +55,15 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
     },
     cell: ({ row }) => {
       const id = row.original.id;
+      const slug = row.original.slug;
       const name = row.original.name;
-      const image = row.original.url;
+      const image = row.original.logo;
 
       return (
         <CustomHoverCard
           triggerAsChild
           trigger={
-            <Link
-              href={`/admin/brand-logos/${id}`}
-              className="flex items-center gap-2"
-            >
+            <Link href={`/brand/${slug}`} className="flex items-center gap-2">
               <CustomAvatar
                 image={image}
                 className="overflow-hidden bg-black"
@@ -74,27 +72,54 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
             </Link>
           }
         >
-          <Link
-            href={`/admin/brand-logos/${id}`}
-            className="flex items-center gap-2"
-          >
-            <Image
-              src={image}
-              alt={`${name}'s Logo`}
-              className="h-auto object-cover"
-              unoptimized
-              width={300}
-              height={50}
-            />
+          <Link href={`/brand/${slug}`} className="flex items-center gap-2">
+            {image ? (
+              <Image
+                src={image}
+                alt={`${name}'s Logo`}
+                className="h-auto object-cover"
+                unoptimized
+                width={300}
+                height={50}
+              />
+            ) : (
+              <span>Go to {name}</span>
+            )}
           </Link>
         </CustomHoverCard>
       );
     },
   },
+  // Slug
+  {
+    accessorKey: "slug",
+    id: "slug",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="flex gap-2"
+          onClick={() => column.toggleSorting()}
+        >
+          Slug
+          {column.getIsSorted() === "asc" && (
+            <PiArrowBendRightUpDuotone size={20} />
+          )}
+          {column.getIsSorted() === "desc" && (
+            <PiArrowBendRightDownDuotone size={20} />
+          )}
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <Button asChild variant={"link"} className={cn("text-foreground")}>
+        <Link href={`/brand/${row.original.slug}`}>{row.original.slug}</Link>
+      </Button>
+    ),
+  },
   // Created At
   {
     accessorKey: "createdAt",
-    id: "createdAt",
     sortDescFirst: false,
     header: ({ column }) => {
       return (
@@ -180,7 +205,7 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
               <p>
                 Created at:{" "}
                 <strong>
-                  {returnFormattedDate(row.original.createdAt)} (UTC)
+                  {returnFormattedDate(row.original.updatedAt)} (UTC)
                 </strong>
               </p>
             </CustomHoverCard>
@@ -197,7 +222,6 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
   // Updated At
   {
     accessorKey: "updatedAt",
-    id: "updatedAt",
     header: ({ column }) => {
       return (
         <Button
@@ -301,9 +325,9 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const avatars = row.original;
+      const brand = row.original;
 
-      return <AdminBrandLogosRowActions brandLogo={avatars} />;
+      return <BrandRowActions brand={brand} />;
     },
   },
 ];

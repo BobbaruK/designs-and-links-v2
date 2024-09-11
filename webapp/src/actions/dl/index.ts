@@ -15,11 +15,12 @@ import {
   adminDeleteUserAvatar,
   adminEditUserAvatar,
 } from "@/actions/dl/admin-user-avatar";
+import { addBrand, deleteBrand, editBrand } from "@/actions/dl/brand";
 import {
   adminAddBrandLogo,
   adminDeleteBrandLogo,
   adminEditBrandLogo,
-} from "@/actions/dl/brand-logo";
+} from "@/actions/dl/admin-brand-logo";
 import {
   addFormValidation,
   deleteFormValidation,
@@ -38,6 +39,7 @@ import {
 import { addTopic, deleteTopic, editTopic } from "@/actions/dl/topic";
 
 export {
+  addBrand,
   addFormValidation,
   addLandingPageType,
   addLanguage,
@@ -54,10 +56,12 @@ export {
   adminEditFlag,
   adminEditUser,
   adminEditUserAvatar,
+  deleteBrand,
   deleteFormValidation,
   deleteLandingPageType,
   deleteLanguage,
   deleteTopic,
+  editBrand,
   editFormValidation,
   editLandingPageType,
   editLanguage,

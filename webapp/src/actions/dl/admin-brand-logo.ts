@@ -114,10 +114,10 @@ export const adminDeleteBrandLogo = async (id: string) => {
 
   if (!existingBrandLogo) return { error: "Brand logo not found!" };
 
-  // await db.dL_Language.updateMany({
-  //   where: { flag: existingFlag.url },
-  //   data: { flag: null },
-  // });
+  await db.dL_Brand.updateMany({
+    where: { logo: existingBrandLogo.url },
+    data: { logo: null },
+  });
 
   try {
     await db.dL_BrandLogo.delete({

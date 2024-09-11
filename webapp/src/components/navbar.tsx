@@ -36,7 +36,7 @@ export const Navbar = () => {
             asChild
             variant={pathname.startsWith("/license") ? "default" : "outline"}
           >
-            <Link href={"/license"}>License</Link>
+            <Link href={"/license"}>Licenses</Link>
           </Button>
           <Button
             asChild
@@ -49,6 +49,12 @@ export const Navbar = () => {
             variant={pathname.startsWith("/language") ? "default" : "outline"}
           >
             <Link href={"/language"}>Languages</Link>
+          </Button>
+          <Button
+            asChild
+            variant={pathname.startsWith("/brand") ? "default" : "outline"}
+          >
+            <Link href={"/brand"}>Brands</Link>
           </Button>
         </div>
         <UserButton />

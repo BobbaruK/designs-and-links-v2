@@ -1,11 +1,10 @@
 "use client";
 
-import { deleteLanguage, deleteTopic, editLanguage } from "@/actions/dl";
+import { addBrand } from "@/actions/dl";
 import { revalidate } from "@/actions/reavalidate";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
 import { CustomAvatar } from "@/components/custom-avatar";
-import { DeleteDialog } from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -30,22 +29,20 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useCurrentRole } from "@/hooks/use-current-role";
-import { LanguageSchema } from "@/lib/schemas";
+import { BrandSchema } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { DL_Language, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { Check, ChevronsUpDown } from "lucide-react";
-import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 interface Props {
-  language: DL_Language;
-  flags:
-    | Prisma.DL_FlagGetPayload<{
+  logos:
+    | Prisma.DL_BrandLogoGetPayload<{
         include: {
           createdBy: {
             omit: {
@@ -62,37 +59,34 @@ interface Props {
     | null;
 }
 
-export const EditLanguage = ({ language, flags }: Props) => {
+export const AddBrand = ({ logos }: Props) => {
   const router = useRouter();
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const [isPending, startTransition] = useTransition();
-  const userRole = useCurrentRole();
 
-  const form = useForm<z.infer<typeof LanguageSchema>>({
-    resolver: zodResolver(LanguageSchema),
+  const form = useForm<z.infer<typeof BrandSchema>>({
+    resolver: zodResolver(BrandSchema),
     defaultValues: {
-      name: language.name || undefined,
-      englishName: language.englishName || undefined,
-      iso_639_1: language.iso_639_1 || undefined,
-      iso_3166_1: language.iso_3166_1 || undefined,
-      flag: language.flag || undefined,
+      name: "",
+      slug: "",
+      logo: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LanguageSchema>) => {
+  const onSubmit = (values: z.infer<typeof BrandSchema>) => {
     setSuccess(undefined);
     setError(undefined);
 
     startTransition(() => {
-      editLanguage(values, language.id)
+      addBrand(values)
         .then((data) => {
           if (data.error) {
             setError(data.error);
           }
           if (data.success) {
             setSuccess(data.success);
-            setTimeout(() => router.push(`/language/${data.slug}`), 300);
+            setTimeout(() => router.push(`/brand/${data.slug}`), 300);
           }
           revalidate();
         })
@@ -100,21 +94,8 @@ export const EditLanguage = ({ language, flags }: Props) => {
     });
   };
 
-  const onDelete = () => {
-    deleteLanguage(language.id).then((data) => {
-      if (data.error) {
-        setError(data.error);
-      }
-      if (data.success) {
-        setSuccess(data.success);
-        setTimeout(() => router.push(`/language`), 300);
-      }
-      revalidate();
-    });
-  };
-
   const onResetAvatar = () => {
-    form.setValue("flag", "");
+    form.setValue("logo", "");
   };
 
   return (
@@ -127,23 +108,17 @@ export const EditLanguage = ({ language, flags }: Props) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="Română" disabled={isPending} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="englishName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>English name</FormLabel>
-                <FormControl>
+                <FormControl
+                  onKeyUp={(e) => {
+                    form.setValue(
+                      "slug",
+                      field.value.toLowerCase().replaceAll(/[^A-Z0-9]/gi, "-"),
+                    );
+                  }}
+                >
                   <Input
                     {...field}
-                    placeholder="Romanian"
+                    placeholder="Traders Academic"
                     disabled={isPending}
                   />
                 </FormControl>
@@ -153,54 +128,28 @@ export const EditLanguage = ({ language, flags }: Props) => {
           />
           <FormField
             control={form.control}
-            name="iso_639_1"
+            name="slug"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>ISO 639 1</FormLabel>
+                <FormLabel>Slug</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="ro" disabled={isPending} />
+                  <Input
+                    {...field}
+                    placeholder="traders-academic"
+                    type="text"
+                    disabled
+                  />
                 </FormControl>
-                <FormDescription>
-                  <Link
-                    href={"https://www.iso.org/iso-639-language-code"}
-                    className="underline underline-offset-2"
-                    target="_blank"
-                  >
-                    https://www.iso.org/iso-639-language-code
-                  </Link>
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name="iso_3166_1"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>ISO 3166 1</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="RO" disabled={isPending} />
-                </FormControl>
-                <FormDescription>
-                  <Link
-                    href={"https://www.iso.org/iso-3166-country-codes.html"}
-                    className="underline underline-offset-2"
-                    target="_blank"
-                  >
-                    https://www.iso.org/iso-3166-country-codes.html
-                  </Link>
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="flag"
+            name="logo"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel className="self-start">Flag</FormLabel>
+                <FormLabel className="self-start">Logo</FormLabel>
                 <div className="flex flex-row items-center gap-4">
                   <Popover>
                     <PopoverTrigger asChild>
@@ -209,25 +158,25 @@ export const EditLanguage = ({ language, flags }: Props) => {
                           variant="outline"
                           role="combobox"
                           className={cn(
-                            "w-[200px] justify-between",
+                            "w-[300px] justify-between",
                             !field.value && "text-muted-foreground",
                           )}
                         >
                           {field.value
-                            ? flags?.find((flag) => flag.url === field.value)
+                            ? logos?.find((logo) => logo.url === field.value)
                                 ?.name
-                            : "Select flag"}
+                            : "Select brand logo"}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[200px] p-0">
+                    <PopoverContent className="w-[300px] p-0">
                       <Command>
-                        <CommandInput placeholder="Search flag..." />
+                        <CommandInput placeholder="Search brand logo..." />
                         <CommandList>
                           <CommandEmpty>No flag found.</CommandEmpty>
                           <CommandGroup>
-                            {flags
+                            {logos
                               ?.sort((a, b) => {
                                 const nameA = a.name.toUpperCase();
                                 const nameB = b.name.toUpperCase();
@@ -240,29 +189,29 @@ export const EditLanguage = ({ language, flags }: Props) => {
 
                                 return 0;
                               })
-                              .map((flag) => (
+                              .map((brand) => (
                                 <CommandItem
-                                  value={flag.name}
-                                  key={flag.id}
+                                  value={brand.name}
+                                  key={brand.id}
                                   onSelect={() => {
-                                    form.setValue("flag", flag.url);
+                                    form.setValue("logo", brand.url);
                                   }}
                                   className="flex items-center gap-0"
                                 >
                                   <Check
                                     className={cn(
                                       "mr-2 h-4 w-4",
-                                      flag.url === field.value
+                                      brand.url === field.value
                                         ? "opacity-100"
                                         : "opacity-0",
                                     )}
                                   />
                                   <div className="flex items-center gap-4">
                                     <CustomAvatar
-                                      image={flag.url}
+                                      image={brand.url}
                                       className="size-7"
                                     />
-                                    {flag.name}
+                                    {brand.name}
                                   </div>
                                 </CommandItem>
                               ))}
@@ -271,9 +220,22 @@ export const EditLanguage = ({ language, flags }: Props) => {
                       </Command>
                     </PopoverContent>
                   </Popover>
-                  <FormDescription className="flex items-center gap-4">
-                    <CustomAvatar image={form.getValues("flag")} />
-                    {form.getValues("flag") && (
+                  <FormDescription
+                    className={cn("flex h-auto items-center gap-4")}
+                  >
+                    {/* <CustomAvatar image={form.getValues("logo")} /> */}
+                    {form.getValues("logo") && (
+                      <Image
+                        src={form.getValues("logo")}
+                        alt={`'s Logo`}
+                        className="object-cover"
+                        unoptimized
+                        width={150}
+                        height={10}
+                      />
+                    )}
+
+                    {form.getValues("logo") && (
                       <Button
                         size={"sm"}
                         variant={"link"}
@@ -281,7 +243,7 @@ export const EditLanguage = ({ language, flags }: Props) => {
                         onClick={onResetAvatar}
                         type="button"
                       >
-                        Remove flag
+                        Remove brand logo
                       </Button>
                     )}
                   </FormDescription>
@@ -293,16 +255,7 @@ export const EditLanguage = ({ language, flags }: Props) => {
         </div>
         <FormSuccess message={success} />
         <FormError message={error} />
-        <div className="flex gap-4">
-          <Button type="submit">Update</Button>
-          {userRole !== "USER" && (
-            <DeleteDialog
-              label={language?.englishName}
-              asset={"language"}
-              onDelete={onDelete}
-            />
-          )}
-        </div>
+        <Button type="submit">Add</Button>
       </form>
     </Form>
   );

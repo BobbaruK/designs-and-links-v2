@@ -46,19 +46,19 @@ export const AdminBrandLogoAdd = () => {
     setError(undefined);
 
     startTransition(() => {
-      // adminAddBrandLogo(values)
-      //   .then((data) => {
-      //     if (data.error) {
-      //       setError(data.error);
-      //     }
-      //     if (data.success) {
-      //       update();
-      //       setSuccess(data.success);
-      //       setTimeout(() => router.push("/admin/brand-logos"), 300);
-      //     }
-      //     revalidate();
-      //   })
-      //   .catch(() => setError("Something went wrong!"));
+      adminAddBrandLogo(values)
+        .then((data) => {
+          if (data.error) {
+            setError(data.error);
+          }
+          if (data.success) {
+            update();
+            setSuccess(data.success);
+            setTimeout(() => router.push("/admin/brand-logos"), 300);
+          }
+          revalidate();
+        })
+        .catch(() => setError("Something went wrong!"));
     });
   };
 

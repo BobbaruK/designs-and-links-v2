@@ -112,14 +112,14 @@ export const adminDeleteFlag = async (id: string) => {
 
   if (!existingFlag) return { error: "Flag not found!" };
 
-  await db.dL_Language.updateMany({
-    where: { flag: existingFlag.url },
-    data: { flag: null },
-  });
-
   try {
     await db.dL_Flag.delete({
       where: { id },
+    });
+
+    await db.dL_Language.updateMany({
+      where: { flag: existingFlag.url },
+      data: { flag: null },
     });
 
     return {

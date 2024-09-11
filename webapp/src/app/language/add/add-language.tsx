@@ -4,7 +4,16 @@ import { addLanguage } from "@/actions/dl";
 import { revalidate } from "@/actions/reavalidate";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
+import { CustomAvatar } from "@/components/custom-avatar";
 import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -20,25 +29,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Textarea } from "@/components/ui/textarea";
 import { LanguageSchema } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Prisma } from "@prisma/client";
+import { Check, ChevronsUpDown } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Prisma, UserRole } from "@prisma/client";
-import { Check, ChevronsUpDown } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { CustomAvatar } from "@/components/custom-avatar";
 
 interface Props {
   flags:
@@ -145,6 +145,15 @@ export const AddLanguage = ({ flags }: Props) => {
                 <FormControl>
                   <Input {...field} placeholder="ro" disabled={isPending} />
                 </FormControl>
+                <FormDescription>
+                  <Link
+                    href={"https://www.iso.org/iso-639-language-code"}
+                    className="underline underline-offset-2"
+                    target="_blank"
+                  >
+                    https://www.iso.org/iso-639-language-code
+                  </Link>
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -158,6 +167,15 @@ export const AddLanguage = ({ flags }: Props) => {
                 <FormControl>
                   <Input {...field} placeholder="RO" disabled={isPending} />
                 </FormControl>
+                <FormDescription>
+                  <Link
+                    href={"https://www.iso.org/iso-3166-country-codes.html"}
+                    className="underline underline-offset-2"
+                    target="_blank"
+                  >
+                    https://www.iso.org/iso-3166-country-codes.html
+                  </Link>
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -248,7 +266,7 @@ export const AddLanguage = ({ flags }: Props) => {
                         onClick={onResetAvatar}
                         type="button"
                       >
-                        Delete flag
+                        Remove flag
                       </Button>
                     )}
                   </FormDescription>

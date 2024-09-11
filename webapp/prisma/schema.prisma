@@ -50,6 +50,8 @@ model User {
   languageUpdated       DL_Language[]          @relation("languageUpdated")
   brandLogoCreated      DL_BrandLogo[]         @relation("brandLogoCreated")
   brandLogoUpdated      DL_BrandLogo[]         @relation("brandLogoUpdated")
+  brandCreated          DL_Brand[]             @relation("brandCreated")
+  brandUpdated          DL_Brand[]             @relation("brandUpdated")
 
   @@index([id, email, image])
 }
@@ -194,6 +196,21 @@ model DL_Language {
   updateUserId  String?
 
   @@index([id, iso_639_1, flag])
+}
+
+model DL_Brand {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  name          String   @unique
+  slug          String   @unique
+  logo          String?
+  createdBy     User?    @relation("brandCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdUserId String?
+  updatedBy     User?    @relation("brandUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updateUserId  String?
+
+  @@index([id, slug])
 }
 
 // Avatars related tables

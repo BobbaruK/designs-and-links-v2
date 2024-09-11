@@ -8,6 +8,7 @@ import {
   RegisterSchema,
   ResetSchema,
 } from "@/lib/schemas/auth";
+import { BrandSchema } from "@/lib/schemas/brand";
 import { BrandLogoSchema } from "@/lib/schemas/brand-logo";
 import { FlagSchema } from "@/lib/schemas/flag";
 import { FormValidationSchema } from "@/lib/schemas/form-validation";
@@ -22,6 +23,7 @@ export {
   AdminUserAddSchema,
   AdminUserEditSchema,
   BrandLogoSchema,
+  BrandSchema,
   FlagSchema,
   FormValidationSchema,
   LandingPageTypeSchema,
