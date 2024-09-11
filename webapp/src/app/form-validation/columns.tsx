@@ -16,6 +16,7 @@ import {
   PiArrowBendRightUpDuotone,
 } from "react-icons/pi";
 import FormValidationRowActions from "./form-validation-row-actions";
+import { CustomHoverCard } from "@/components/custom-hover-card";
 
 type FormValidation = Prisma.DL_FormValidationGetPayload<{
   include: {
@@ -150,8 +151,8 @@ export const columns: ColumnDef<FormValidation>[] = [
     accessorKey: "createdBy",
     // enableSorting: false,
     sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.createdBy?.name!; 
-      const rB_Username = rowB.original.createdBy?.name!; 
+      const rA_Username = rowA.original.createdBy?.name!;
+      const rB_Username = rowB.original.createdBy?.name!;
 
       return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
     },
@@ -182,44 +183,37 @@ export const columns: ColumnDef<FormValidation>[] = [
       return (
         <>
           {createdBy ? (
-            <HoverCard>
-              <HoverCardTrigger
-                className="flex items-center justify-start gap-4 hover:cursor-pointer"
-                asChild
-              >
+            <CustomHoverCard
+              triggerAsChild
+              trigger={
                 <Link href={`/profile/${id}`}>
                   <CustomAvatar image={image} />
-
                   {name}
                 </Link>
-              </HoverCardTrigger>
-              <HoverCardContent className="leading-relaxed">
-                <p>
-                  User:{" "}
-                  <Link
-                    className={cn("hover:underline")}
-                    href={`/profile/${id}`}
-                  >
-                    <strong>{name}</strong>
-                  </Link>
-                </p>
-                <p>
-                  Email:{" "}
-                  <Link
-                    className={cn("hover:underline")}
-                    href={`mailto:${email}`}
-                  >
-                    <strong>{email}</strong>
-                  </Link>
-                </p>
-                <p>
-                  Created at:{" "}
-                  <strong>
-                    {returnFormattedDate(row.original.createdAt)} (UTC)
-                  </strong>
-                </p>
-              </HoverCardContent>
-            </HoverCard>
+              }
+            >
+              <p>
+                User:{" "}
+                <Link className={cn("hover:underline")} href={`/profile/${id}`}>
+                  <strong>{name}</strong>
+                </Link>
+              </p>
+              <p>
+                Email:{" "}
+                <Link
+                  className={cn("hover:underline")}
+                  href={`mailto:${email}`}
+                >
+                  <strong>{email}</strong>
+                </Link>
+              </p>
+              <p>
+                Created at:{" "}
+                <strong>
+                  {returnFormattedDate(row.original.updatedAt)} (UTC)
+                </strong>
+              </p>
+            </CustomHoverCard>
           ) : (
             <div className="flex items-center gap-4">
               <CustomAvatar image={null} />
@@ -290,46 +284,37 @@ export const columns: ColumnDef<FormValidation>[] = [
       return (
         <>
           {updatedBy ? (
-            <>
-              <HoverCard>
-                <HoverCardTrigger
-                  className="flex items-center justify-start gap-4 hover:cursor-pointer"
-                  asChild
+            <CustomHoverCard
+              triggerAsChild
+              trigger={
+                <Link href={`/profile/${id}`}>
+                  <CustomAvatar image={image} />
+                  {name}
+                </Link>
+              }
+            >
+              <p>
+                User:{" "}
+                <Link className={cn("hover:underline")} href={`/profile/${id}`}>
+                  <strong>{name}</strong>
+                </Link>
+              </p>
+              <p>
+                Email:{" "}
+                <Link
+                  className={cn("hover:underline")}
+                  href={`mailto:${email}`}
                 >
-                  <Link href={`/profile/${id}`}>
-                    <CustomAvatar image={image} />
-
-                    {name}
-                  </Link>
-                </HoverCardTrigger>
-                <HoverCardContent className="leading-relaxed">
-                  <p>
-                    User:{" "}
-                    <Link
-                      className={cn("hover:underline")}
-                      href={`/profile/${id}`}
-                    >
-                      <strong>{name}</strong>
-                    </Link>
-                  </p>
-                  <p>
-                    Email:{" "}
-                    <Link
-                      className={cn("hover:underline")}
-                      href={`mailto:${email}`}
-                    >
-                      <strong>{email}</strong>
-                    </Link>
-                  </p>
-                  <p>
-                    Created at:{" "}
-                    <strong>
-                      {returnFormattedDate(row.original.updatedAt)} (UTC)
-                    </strong>
-                  </p>
-                </HoverCardContent>
-              </HoverCard>
-            </>
+                  <strong>{email}</strong>
+                </Link>
+              </p>
+              <p>
+                Created at:{" "}
+                <strong>
+                  {returnFormattedDate(row.original.updatedAt)} (UTC)
+                </strong>
+              </p>
+            </CustomHoverCard>
           ) : (
             <div className="flex items-center gap-4">
               <CustomAvatar image={null} />

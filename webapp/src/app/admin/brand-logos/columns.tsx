@@ -20,6 +20,7 @@ import { Avatar } from "@radix-ui/react-avatar";
 import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { GrDocumentMissing } from "react-icons/gr";
 import Image from "next/image";
+import { CustomHoverCard } from "@/components/custom-hover-card";
 
 type DB_BrandLogos = Prisma.DL_BrandLogoGetPayload<{
   include: {
@@ -66,12 +67,9 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
       const image = row.original.url;
 
       return (
-        // TODO: Make this a component. it's used in almost all columns files
-        <HoverCard openDelay={100} closeDelay={100}>
-          <HoverCardTrigger
-            className="flex items-center justify-start gap-4 hover:cursor-pointer"
-            asChild
-          >
+        <CustomHoverCard
+          triggerAsChild
+          trigger={
             <Link
               href={`/admin/brand-logos/${id}`}
               className="flex items-center gap-2"
@@ -82,28 +80,22 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
               />
               {name}
             </Link>
-          </HoverCardTrigger>
-          <HoverCardContent
-            className="w-auto overflow-hidden leading-relaxed"
-            align="start"
+          }
+        >
+          <Link
+            href={`/admin/brand-logos/${id}`}
+            className="flex items-center gap-2"
           >
-            {/* <div className="h-[50px] w-[300px]"> */}
-            <Link
-              href={`/admin/brand-logos/${id}`}
-              className="flex items-center gap-2"
-            >
-              <Image
-                src={image}
-                alt={`${name}'s Logo`}
-                className="h-auto object-cover"
-                unoptimized
-                width={300}
-                height={50}
-              />
-            </Link>
-            {/* </div> */}
-          </HoverCardContent>
-        </HoverCard>
+            <Image
+              src={image}
+              alt={`${name}'s Logo`}
+              className="h-auto object-cover"
+              unoptimized
+              width={300}
+              height={50}
+            />
+          </Link>
+        </CustomHoverCard>
       );
     },
   },
@@ -169,45 +161,37 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
       return (
         <>
           {createdBy ? (
-            // TODO: Make this a component. it's used in almost all columns files
-            <HoverCard>
-              <HoverCardTrigger
-                className="flex items-center justify-start gap-4 hover:cursor-pointer"
-                asChild
-              >
+            <CustomHoverCard
+              triggerAsChild
+              trigger={
                 <Link href={`/profile/${id}`}>
                   <CustomAvatar image={image} />
-
                   {name}
                 </Link>
-              </HoverCardTrigger>
-              <HoverCardContent className="leading-relaxed">
-                <p>
-                  User:{" "}
-                  <Link
-                    className={cn("hover:underline")}
-                    href={`/profile/${id}`}
-                  >
-                    <strong>{name}</strong>
-                  </Link>
-                </p>
-                <p>
-                  Email:{" "}
-                  <Link
-                    className={cn("hover:underline")}
-                    href={`mailto:${email}`}
-                  >
-                    <strong>{email}</strong>
-                  </Link>
-                </p>
-                <p>
-                  Created at:{" "}
-                  <strong>
-                    {returnFormattedDate(row.original.createdAt)} (UTC)
-                  </strong>
-                </p>
-              </HoverCardContent>
-            </HoverCard>
+              }
+            >
+              <p>
+                User:{" "}
+                <Link className={cn("hover:underline")} href={`/profile/${id}`}>
+                  <strong>{name}</strong>
+                </Link>
+              </p>
+              <p>
+                Email:{" "}
+                <Link
+                  className={cn("hover:underline")}
+                  href={`mailto:${email}`}
+                >
+                  <strong>{email}</strong>
+                </Link>
+              </p>
+              <p>
+                Created at:{" "}
+                <strong>
+                  {returnFormattedDate(row.original.createdAt)} (UTC)
+                </strong>
+              </p>
+            </CustomHoverCard>
           ) : (
             <div className="flex items-center gap-4">
               <CustomAvatar image={null} />
@@ -279,46 +263,37 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
       return (
         <>
           {updatedBy ? (
-            <>
-              <HoverCard>
-                <HoverCardTrigger
-                  className="flex items-center justify-start gap-4 hover:cursor-pointer"
-                  asChild
+            <CustomHoverCard
+              triggerAsChild
+              trigger={
+                <Link href={`/profile/${id}`}>
+                  <CustomAvatar image={image} />
+                  {name}
+                </Link>
+              }
+            >
+              <p>
+                User:{" "}
+                <Link className={cn("hover:underline")} href={`/profile/${id}`}>
+                  <strong>{name}</strong>
+                </Link>
+              </p>
+              <p>
+                Email:{" "}
+                <Link
+                  className={cn("hover:underline")}
+                  href={`mailto:${email}`}
                 >
-                  <Link href={`/profile/${id}`}>
-                    <CustomAvatar image={image} />
-
-                    {name}
-                  </Link>
-                </HoverCardTrigger>
-                <HoverCardContent className="leading-relaxed">
-                  <p>
-                    User:{" "}
-                    <Link
-                      className={cn("hover:underline")}
-                      href={`/profile/${id}`}
-                    >
-                      <strong>{name}</strong>
-                    </Link>
-                  </p>
-                  <p>
-                    Email:{" "}
-                    <Link
-                      className={cn("hover:underline")}
-                      href={`mailto:${email}`}
-                    >
-                      <strong>{email}</strong>
-                    </Link>
-                  </p>
-                  <p>
-                    Created at:{" "}
-                    <strong>
-                      {returnFormattedDate(row.original.updatedAt)} (UTC)
-                    </strong>
-                  </p>
-                </HoverCardContent>
-              </HoverCard>
-            </>
+                  <strong>{email}</strong>
+                </Link>
+              </p>
+              <p>
+                Created at:{" "}
+                <strong>
+                  {returnFormattedDate(row.original.updatedAt)} (UTC)
+                </strong>
+              </p>
+            </CustomHoverCard>
           ) : (
             <div className="flex items-center gap-4">
               <CustomAvatar image={null} />

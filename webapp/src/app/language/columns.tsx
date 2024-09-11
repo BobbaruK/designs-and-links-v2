@@ -16,6 +16,7 @@ import {
   PiArrowBendRightUpDuotone,
 } from "react-icons/pi";
 import LanguageRowActions from "./language-row-actions";
+import { CustomHoverCard } from "@/components/custom-hover-card";
 
 type Language = Prisma.DL_LanguageGetPayload<{
   include: {
@@ -33,10 +34,10 @@ type Language = Prisma.DL_LanguageGetPayload<{
 }>;
 
 export const columns: ColumnDef<Language>[] = [
-  // Name
+  // English name
   {
-    accessorKey: "name",
-    id: "name",
+    accessorKey: "englishName",
+    id: "englishName",
     enableHiding: false,
     header: ({ column }) => {
       return (
@@ -45,7 +46,7 @@ export const columns: ColumnDef<Language>[] = [
           className="flex gap-2"
           onClick={() => column.toggleSorting()}
         >
-          Name
+          English name
           {column.getIsSorted() === "asc" && (
             <PiArrowBendRightUpDuotone size={20} />
           )}
@@ -65,16 +66,16 @@ export const columns: ColumnDef<Language>[] = [
             className="flex items-center gap-2"
           >
             <CustomAvatar image={image} />
-            {row.original.name}
+            {row.original.englishName}
           </Link>
         </Button>
       );
     },
   },
-  // English name
+  // Name
   {
-    accessorKey: "englishName",
-    id: "englishName",
+    accessorKey: "name",
+    id: "name",
     header: ({ column }) => {
       return (
         <Button
@@ -82,7 +83,7 @@ export const columns: ColumnDef<Language>[] = [
           className="flex gap-2"
           onClick={() => column.toggleSorting()}
         >
-          English name
+          Name
           {column.getIsSorted() === "asc" && (
             <PiArrowBendRightUpDuotone size={20} />
           )}
@@ -95,7 +96,7 @@ export const columns: ColumnDef<Language>[] = [
     cell: ({ row }) => (
       <Button asChild variant={"link"} className={cn("text-foreground")}>
         <Link href={`/language/${row.original.iso_639_1}`}>
-          {row.original.englishName}
+          {row.original.name}
         </Link>
       </Button>
     ),
@@ -121,7 +122,9 @@ export const columns: ColumnDef<Language>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => row.original.iso_639_1,
+    cell: ({ row }) => (
+      <div className="text-center">{row.original.iso_639_1}</div>
+    ),
   },
   // ISO 3166-1
   {
@@ -145,7 +148,9 @@ export const columns: ColumnDef<Language>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => row.original.iso_3166_1 || "-",
+    cell: ({ row }) => (
+      <div className="text-center">{row.original.iso_3166_1 || "-"}</div>
+    ),
   },
   // Created At
   {
@@ -176,8 +181,8 @@ export const columns: ColumnDef<Language>[] = [
     accessorKey: "createdBy",
     // enableSorting: false,
     sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.createdBy?.name!; // TODO: check !
-      const rB_Username = rowB.original.createdBy?.name!; // TODO: check !
+      const rA_Username = rowA.original.createdBy?.name!;
+      const rB_Username = rowB.original.createdBy?.name!;
 
       return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
     },
@@ -208,44 +213,37 @@ export const columns: ColumnDef<Language>[] = [
       return (
         <>
           {createdBy ? (
-            <HoverCard>
-              <HoverCardTrigger
-                className="flex items-center justify-start gap-4 hover:cursor-pointer"
-                asChild
-              >
+            <CustomHoverCard
+              triggerAsChild
+              trigger={
                 <Link href={`/profile/${id}`}>
                   <CustomAvatar image={image} />
-
                   {name}
                 </Link>
-              </HoverCardTrigger>
-              <HoverCardContent className="leading-relaxed">
-                <p>
-                  User:{" "}
-                  <Link
-                    className={cn("hover:underline")}
-                    href={`/profile/${id}`}
-                  >
-                    <strong>{name}</strong>
-                  </Link>
-                </p>
-                <p>
-                  Email:{" "}
-                  <Link
-                    className={cn("hover:underline")}
-                    href={`mailto:${email}`}
-                  >
-                    <strong>{email}</strong>
-                  </Link>
-                </p>
-                <p>
-                  Created at:{" "}
-                  <strong>
-                    {returnFormattedDate(row.original.createdAt)} (UTC)
-                  </strong>
-                </p>
-              </HoverCardContent>
-            </HoverCard>
+              }
+            >
+              <p>
+                User:{" "}
+                <Link className={cn("hover:underline")} href={`/profile/${id}`}>
+                  <strong>{name}</strong>
+                </Link>
+              </p>
+              <p>
+                Email:{" "}
+                <Link
+                  className={cn("hover:underline")}
+                  href={`mailto:${email}`}
+                >
+                  <strong>{email}</strong>
+                </Link>
+              </p>
+              <p>
+                Created at:{" "}
+                <strong>
+                  {returnFormattedDate(row.original.updatedAt)} (UTC)
+                </strong>
+              </p>
+            </CustomHoverCard>
           ) : (
             <div className="flex items-center gap-4">
               <CustomAvatar image={null} />
@@ -317,44 +315,40 @@ export const columns: ColumnDef<Language>[] = [
         <>
           {updatedBy ? (
             <>
-              <HoverCard>
-                <HoverCardTrigger
-                  className="flex items-center justify-start gap-4 hover:cursor-pointer"
-                  asChild
-                >
+              <CustomHoverCard
+                triggerAsChild
+                trigger={
                   <Link href={`/profile/${id}`}>
                     <CustomAvatar image={image} />
-
                     {name}
                   </Link>
-                </HoverCardTrigger>
-                <HoverCardContent className="leading-relaxed">
-                  <p>
-                    User:{" "}
-                    <Link
-                      className={cn("hover:underline")}
-                      href={`/profile/${id}`}
-                    >
-                      <strong>{name}</strong>
-                    </Link>
-                  </p>
-                  <p>
-                    Email:{" "}
-                    <Link
-                      className={cn("hover:underline")}
-                      href={`mailto:${email}`}
-                    >
-                      <strong>{email}</strong>
-                    </Link>
-                  </p>
-                  <p>
-                    Created at:{" "}
-                    <strong>
-                      {returnFormattedDate(row.original.updatedAt)} (UTC)
-                    </strong>
-                  </p>
-                </HoverCardContent>
-              </HoverCard>
+                }
+              >
+                <p>
+                  User:{" "}
+                  <Link
+                    className={cn("hover:underline")}
+                    href={`/profile/${id}`}
+                  >
+                    <strong>{name}</strong>
+                  </Link>
+                </p>
+                <p>
+                  Email:{" "}
+                  <Link
+                    className={cn("hover:underline")}
+                    href={`mailto:${email}`}
+                  >
+                    <strong>{email}</strong>
+                  </Link>
+                </p>
+                <p>
+                  Created at:{" "}
+                  <strong>
+                    {returnFormattedDate(row.original.updatedAt)} (UTC)
+                  </strong>
+                </p>
+              </CustomHoverCard>
             </>
           ) : (
             <div className="flex items-center gap-4">
