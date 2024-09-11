@@ -28,7 +28,6 @@ const AdminBrandLogosRowActions = ({ brandLogo }: Props) => {
   const onDelete = () => {
     adminDeleteBrandLogo(brandLogo.id).then((data) => {
       if (data.error) {
-        console.log(data.error);
         toast.error(
           <div className="">
             Could not delete brand logo

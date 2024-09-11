@@ -100,8 +100,6 @@ export const AddLanguage = ({ flags }: Props) => {
     form.setValue("flag", "");
   };
 
-  console.log(form.getValues("flag"));
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

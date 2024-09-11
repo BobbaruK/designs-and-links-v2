@@ -54,6 +54,10 @@ model User {
   brandUpdated          DL_Brand[]             @relation("brandUpdated")
   designAvatarCreated   DL_DesignAvatar[]      @relation("designAvatarCreated")
   designAvatarUpdated   DL_DesignAvatar[]      @relation("designAvatarUpdated")
+  designCreated         DL_Design[]            @relation("designCreated")
+  designUpdated         DL_Design[]            @relation("designUpdated")
+  subDesignCreated      DL_SubDesign[]         @relation("subDesignCreated")
+  subDesignUpdated      DL_SubDesign[]         @relation("subDesignUpdated")
 
   @@index([id, email, image])
 }
@@ -213,6 +217,39 @@ model DL_Brand {
   updateUserId  String?
 
   @@index([id, slug, logo])
+}
+
+model DL_Design {
+  id            String         @id @default(cuid())
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  name          String         @unique
+  slug          String         @unique
+  avatar        String?
+  subDesigns    DL_SubDesign[]
+  createdBy     User?          @relation("designCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdUserId String?
+  updatedBy     User?          @relation("designUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updateUserId  String?
+
+  @@index([id, slug, avatar])
+}
+
+model DL_SubDesign {
+  id            String     @id @default(cuid())
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  name          String     @unique
+  slug          String     @unique
+  avatar        String?
+  createdBy     User?      @relation("subDesignCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdUserId String?
+  updatedBy     User?      @relation("subDesignUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updateUserId  String?
+  DL_Design     DL_Design? @relation(fields: [DL_DesignId], references: [id])
+  DL_DesignId   String?
+
+  @@index([id, slug, avatar])
 }
 
 // Avatars related tables

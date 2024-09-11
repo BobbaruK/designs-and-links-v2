@@ -12,9 +12,40 @@ import {
   PiArrowBendRightDownDuotone,
   PiArrowBendRightUpDuotone,
 } from "react-icons/pi";
-import BrandRowActions from "./brand-row-actions";
+import DesignRowActions from "./design-row-actions";
+import { FaCaretRight } from "react-icons/fa6";
+import { FaCaretDown } from "react-icons/fa6";
 
-type Brand = Prisma.DL_BrandGetPayload<{
+type Design = Prisma.DL_DesignGetPayload<{
+  include: {
+    createdBy: {
+      omit: {
+        password: true;
+      };
+    };
+    updatedBy: {
+      omit: {
+        password: true;
+      };
+    };
+    subDesigns: {
+      include: {
+        createdBy: {
+          omit: {
+            password: true;
+          };
+        };
+        updatedBy: {
+          omit: {
+            password: true;
+          };
+        };
+      };
+    };
+  };
+}>;
+
+type SubDesign = Prisma.DL_SubDesignGetPayload<{
   include: {
     createdBy: {
       omit: {
@@ -29,14 +60,60 @@ type Brand = Prisma.DL_BrandGetPayload<{
   };
 }>;
 
-export const columns: ColumnDef<Brand>[] = [
+export const columns: ColumnDef<Design>[] = [
+  // Expand
+  {
+    accessorKey: "expand",
+    id: "expand",
+    enableHiding: false,
+    header: ({ column, table }) => {
+      return (
+        <>
+          <div className="flex w-full items-center justify-start gap-2">
+            <Button
+              variant="ghost"
+              className="grid place-items-center"
+              {...{
+                onClick: table.getToggleAllRowsExpandedHandler(),
+              }}
+            >
+              {table.getIsAllRowsExpanded() ? (
+                <FaCaretDown />
+              ) : (
+                <FaCaretRight />
+              )}
+            </Button>
+          </div>
+        </>
+      );
+    },
+    cell: ({ row, getValue }) => {
+      return (
+        <>
+          {row.getCanExpand() && (
+            <>
+              <Button
+                variant="ghost"
+                className="grid place-items-center"
+                {...{
+                  onClick: row.getToggleExpandedHandler(),
+                }}
+              >
+                {row.getIsExpanded() ? <FaCaretDown /> : <FaCaretRight />}
+              </Button>
+            </>
+          )}
+        </>
+      );
+    },
+  },
   // Name
   {
     accessorKey: "name",
     id: "name",
     enableHiding: false,
     sortingFn: "text",
-    header: ({ column }) => {
+    header: ({ column, table }) => {
       return (
         <Button
           variant="ghost"
@@ -53,69 +130,55 @@ export const columns: ColumnDef<Brand>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => {
-      const id = row.original.id;
-      const slug = row.original.slug;
+    cell: ({ row, getValue }) => {
+      const id = row.original.slug;
       const name = row.original.name;
-      const image = row.original.logo;
+      const image = row.original.avatar || "";
 
       return (
-        <CustomHoverCard
-          triggerAsChild
-          trigger={
-            <Link href={`/brand/${slug}`} className="flex items-center gap-2">
-              <CustomAvatar
-                image={image}
-                className="h-[60px] w-[150px] overflow-hidden rounded-md bg-black"
-              />
-              {name}
-            </Link>
-          }
+        <div
+          style={{
+            // Since rows are flattened by default,
+            // we can use the row.depth property
+            // and paddingLeft to visually indicate the depth
+            // of the row
+            paddingLeft: `${row.depth * 2}rem`,
+          }}
         >
-          <Link href={`/brand/${slug}`} className="flex items-center gap-2">
+          <CustomHoverCard
+            triggerAsChild
+            trigger={
+              <Link href={`/design/${id}`} className="flex items-center gap-2">
+                <CustomAvatar
+                  image={image}
+                  className="h-[110px] w-[100px] overflow-hidden rounded-md bg-black"
+                />
+                {name}
+              </Link>
+            }
+          >
             {image ? (
-              <Image
-                src={image}
-                alt={`${name}'s Logo`}
-                className="h-auto object-cover"
-                unoptimized
-                width={300}
-                height={50}
-              />
+              <Link
+                href={image}
+                className="flex items-center gap-2"
+                target="_blank"
+              >
+                <Image
+                  src={image}
+                  alt={`${name}'s Logo`}
+                  className="h-auto object-cover"
+                  unoptimized
+                  width={300}
+                  height={50}
+                />
+              </Link>
             ) : (
-              <span>Go to {name}</span>
+              <p>no image added</p>
             )}
-          </Link>
-        </CustomHoverCard>
+          </CustomHoverCard>
+        </div>
       );
     },
-  },
-  // Slug
-  {
-    accessorKey: "slug",
-    id: "slug",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          className="flex gap-2"
-          onClick={() => column.toggleSorting()}
-        >
-          Slug
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <Button asChild variant={"link"} className={cn("text-foreground")}>
-        <Link href={`/brand/${row.original.slug}`}>{row.original.slug}</Link>
-      </Button>
-    ),
   },
   // Created At
   {
@@ -279,37 +342,42 @@ export const columns: ColumnDef<Brand>[] = [
       return (
         <>
           {updatedBy ? (
-            <CustomHoverCard
-              triggerAsChild
-              trigger={
-                <Link href={`/profile/${id}`}>
-                  <CustomAvatar image={image} />
-                  {name}
-                </Link>
-              }
-            >
-              <p>
-                User:{" "}
-                <Link className={cn("hover:underline")} href={`/profile/${id}`}>
-                  <strong>{name}</strong>
-                </Link>
-              </p>
-              <p>
-                Email:{" "}
-                <Link
-                  className={cn("hover:underline")}
-                  href={`mailto:${email}`}
-                >
-                  <strong>{email}</strong>
-                </Link>
-              </p>
-              <p>
-                Created at:{" "}
-                <strong>
-                  {returnFormattedDate(row.original.updatedAt)} (UTC)
-                </strong>
-              </p>
-            </CustomHoverCard>
+            <>
+              <CustomHoverCard
+                triggerAsChild
+                trigger={
+                  <Link href={`/profile/${id}`}>
+                    <CustomAvatar image={image} />
+                    {name}
+                  </Link>
+                }
+              >
+                <p>
+                  User:{" "}
+                  <Link
+                    className={cn("hover:underline")}
+                    href={`/profile/${id}`}
+                  >
+                    <strong>{name}</strong>
+                  </Link>
+                </p>
+                <p>
+                  Email:{" "}
+                  <Link
+                    className={cn("hover:underline")}
+                    href={`mailto:${email}`}
+                  >
+                    <strong>{email}</strong>
+                  </Link>
+                </p>
+                <p>
+                  Created at:{" "}
+                  <strong>
+                    {returnFormattedDate(row.original.updatedAt)} (UTC)
+                  </strong>
+                </p>
+              </CustomHoverCard>
+            </>
           ) : (
             <div className="flex items-center gap-4">
               <CustomAvatar image={null} />
@@ -325,9 +393,9 @@ export const columns: ColumnDef<Brand>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const brand = row.original;
+      const design = row.original;
 
-      return <BrandRowActions brand={brand} />;
+      return <DesignRowActions design={design as Design & SubDesign} />;
     },
   },
 ];

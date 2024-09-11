@@ -7,6 +7,13 @@ import {
   getDesignAvatars,
 } from "@/lib/data/dl/admin-design-avatar";
 import { getBrandById, getBrandBySlug, getBrands } from "@/lib/data/dl/brands";
+import {
+  getDesignById,
+  getDesignBySlug,
+  getDesigns,
+  getSubDesignById,
+  getSubDesignBySlug,
+} from "@/lib/data/dl/designs";
 import { getFlagById, getFlags } from "@/lib/data/dl/flags";
 import {
   getFormValidationById,
@@ -35,6 +42,9 @@ export {
   getBrands,
   getDesignAvatarById,
   getDesignAvatars,
+  getDesignById,
+  getDesignBySlug,
+  getDesigns,
   getFlagById,
   getFlags,
   getFormValidationById,
@@ -48,6 +58,8 @@ export {
   getLicenseById,
   getLicenseBySlug,
   getLicenses,
+  getSubDesignById,
+  getSubDesignBySlug,
   getTopicById,
   getTopicBySlug,
   getTopics,

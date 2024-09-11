@@ -1,0 +1,75 @@
+import { CustomAlert } from "@/components/alert-custom";
+import { IconButton } from "@/components/button-icon";
+import { Card, CardHeader } from "@/components/ui/card";
+import { currentUser } from "@/lib/auth";
+import { getDesignBySlug, getSubDesignBySlug } from "@/lib/data/dl";
+import { CiEdit } from "react-icons/ci";
+import { IoArrowBackCircleSharp } from "react-icons/io5";
+
+interface Props {
+  params: {
+    slug: string;
+  };
+}
+
+const DesignPage = async ({ params: { slug } }: Props) => {
+  const design = await getDesignBySlug(slug);
+  const subDesign = await getSubDesignBySlug(slug);
+
+  const user = await currentUser();
+
+  const name = design ? design.name : subDesign?.name;
+  const dSlug = design ? design.slug : subDesign?.slug;
+
+  return (
+    <div className="container flex flex-col gap-6">
+      {!design && !subDesign ? (
+        <>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between gap-4">
+                <h1 className="text-4xl font-bold">Design: {slug}</h1>
+                <IconButton
+                  icon={<IoArrowBackCircleSharp size={25} />}
+                  href={"/design"}
+                  label={"Back to designs"}
+                />
+              </div>
+            </CardHeader>
+          </Card>
+          <CustomAlert
+            title={"Error!"}
+            description={`Seems like the design that you are looking for does not exist.`}
+            variant="destructive"
+          />
+        </>
+      ) : (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between gap-4">
+              <h1 className="text-4xl font-bold">Design: {name}</h1>
+              <div className="ms-auto flex items-center justify-center gap-4">
+                {(user?.role === "EDITOR" || user?.role === "ADMIN") && (
+                  <IconButton
+                    icon={<CiEdit size={25} />}
+                    href={`/design/${dSlug}/edit`}
+                    label={"Edit design"}
+                  />
+                )}
+                <IconButton
+                  icon={<IoArrowBackCircleSharp size={25} />}
+                  href={"/design"}
+                  label={"Back to designs"}
+                />
+              </div>
+            </div>
+          </CardHeader>
+          {/* <CardContent>
+          </CardContent> */}
+        </Card>
+      )}
+    </div>
+  );
+};
+
+export default DesignPage;

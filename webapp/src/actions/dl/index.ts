@@ -27,6 +27,14 @@ import {
 } from "@/actions/dl/admin-user-avatar";
 import { addBrand, deleteBrand, editBrand } from "@/actions/dl/brand";
 import {
+  addDesign,
+  addSubDesign,
+  deleteDesign,
+  deleteSubDesign,
+  editDesign,
+  editSubDesign,
+} from "@/actions/dl/designs";
+import {
   addFormValidation,
   deleteFormValidation,
   editFormValidation,
@@ -45,9 +53,11 @@ import { addTopic, deleteTopic, editTopic } from "@/actions/dl/topic";
 
 export {
   addBrand,
+  addDesign,
   addFormValidation,
   addLandingPageType,
   addLanguage,
+  addSubDesign,
   addTopic,
   adminAddBrandLogo,
   adminAddDesignAvatar,
@@ -65,13 +75,17 @@ export {
   adminEditUser,
   adminEditUserAvatar,
   deleteBrand,
+  deleteDesign,
   deleteFormValidation,
   deleteLandingPageType,
   deleteLanguage,
+  deleteSubDesign,
   deleteTopic,
   editBrand,
+  editDesign,
   editFormValidation,
   editLandingPageType,
   editLanguage,
+  editSubDesign,
   editTopic,
 };

@@ -92,9 +92,6 @@ export const editLanguage = async (
     return { error: "Language does not exist" };
   }
 
-  console.log("================");
-  console.log("flag", flag);
-
   try {
     const updatedLanguage = await db.dL_Language.update({
       where: {

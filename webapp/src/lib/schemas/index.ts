@@ -10,6 +10,7 @@ import {
 } from "@/lib/schemas/auth";
 import { BrandSchema } from "@/lib/schemas/brand";
 import { BrandLogoSchema } from "@/lib/schemas/brand-logo";
+import { DesignSchema } from "@/lib/schemas/design";
 import { DesignAvatarSchema } from "@/lib/schemas/design-avatar";
 import { FlagSchema } from "@/lib/schemas/flag";
 import { FormValidationSchema } from "@/lib/schemas/form-validation";
@@ -26,6 +27,7 @@ export {
   BrandLogoSchema,
   BrandSchema,
   DesignAvatarSchema,
+  DesignSchema,
   FlagSchema,
   FormValidationSchema,
   LandingPageTypeSchema,
