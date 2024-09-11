@@ -52,6 +52,8 @@ model User {
   brandLogoUpdated      DL_BrandLogo[]         @relation("brandLogoUpdated")
   brandCreated          DL_Brand[]             @relation("brandCreated")
   brandUpdated          DL_Brand[]             @relation("brandUpdated")
+  designAvatarCreated   DL_DesignAvatar[]      @relation("designAvatarCreated")
+  designAvatarUpdated   DL_DesignAvatar[]      @relation("designAvatarUpdated")
 
   @@index([id, email, image])
 }
@@ -210,7 +212,7 @@ model DL_Brand {
   updatedBy     User?    @relation("brandUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
 
-  @@index([id, slug])
+  @@index([id, slug, logo])
 }
 
 // Avatars related tables
@@ -251,5 +253,19 @@ model DL_BrandLogo {
   updatedBy     User?    @relation("brandLogoUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
 
-  @@index([id])
+  @@index([id, url])
+}
+
+model DL_DesignAvatar {
+  id            String   @id @unique @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  name          String
+  url           String
+  createdBy     User?    @relation("designAvatarCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdUserId String?
+  updatedBy     User?    @relation("designAvatarUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updateUserId  String?
+
+  @@index([id, url])
 }

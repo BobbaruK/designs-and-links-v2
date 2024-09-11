@@ -1,6 +1,16 @@
 "use server";
 
 import {
+  adminAddBrandLogo,
+  adminDeleteBrandLogo,
+  adminEditBrandLogo,
+} from "@/actions/dl/admin-brand-logo";
+import {
+  adminAddDesignAvatar,
+  adminDeleteDesignAvatar,
+  adminEditDesignAvatar,
+} from "@/actions/dl/admin-design-avatar";
+import {
   adminAddFlag,
   adminDeleteFlag,
   adminEditFlag,
@@ -16,11 +26,6 @@ import {
   adminEditUserAvatar,
 } from "@/actions/dl/admin-user-avatar";
 import { addBrand, deleteBrand, editBrand } from "@/actions/dl/brand";
-import {
-  adminAddBrandLogo,
-  adminDeleteBrandLogo,
-  adminEditBrandLogo,
-} from "@/actions/dl/admin-brand-logo";
 import {
   addFormValidation,
   deleteFormValidation,
@@ -45,14 +50,17 @@ export {
   addLanguage,
   addTopic,
   adminAddBrandLogo,
+  adminAddDesignAvatar,
   adminAddFlag,
   adminAddUser,
   adminAddUserAvatar,
   adminDeleteBrandLogo,
+  adminDeleteDesignAvatar,
   adminDeleteFlag,
   adminDeleteUser,
   adminDeleteUserAvatar,
   adminEditBrandLogo,
+  adminEditDesignAvatar,
   adminEditFlag,
   adminEditUser,
   adminEditUserAvatar,

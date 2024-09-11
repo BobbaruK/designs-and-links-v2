@@ -37,6 +37,14 @@ export const AdminNavigation = () => {
       >
         <Link href={"/admin/brand-logos"}>Brand Logos</Link>
       </Button>
+      <Button
+        asChild
+        variant={
+          pathname.startsWith("/admin/design-avatars") ? "default" : "secondary"
+        }
+      >
+        <Link href={"/admin/design-avatars"}>Design Avatars</Link>
+      </Button>
     </div>
   );
 };
