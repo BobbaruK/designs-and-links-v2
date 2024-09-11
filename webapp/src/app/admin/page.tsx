@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
+import { AdminNavigation } from "@/components/admin-navigation";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import Link from "next/link";
 
 const AdminPage = () => {
   return (
@@ -12,18 +11,7 @@ const AdminPage = () => {
           </div>
         </CardHeader>
         <CardContent className="flex flex-row flex-wrap items-center justify-start gap-4">
-          <Button asChild>
-            <Link href={"/admin/users"}>Users</Link>
-          </Button>
-          <Button asChild>
-            <Link href={"/admin/user-avatars"}>User Avatars</Link>
-          </Button>
-          <Button asChild>
-            <Link href={"/admin/flags"}>Flags</Link>
-          </Button>
-          <Button asChild>
-            <Link href={"/admin/brand-logos"}>Brand Logos</Link>
-          </Button>
+          <AdminNavigation />
         </CardContent>
       </Card>
     </div>
