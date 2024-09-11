@@ -103,8 +103,8 @@ export const columns: ColumnDef<DB_UserAvatars>[] = [
     accessorKey: "createdBy",
     // enableSorting: false,
     sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.createdBy?.name!; // TODO: check !
-      const rB_Username = rowB.original.createdBy?.name!; // TODO: check !
+      const rA_Username = rowA.original.createdBy?.name!; 
+      const rB_Username = rowB.original.createdBy?.name!; 
 
       return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
     },

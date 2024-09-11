@@ -1,7 +1,7 @@
 import { MAX_USERNAME, MIN_USERNAME } from "@/lib/constants";
 import { z } from "zod";
 
-export const UserAvatarSchema = z.object({
+export const BrandLogoSchema = z.object({
   name: z
     .string()
     .min(MIN_USERNAME, {

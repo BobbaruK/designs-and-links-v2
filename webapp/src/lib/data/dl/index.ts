@@ -1,3 +1,7 @@
+import {
+  getBrandLogoById,
+  getBrandLogos,
+} from "@/lib/data/dl/admin-brand-logos";
 import { getFlagById, getFlags } from "@/lib/data/dl/flags";
 import {
   getFormValidationById,
@@ -19,6 +23,8 @@ import { getTopicById, getTopicBySlug, getTopics } from "@/lib/data/dl/topic";
 import { getUserAvatarById, getUserAvatars } from "@/lib/data/dl/user-avatars";
 
 export {
+  getBrandLogoById,
+  getBrandLogos,
   getFlagById,
   getFlags,
   getFormValidationById,

@@ -16,6 +16,11 @@ import {
   adminEditUserAvatar,
 } from "@/actions/dl/admin-user-avatar";
 import {
+  adminAddBrandLogo,
+  adminDeleteBrandLogo,
+  adminEditBrandLogo,
+} from "@/actions/dl/brand-logo";
+import {
   addFormValidation,
   deleteFormValidation,
   editFormValidation,
@@ -37,12 +42,15 @@ export {
   addLandingPageType,
   addLanguage,
   addTopic,
+  adminAddBrandLogo,
   adminAddFlag,
   adminAddUser,
   adminAddUserAvatar,
+  adminDeleteBrandLogo,
   adminDeleteFlag,
   adminDeleteUser,
   adminDeleteUserAvatar,
+  adminEditBrandLogo,
   adminEditFlag,
   adminEditUser,
   adminEditUserAvatar,

@@ -105,7 +105,7 @@ export const AdminFlagEdit = ({ flag }: Props) => {
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="https://site.com/image.png"
+                    placeholder="https://site.com/image.svg"
                     disabled={isPending}
                   />
                 </FormControl>

@@ -15,9 +15,13 @@ import {
   PiArrowBendRightDownDuotone,
   PiArrowBendRightUpDuotone,
 } from "react-icons/pi";
-import LandingPageTypeRowActions from "./lp-type-row-actions";
+import AdminBrandLogosRowActions from "./admin-brand-logos-row-actions";
+import { Avatar } from "@radix-ui/react-avatar";
+import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { GrDocumentMissing } from "react-icons/gr";
+import Image from "next/image";
 
-type Topic = Prisma.DL_TopicGetPayload<{
+type DB_BrandLogos = Prisma.DL_BrandLogoGetPayload<{
   include: {
     createdBy: {
       omit: {
@@ -32,11 +36,13 @@ type Topic = Prisma.DL_TopicGetPayload<{
   };
 }>;
 
-export const columns: ColumnDef<Topic>[] = [
+export const columns: ColumnDef<DB_BrandLogos>[] = [
   // Name
   {
     accessorKey: "name",
+    id: "name",
     enableHiding: false,
+    sortingFn: "text",
     header: ({ column }) => {
       return (
         <Button
@@ -54,72 +60,57 @@ export const columns: ColumnDef<Topic>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => (
-      <Button asChild variant={"link"} className={cn("text-foreground")}>
-        <Link href={`/lp-type/${row.original.slug}`}>{row.original.name}</Link>
-      </Button>
-    ),
-  },
-  // Slug
-  {
-    accessorKey: "slug",
-    id: "slug",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          className="flex gap-2"
-          onClick={() => column.toggleSorting()}
-        >
-          Slug
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <Button asChild variant={"link"} className={cn("text-foreground")}>
-        <Link href={`/lp-type/${row.original.slug}`}>{row.original.slug}</Link>
-      </Button>
-    ),
-  },
-  // Description
-  {
-    accessorKey: "description",
-    id: "description",
-    enableSorting: false,
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          className="flex cursor-context-menu gap-2"
-          // onClick={() => column.toggleSorting()}
-        >
-          Description
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
-        </Button>
-      );
-    },
     cell: ({ row }) => {
+      const id = row.original.id;
+      const name = row.original.name;
+      const image = row.original.url;
+
       return (
-        <div className="line-clamp-2 max-w-[25ch]">
-          {row.original.description || "-"}
-        </div>
+        // TODO: Make this a component. it's used in almost all columns files
+        <HoverCard openDelay={100} closeDelay={100}>
+          <HoverCardTrigger
+            className="flex items-center justify-start gap-4 hover:cursor-pointer"
+            asChild
+          >
+            <Link
+              href={`/admin/brand-logos/${id}`}
+              className="flex items-center gap-2"
+            >
+              <CustomAvatar
+                image={image}
+                className="overflow-hidden bg-black"
+              />
+              {name}
+            </Link>
+          </HoverCardTrigger>
+          <HoverCardContent
+            className="w-auto overflow-hidden leading-relaxed"
+            align="start"
+          >
+            {/* <div className="h-[50px] w-[300px]"> */}
+            <Link
+              href={`/admin/brand-logos/${id}`}
+              className="flex items-center gap-2"
+            >
+              <Image
+                src={image}
+                alt={`${name}'s Logo`}
+                className="h-auto object-cover"
+                unoptimized
+                width={300}
+                height={50}
+              />
+            </Link>
+            {/* </div> */}
+          </HoverCardContent>
+        </HoverCard>
       );
     },
   },
   // Created At
   {
     accessorKey: "createdAt",
+    id: "createdAt",
     sortDescFirst: false,
     header: ({ column }) => {
       return (
@@ -146,8 +137,8 @@ export const columns: ColumnDef<Topic>[] = [
     accessorKey: "createdBy",
     // enableSorting: false,
     sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.createdBy?.name!; 
-      const rB_Username = rowB.original.createdBy?.name!; 
+      const rA_Username = rowA.original.createdBy?.name!;
+      const rB_Username = rowB.original.createdBy?.name!;
 
       return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
     },
@@ -178,6 +169,7 @@ export const columns: ColumnDef<Topic>[] = [
       return (
         <>
           {createdBy ? (
+            // TODO: Make this a component. it's used in almost all columns files
             <HoverCard>
               <HoverCardTrigger
                 className="flex items-center justify-start gap-4 hover:cursor-pointer"
@@ -229,6 +221,7 @@ export const columns: ColumnDef<Topic>[] = [
   // Updated At
   {
     accessorKey: "updatedAt",
+    id: "updatedAt",
     header: ({ column }) => {
       return (
         <Button
@@ -341,9 +334,9 @@ export const columns: ColumnDef<Topic>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const lpType = row.original;
+      const avatars = row.original;
 
-      return <LandingPageTypeRowActions lpType={lpType} />;
+      return <AdminBrandLogosRowActions brandLogo={avatars} />;
     },
   },
 ];

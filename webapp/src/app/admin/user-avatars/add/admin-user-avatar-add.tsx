@@ -88,7 +88,7 @@ export const AdminUserAvatarAdd = () => {
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="https://site.com/image.png"
+                    placeholder="https://site.com/image.svg"
                     type="text"
                     disabled={isPending}
                   />

@@ -48,6 +48,8 @@ model User {
   flagsUpdated          DL_Flag[]              @relation("flagsUpdated")
   languageCreated       DL_Language[]          @relation("languageCreated")
   languageUpdated       DL_Language[]          @relation("languageUpdated")
+  brandLogoCreated      DL_BrandLogo[]         @relation("brandLogoCreated")
+  brandLogoUpdated      DL_BrandLogo[]         @relation("brandLogoUpdated")
 
   @@index([id, email, image])
 }
@@ -191,7 +193,7 @@ model DL_Language {
   updatedBy     User?    @relation("languageUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
 
-  @@index([id, iso_639_1])
+  @@index([id, iso_639_1, flag])
 }
 
 // Avatars related tables
@@ -217,4 +219,20 @@ model DL_Flag {
   createdUserId String?
   updatedBy     User?    @relation("flagsUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
+
+  @@index([id])
+}
+
+model DL_BrandLogo {
+  id            String   @id @unique @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  name          String
+  url           String
+  createdBy     User?    @relation("brandLogoCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdUserId String?
+  updatedBy     User?    @relation("brandLogoUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updateUserId  String?
+
+  @@index([id])
 }

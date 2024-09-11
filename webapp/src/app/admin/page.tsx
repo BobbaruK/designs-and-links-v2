@@ -21,6 +21,9 @@ const AdminPage = () => {
           <Button asChild>
             <Link href={"/admin/flags"}>Flags</Link>
           </Button>
+          <Button asChild>
+            <Link href={"/admin/brand-logos"}>Brand Logos</Link>
+          </Button>
         </CardContent>
       </Card>
     </div>

@@ -10,5 +10,8 @@ export const FlagSchema = z.object({
     .max(MAX_USERNAME, {
       message: `User avarat name must be ${MAX_USERNAME} or fewer characters long`,
     }),
-  url: z.string(),
+  url: z
+    .string()
+    .startsWith("https://", { message: "Must provide secure URL" })
+    .endsWith(".svg", { message: "Only svg's images allowed" }),
 });
