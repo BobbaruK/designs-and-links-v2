@@ -212,7 +212,7 @@ export const columns: ColumnDef<Brand>[] = [
           ) : (
             <div className="flex items-center gap-4">
               <CustomAvatar image={null} />
-              Deleted user
+              No User
             </div>
           )}
         </>
@@ -313,7 +313,7 @@ export const columns: ColumnDef<Brand>[] = [
           ) : (
             <div className="flex items-center gap-4">
               <CustomAvatar image={null} />
-              Deleted user
+              No User
             </div>
           )}
         </>

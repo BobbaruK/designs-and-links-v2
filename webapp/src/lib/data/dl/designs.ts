@@ -45,6 +45,37 @@ export const getDesigns = async () => {
     return null;
   }
 };
+/**
+ * {@linkcode getDesigns}
+ *
+ * It also includes `createdBy` and `updatedBy` and ommits the passwords
+ * @yields a `Promise` that resolve in an formValidation `Object`
+ */
+export const getSubDesigns = async () => {
+  try {
+    const subDesigns = await db.dL_SubDesign.findMany({
+      include: {
+        createdBy: {
+          omit: {
+            password: true,
+          },
+        },
+        updatedBy: {
+          omit: {
+            password: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return subDesigns;
+  } catch {
+    return null;
+  }
+};
 
 /**
  * {@linkcode getDesignById}

@@ -22,7 +22,7 @@ export const AdminUserEditSchema = z.object({
 });
 
 export const AdminUserAddSchema = z.object({
-  name: z.optional(z.string()),
+  name: z.string(),
   email: z.string().email(),
   password: z
     .string()

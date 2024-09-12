@@ -14,6 +14,7 @@ import { DesignSchema } from "@/lib/schemas/design";
 import { DesignAvatarSchema } from "@/lib/schemas/design-avatar";
 import { FlagSchema } from "@/lib/schemas/flag";
 import { FormValidationSchema } from "@/lib/schemas/form-validation";
+import { LandingPageSchema } from "@/lib/schemas/landing-page";
 import { LanguageSchema } from "@/lib/schemas/language";
 import { LicenseSchema } from "@/lib/schemas/license";
 import { LandingPageTypeSchema } from "@/lib/schemas/lp-type";
@@ -30,6 +31,7 @@ export {
   DesignSchema,
   FlagSchema,
   FormValidationSchema,
+  LandingPageSchema,
   LandingPageTypeSchema,
   LanguageSchema,
   LicenseSchema,

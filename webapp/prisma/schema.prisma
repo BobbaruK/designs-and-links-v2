@@ -14,6 +14,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// =================================================================
 // Authentication and Authorization related tables
 enum UserRole {
   ADMIN
@@ -23,7 +24,7 @@ enum UserRole {
 
 model User {
   id                    String                 @id @default(cuid())
-  name                  String?
+  name                  String
   email                 String                 @unique
   password              String?
   role                  UserRole               @default(USER)
@@ -58,6 +59,9 @@ model User {
   designUpdated         DL_Design[]            @relation("designUpdated")
   subDesignCreated      DL_SubDesign[]         @relation("subDesignCreated")
   subDesignUpdated      DL_SubDesign[]         @relation("subDesignUpdated")
+  landingPageCreated    DL_LandingPage[]       @relation("landingPageCreated")
+  landingPageUpdated    DL_LandingPage[]       @relation("landingPageUpdated")
+  LandingPagesRequested DL_LandingPage[]
 
   @@index([id, email, image])
 }
@@ -122,136 +126,180 @@ model TwoFactorConfirmation {
   @@index([id, userId])
 }
 
+// =================================================================
 // Designs and Links related tables
 model DL_Topic {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  name          String   @unique
-  slug          String   @unique
+  id            String           @id @default(cuid())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  name          String           @unique
+  slug          String           @unique
   description   String?
-  createdBy     User?    @relation("topicCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdBy     User?            @relation("topicCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
   createdUserId String?
-  updatedBy     User?    @relation("topicUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updatedBy     User?            @relation("topicUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
+  LandingPage   DL_LandingPage[]
 
   @@unique([name, slug])
   @@index([id, slug])
 }
 
 model DL_FormValidation {
-  id            String   @id @unique @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  name          String   @unique
-  slug          String   @unique
+  id            String           @id @unique @default(cuid())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  name          String           @unique
+  slug          String           @unique
   description   String?
-  createdBy     User?    @relation("formValidationCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdBy     User?            @relation("formValidationCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
   createdUserId String?
-  updatedBy     User?    @relation("formValidationUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updatedBy     User?            @relation("formValidationUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
+  LandingPage   DL_LandingPage[]
 
   @@unique([name, slug])
   @@index([id, slug])
 }
 
 model DL_License {
-  id            String   @id @unique @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  name          String   @unique
-  slug          String   @unique
+  id            String           @id @unique @default(cuid())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  name          String           @unique
+  slug          String           @unique
   description   String?
-  createdBy     User?    @relation("licenseCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdBy     User?            @relation("licenseCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
   createdUserId String?
-  updatedBy     User?    @relation("licenseUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updatedBy     User?            @relation("licenseUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
+  LandingPage   DL_LandingPage[]
 
   @@unique([name, slug])
   @@index([id, slug])
 }
 
 model DL_LandingPageType {
-  id            String   @id @unique @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  name          String   @unique
-  slug          String   @unique
+  id            String           @id @unique @default(cuid())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  name          String           @unique
+  slug          String           @unique
   description   String?
-  createdBy     User?    @relation("lpTypeCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdBy     User?            @relation("lpTypeCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
   createdUserId String?
-  updatedBy     User?    @relation("lpTypeUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updatedBy     User?            @relation("lpTypeUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
+  LandingPage   DL_LandingPage[]
 
   @@unique([name, slug])
   @@index([id, slug])
 }
 
 model DL_Language {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  name          String   @unique
-  englishName   String   @unique
-  iso_639_1     String   @unique
+  id            String           @id @default(cuid())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  name          String           @unique
+  englishName   String           @unique
+  iso_639_1     String           @unique
   iso_3166_1    String?
   flag          String?
-  createdBy     User?    @relation("languageCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdBy     User?            @relation("languageCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
   createdUserId String?
-  updatedBy     User?    @relation("languageUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updatedBy     User?            @relation("languageUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
+  LandingPage   DL_LandingPage[]
 
   @@index([id, iso_639_1, flag])
 }
 
 model DL_Brand {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  name          String   @unique
-  slug          String   @unique
+  id            String           @id @default(cuid())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  name          String           @unique
+  slug          String           @unique
   logo          String?
-  createdBy     User?    @relation("brandCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdBy     User?            @relation("brandCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
   createdUserId String?
-  updatedBy     User?    @relation("brandUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updatedBy     User?            @relation("brandUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
+  LandingPage   DL_LandingPage[]
 
   @@index([id, slug, logo])
 }
 
 model DL_Design {
-  id            String         @id @default(cuid())
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  name          String         @unique
-  slug          String         @unique
+  id            String           @id @default(cuid())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  name          String           @unique
+  slug          String           @unique
   avatar        String?
   subDesigns    DL_SubDesign[]
-  createdBy     User?          @relation("designCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdBy     User?            @relation("designCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
   createdUserId String?
-  updatedBy     User?          @relation("designUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updatedBy     User?            @relation("designUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
+  LandingPage   DL_LandingPage[]
 
   @@index([id, slug, avatar])
 }
 
 model DL_SubDesign {
-  id            String     @id @default(cuid())
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  name          String     @unique
-  slug          String     @unique
+  id            String           @id @default(cuid())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  name          String           @unique
+  slug          String           @unique
   avatar        String?
-  createdBy     User?      @relation("subDesignCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdBy     User?            @relation("subDesignCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
   createdUserId String?
-  updatedBy     User?      @relation("subDesignUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updatedBy     User?            @relation("subDesignUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
-  DL_Design     DL_Design? @relation(fields: [DL_DesignId], references: [id])
+  DL_Design     DL_Design?       @relation(fields: [DL_DesignId], references: [id])
   DL_DesignId   String?
+  LandingPage   DL_LandingPage[]
 
   @@index([id, slug, avatar])
 }
 
+model DL_LandingPage {
+  id                String              @id @default(cuid())
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  name              String              @unique
+  slug              String              @unique
+  whatsapp          Boolean             @default(false)
+  fxoroFooter       Boolean             @default(false)
+  requester         User?               @relation(fields: [requesterId], references: [id])
+  requesterId       String?
+  topic             DL_Topic?           @relation(fields: [topicId], references: [id])
+  topicId           String?
+  formValidation    DL_FormValidation?  @relation(fields: [formValidationId], references: [id])
+  formValidationId  String?
+  license           DL_License?         @relation(fields: [LicenseId], references: [id])
+  LicenseId         String?
+  lpType            DL_LandingPageType? @relation(fields: [landingPageTypeId], references: [id])
+  landingPageTypeId String?
+  language          DL_Language?        @relation(fields: [languageId], references: [id])
+  languageId        String?
+  brand             DL_Brand?           @relation(fields: [brandId], references: [id])
+  brandId           String?
+  design            DL_Design?          @relation(fields: [designId], references: [id])
+  designId          String?
+  subDesign         DL_SubDesign?       @relation(fields: [subDesignId], references: [id])
+  subDesignId       String?
+  createdBy         User?               @relation("landingPageCreated", fields: [createdUserId], references: [id], onDelete: SetNull)
+  createdUserId     String?
+  updatedBy         User?               @relation("landingPageUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
+  updateUserId      String?
+
+  @@index([id, slug])
+}
+
+// =================================================================
 // Avatars related tables
 model DL_UserAvatar {
   id            String   @id @unique @default(cuid())

@@ -213,7 +213,7 @@ export const columns: ColumnDef<Topic>[] = [
           ) : (
             <div className="flex items-center gap-4">
               <CustomAvatar image={null} />
-              Deleted user
+              No User
             </div>
           )}
         </>
@@ -314,7 +314,7 @@ export const columns: ColumnDef<Topic>[] = [
           ) : (
             <div className="flex items-center gap-4">
               <CustomAvatar image={null} />
-              Deleted user
+              No User
             </div>
           )}
         </>

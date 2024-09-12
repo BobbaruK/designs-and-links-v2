@@ -13,6 +13,7 @@ import {
   getDesigns,
   getSubDesignById,
   getSubDesignBySlug,
+  getSubDesigns,
 } from "@/lib/data/dl/designs";
 import { getFlagById, getFlags } from "@/lib/data/dl/flags";
 import {
@@ -20,7 +21,16 @@ import {
   getFormValidationBySlug,
   getFormValidations,
 } from "@/lib/data/dl/form-validation";
-import { getLanguageById, getLanguageByIso } from "@/lib/data/dl/language";
+import {
+  getLandingPageBySlug,
+  getLandingPages,
+  getLandinPageById,
+} from "@/lib/data/dl/landing-pages";
+import {
+  getLanguageById,
+  getLanguageByIso,
+  getLanguages,
+} from "@/lib/data/dl/language";
 import {
   getLicenseById,
   getLicenseBySlug,
@@ -50,16 +60,21 @@ export {
   getFormValidationById,
   getFormValidationBySlug,
   getFormValidations,
+  getLandingPageBySlug,
+  getLandingPages,
   getLandingPageTypeById,
   getLandingPageTypeBySlug,
   getLandingPageTypes,
+  getLandinPageById,
   getLanguageById,
   getLanguageByIso,
+  getLanguages,
   getLicenseById,
   getLicenseBySlug,
   getLicenses,
   getSubDesignById,
   getSubDesignBySlug,
+  getSubDesigns,
   getTopicById,
   getTopicBySlug,
   getTopics,

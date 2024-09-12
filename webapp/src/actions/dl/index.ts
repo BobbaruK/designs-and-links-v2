@@ -40,6 +40,11 @@ import {
   editFormValidation,
 } from "@/actions/dl/form-validation";
 import {
+  addLandingPage,
+  deleteLandingPage,
+  editLandingPage,
+} from "@/actions/dl/landing-page";
+import {
   addLanguage,
   deleteLanguage,
   editLanguage,
@@ -55,6 +60,7 @@ export {
   addBrand,
   addDesign,
   addFormValidation,
+  addLandingPage,
   addLandingPageType,
   addLanguage,
   addSubDesign,
@@ -77,6 +83,7 @@ export {
   deleteBrand,
   deleteDesign,
   deleteFormValidation,
+  deleteLandingPage,
   deleteLandingPageType,
   deleteLanguage,
   deleteSubDesign,
@@ -84,6 +91,7 @@ export {
   editBrand,
   editDesign,
   editFormValidation,
+  editLandingPage,
   editLandingPageType,
   editLanguage,
   editSubDesign,
