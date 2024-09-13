@@ -296,7 +296,7 @@ model DL_LandingPage {
   updatedBy         User?               @relation("landingPageUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId      String?
 
-  @@index([id, slug])
+  @@index([id, slug, LicenseId])
 }
 
 // =================================================================

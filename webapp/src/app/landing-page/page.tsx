@@ -1,10 +1,10 @@
 import { IconButton } from "@/components/button-icon";
 import { DataTable } from "@/components/data-table";
+import { columns } from "@/components/data-table/landing-page-columns";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { currentUser } from "@/lib/auth";
 import { getLandingPages } from "@/lib/data/dl";
 import { IoAddCircleSharp } from "react-icons/io5";
-import { columns } from "./columns";
 
 const LandingPagePage = async () => {
   const user = await currentUser();
