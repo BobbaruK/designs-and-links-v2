@@ -271,6 +271,7 @@ model DL_LandingPage {
   updatedAt         DateTime            @updatedAt
   name              String              @unique
   slug              String              @unique
+  url               String
   whatsapp          Boolean             @default(false)
   fxoroFooter       Boolean             @default(false)
   requester         User?               @relation(fields: [requesterId], references: [id])
@@ -296,7 +297,7 @@ model DL_LandingPage {
   updatedBy         User?               @relation("landingPageUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId      String?
 
-  @@index([id, slug, LicenseId])
+  @@index([id, slug, topicId, formValidationId, LicenseId, landingPageTypeId, languageId, brandId, designId, subDesignId])
 }
 
 // =================================================================

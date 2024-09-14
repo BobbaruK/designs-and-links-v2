@@ -20,7 +20,7 @@ const EditLicensePage = async ({ params: { slug } }: Props) => {
   const header = (
     <CardHeader>
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-4xl font-bold">License: {slug}</h1>
+        <h1 className="text-4xl font-bold">License: {license?.name}</h1>
         <IconButton
           icon={<IoArrowBackCircleSharp size={25} />}
           href={"/license"}

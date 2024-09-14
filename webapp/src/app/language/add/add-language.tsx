@@ -106,19 +106,6 @@ export const AddLanguage = ({ flags }: Props) => {
         <div className="space-y-4">
           <FormField
             control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="Română" disabled={isPending} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name="englishName"
             render={({ field }) => (
               <FormItem>
@@ -129,6 +116,19 @@ export const AddLanguage = ({ flags }: Props) => {
                     placeholder="Romanian"
                     disabled={isPending}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Română" disabled={isPending} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

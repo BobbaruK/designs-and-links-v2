@@ -18,6 +18,7 @@ export const addLandingPage = async (
   const {
     name,
     slug,
+    url,
     whatsapp,
     fxoroFooter,
     requester,
@@ -59,6 +60,7 @@ export const addLandingPage = async (
       data: {
         name,
         slug,
+        url,
         whatsapp,
         fxoroFooter,
         requesterId: requester || null,
@@ -97,6 +99,7 @@ export const editLandingPage = async (
   const {
     name,
     slug,
+    url,
     whatsapp,
     fxoroFooter,
     requester,
@@ -143,6 +146,7 @@ export const editLandingPage = async (
       data: {
         name,
         slug,
+        url,
         whatsapp,
         fxoroFooter,
         requesterId: requester || null,
@@ -163,7 +167,7 @@ export const editLandingPage = async (
       slug: updatedTopic.slug,
     };
   } catch (error) {
-    return { error: "Could not update topic!" };
+    return { error: "Could not update landing page!" };
   }
 };
 

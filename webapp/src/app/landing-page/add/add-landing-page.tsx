@@ -234,6 +234,7 @@ export const AddLandingPage = ({
     defaultValues: {
       name: "",
       slug: "",
+      url: "",
       whatsapp: false,
       fxoroFooter: false,
       requester: "",
@@ -243,6 +244,8 @@ export const AddLandingPage = ({
       formValidation: "",
       license: "",
       language: "",
+      brand: "",
+      lpType: "",
     },
   });
 
@@ -306,6 +309,23 @@ export const AddLandingPage = ({
                     placeholder="landing-page-name"
                     type="text"
                     disabled
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="url"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>URL</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="https://something.com/lp/name-of-lp"
+                    disabled={isPending}
                   />
                 </FormControl>
                 <FormMessage />

@@ -1,4 +1,4 @@
-import { deleteLandingPage, deleteTopic } from "@/actions/dl";
+import { deleteLandingPage } from "@/actions/dl";
 import { revalidate } from "@/actions/reavalidate";
 import { DeleteDialog } from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCurrentRole } from "@/hooks/use-current-role";
-import { DL_Topic, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -127,6 +127,26 @@ const LandingPageRowActions = ({ landingPage }: Props) => {
             <span>
               Copy <strong>{landingPage.name}</strong> ID
             </span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              navigator.clipboard.writeText(landingPage.url);
+
+              toast.info(`Copied ${landingPage.name}'s url`, {
+                description: landingPage.url,
+              });
+            }}
+          >
+            <span>
+              Copy <strong>{landingPage.name}</strong> url address
+            </span>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={landingPage.url} target="_blank">
+              <span>
+                Go to <strong>{landingPage.name}</strong>&apos;s url address
+              </span>
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

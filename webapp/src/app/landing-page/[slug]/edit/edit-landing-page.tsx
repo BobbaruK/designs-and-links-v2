@@ -283,6 +283,7 @@ export const EditLandingPage = ({
     defaultValues: {
       name: landingPage?.name || undefined,
       slug: landingPage?.slug || undefined,
+      url: landingPage?.url || undefined,
       whatsapp: landingPage?.whatsapp || undefined,
       fxoroFooter: landingPage?.fxoroFooter || undefined,
       requester: landingPage?.requester?.id || undefined,
@@ -370,6 +371,23 @@ export const EditLandingPage = ({
                     placeholder="landing-page-name"
                     type="text"
                     disabled
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="url"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>URL</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="https://something.com/lp/name-of-lp"
+                    disabled={isPending}
                   />
                 </FormControl>
                 <FormMessage />

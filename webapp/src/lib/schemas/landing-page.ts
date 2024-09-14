@@ -11,6 +11,9 @@ export const LandingPageSchema = z.object({
       message: `Name must be ${MAX_USERNAME} or fewer characters long`,
     }),
   slug: z.string(),
+  url: z
+    .string()
+    .startsWith("https://", { message: "Must provide secure URL" }),
   whatsapp: z.optional(z.boolean()),
   fxoroFooter: z.optional(z.boolean()),
   requester: z.optional(z.string()),
