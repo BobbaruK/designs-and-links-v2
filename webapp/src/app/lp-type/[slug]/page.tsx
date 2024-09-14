@@ -8,6 +8,7 @@ import { getLandingPageTypeBySlug } from "@/lib/data/dl";
 import db from "@/lib/db";
 import { CiEdit } from "react-icons/ci";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
+import { ReactNode } from "react";
 
 interface Props {
   params: {
@@ -19,85 +20,45 @@ const LandingPageTypePage = async ({ params: { slug } }: Props) => {
   const lpType = await getLandingPageTypeBySlug(slug);
   const user = await currentUser();
 
-  const landingPages = await db.dL_LandingPage.findMany({
-    where: {
-      landingPageTypeId: lpType?.id,
-    },
-    include: {
-      createdBy: {
-        omit: {
-          password: true,
-        },
-      },
-      updatedBy: {
-        omit: {
-          password: true,
-        },
-      },
-      brand: true,
-      design: true,
-      formValidation: true,
-      language: true,
-      license: true,
-      lpType: true,
-      requester: {
-        omit: {
-          password: true,
-        },
-      },
-      subDesign: true,
-      topic: true,
-    },
-  });
+  const header: ReactNode = (
+    <CardHeader>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-4xl font-bold">
+          {!lpType ? `Landing page type: ${slug}` : lpType.name}
+        </h1>
+        <div className="flex gap-4">
+          {(user?.role === "EDITOR" || user?.role === "ADMIN") && (
+            <IconButton
+              icon={<CiEdit size={25} />}
+              href={`/lp-type/${lpType?.slug}/edit`}
+              label={"Edit landing page type"}
+            />
+          )}
+          <IconButton
+            icon={<IoArrowBackCircleSharp size={25} />}
+            href={"/lp-type"}
+            label={"Back to landing page types"}
+          />
+        </div>
+      </div>
+    </CardHeader>
+  );
 
   return (
     <div className="container flex flex-col gap-6">
       {!lpType ? (
         <>
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold">
-                  Landing page type: {slug}
-                </h1>
-                <IconButton
-                  icon={<IoArrowBackCircleSharp size={25} />}
-                  href={"/lp-type"}
-                  label={"Back to landing page type"}
-                />
-              </div>
-            </CardHeader>
-          </Card>
+          <Card>{header}</Card>
           <CustomAlert
             title={"Error!"}
-            description={`Seems like the topic that you are looking for does not exist.`}
+            asset="landing page type"
             variant="destructive"
           />
         </>
       ) : (
         <>
           <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold">
-                  Landing page type: {lpType.name}
-                </h1>
-                <div className="ms-auto flex items-center justify-center gap-4">
-                  {(user?.role === "EDITOR" || user?.role === "ADMIN") && (
-                    <IconButton
-                      icon={<CiEdit size={25} />}
-                      href={`/lp-type/${lpType.slug}/edit`}
-                      label={"Edit landing page type"}
-                    />
-                  )}
-                  <IconButton
-                    icon={<IoArrowBackCircleSharp size={25} />}
-                    href={"/lp-type"}
-                    label={"Back to landing page types"}
-                  />
-                </div>
-              </div>
-            </CardHeader>
+            {header}
             <CardContent>
               <p>
                 {lpType.description || (
@@ -109,11 +70,12 @@ const LandingPageTypePage = async ({ params: { slug } }: Props) => {
           </Card>
           <DataTable
             columns={columns}
-            data={landingPages!}
+            data={lpType.LandingPages!}
             columnVisibilityObj={{
               slug: false,
               fxoroFooter: false,
               requester: false,
+              lpType: false,
               createdAt: false,
               createdBy: false,
               updatedAt: false,

@@ -1,9 +1,11 @@
-import { CustomAlert } from "@/components/custom-alert";
 import { IconButton } from "@/components/button-icon";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { CustomAlert } from "@/components/custom-alert";
+import { CustomCardContent } from "@/components/custom-card-content";
+import { Card, CardHeader } from "@/components/ui/card";
 import { currentUser } from "@/lib/auth";
 import { getLandingPageTypeBySlug } from "@/lib/data/dl";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
+import { LuFileType2 } from "react-icons/lu";
 import { EditLandingPageType } from "./edit-landing-page-type";
 
 interface Props {
@@ -17,50 +19,43 @@ const EditLandingPageTypePage = async ({ params: { slug } }: Props) => {
 
   const lpType = await getLandingPageTypeBySlug(slug);
 
+  const header = (
+    <CardHeader className="border-b border-b-secondary">
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-4xl font-bold">
+          {!lpType ? `Landing page type: ${slug}` : lpType?.name}
+        </h1>
+        <IconButton
+          icon={<IoArrowBackCircleSharp size={25} />}
+          href={"/lp-type"}
+          label={"Back to landing page types"}
+        />
+      </div>
+    </CardHeader>
+  );
+
   return (
     <div className="container flex flex-col gap-6">
       {!lpType ? (
         <>
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold">
-                  Landing page type: {slug}
-                </h1>
-                <IconButton
-                  icon={<IoArrowBackCircleSharp size={25} />}
-                  href={"/lp-type"}
-                  label={"Back to landing page types"}
-                />
-              </div>
-            </CardHeader>
-          </Card>
+          <Card>{header}</Card>
           <CustomAlert
             title={"Error!"}
-            description={`Seems like the landing page type that you are looking for does not exist.`}
+            asset="landing page type"
             variant="destructive"
           />
         </>
       ) : (
         <>
           <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold">
-                  Edit landing page type: {lpType?.name}
-                </h1>
-                <IconButton
-                  icon={<IoArrowBackCircleSharp size={25} />}
-                  href={`/lp-type/${slug}`}
-                  label={`Back to landing page type ${"cutare"}`}
-                />
-              </div>
-            </CardHeader>
+            {header}
 
             {(user?.role === "EDITOR" || user?.role === "ADMIN") && (
-              <CardContent>
-                <EditLandingPageType lpType={lpType} />
-              </CardContent>
+              <CustomCardContent
+                form={<EditLandingPageType lpType={lpType} />}
+                label={lpType?.name}
+                icon={<LuFileType2 size={320} />}
+              />
             )}
           </Card>
 

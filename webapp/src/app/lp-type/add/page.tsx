@@ -1,16 +1,18 @@
-import { CustomAlert } from "@/components/custom-alert";
 import { IconButton } from "@/components/button-icon";
+import { CustomAlert } from "@/components/custom-alert";
+import { CustomCardContent } from "@/components/custom-card-content";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { currentUser } from "@/lib/auth";
-import { IoArrowBackCircleSharp } from "react-icons/io5";
-import { AddLandingPageType } from "./add-landing-page-type";
 import { ReactNode } from "react";
+import { IoArrowBackCircleSharp } from "react-icons/io5";
+import { LuFileType2 } from "react-icons/lu";
+import { AddLandingPageType } from "./add-landing-page-type";
 
 const AddLandingPageTypePage = async () => {
   const user = await currentUser();
 
   const header: ReactNode = (
-    <CardHeader>
+    <CardHeader className="border-b border-b-secondary">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-4xl font-bold">Add Landing Page Type</h1>
         <IconButton
@@ -28,9 +30,11 @@ const AddLandingPageTypePage = async () => {
         <>
           <Card>
             {header}
-            <CardContent>
-              <AddLandingPageType />
-            </CardContent>
+            <CustomCardContent
+              form={<AddLandingPageType />}
+              label={"Landing Page Type"}
+              icon={<LuFileType2 size={320} />}
+            />
           </Card>
         </>
       ) : (
