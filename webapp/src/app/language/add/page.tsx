@@ -7,6 +7,7 @@ import { ReactNode } from "react";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { AddLanguage } from "./add-language";
 import { HiMiniLanguage } from "react-icons/hi2";
+import { CustomCardContent } from "@/components/custom-card-content";
 
 const AddLanguagePage = async () => {
   const user = await currentUser();
@@ -32,20 +33,11 @@ const AddLanguagePage = async () => {
         <>
           <Card>
             {header}
-            <CardContent className="flex items-stretch p-0">
-              <div className="w-full max-w-[450px] border-e border-e-secondary p-6">
-                <AddLanguage flags={flags} />
-              </div>
-
-              <div className="relative grid grow place-items-center overflow-hidden p-6">
-                <div className="absolute right-4 z-10 line-clamp-1 max-w-full text-[100px] font-black text-primary opacity-20">
-                  Language
-                </div>
-                <div className="pointer-events-none relative z-0">
-                  <HiMiniLanguage size={520} />
-                </div>
-              </div>
-            </CardContent>
+            <CustomCardContent
+              form={<AddLanguage flags={flags} />}
+              label={"Language"}
+              icon={<HiMiniLanguage size={520} />}
+            />
           </Card>
         </>
       ) : (

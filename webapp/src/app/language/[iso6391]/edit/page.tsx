@@ -8,6 +8,7 @@ import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { EditLanguage } from "./edit-language";
 import { HiMiniLanguage } from "react-icons/hi2";
 import Image from "next/image";
+import { CustomCardContent } from "@/components/custom-card-content";
 
 interface Props {
   params: {
@@ -61,31 +62,15 @@ const EditLanguagePage = async ({ params: { iso6391 } }: Props) => {
             </CardHeader>
 
             {(user?.role === "EDITOR" || user?.role === "ADMIN") && (
-              <CardContent className="flex items-stretch p-0">
-                <div className="w-full max-w-[450px] border-e border-e-secondary p-6">
-                  <EditLanguage language={language} flags={flags} />
-                </div>
-                <div className="relative grid grow place-items-center overflow-hidden p-6">
-                  {language.flag ? (
-                    <div className="absolute right-[-235px] top-[-150px] z-0 h-[850px] w-[850px] overflow-hidden rounded-full border border-secondary">
-                      <Image
-                        src={language.flag}
-                        alt={language.name}
-                        unoptimized
-                        fill
-                        className="opacity-30"
-                      />
-                    </div>
-                  ) : (
-                    <div className="absolute right-4 z-10 line-clamp-1 max-w-full text-[100px] font-black text-primary opacity-20">
-                      {language.englishName}
-                    </div>
-                  )}
-                  <div className="pointer-events-none relative z-0">
-                    <HiMiniLanguage size={520} />
-                  </div>
-                </div>
-              </CardContent>
+              <>
+                <CustomCardContent
+                  form={<EditLanguage language={language} flags={flags} />}
+                  flag={language.flag}
+                  flagImgAlt={language.englishName}
+                  flagFallBack={language.englishName}
+                  icon={<HiMiniLanguage size={520} />}
+                />
+              </>
             )}
           </Card>
 

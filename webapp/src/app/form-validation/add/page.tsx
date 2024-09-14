@@ -5,6 +5,7 @@ import { currentUser } from "@/lib/auth";
 import { FaWpforms } from "react-icons/fa";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { AddFormValidation } from "./add-form-validation";
+import { CustomCardContent } from "@/components/custom-card-content";
 
 const AddFormValidationPage = async () => {
   const user = await currentUser();
@@ -25,24 +26,14 @@ const AddFormValidationPage = async () => {
   return (
     <div className="container flex flex-col gap-6">
       {user?.role === "EDITOR" || user?.role === "ADMIN" ? (
-        <>
-          <Card>
-            {header}
-            <CardContent className="flex items-stretch p-0">
-              <div className="w-full max-w-[450px] border-e border-e-secondary p-6">
-                <AddFormValidation />
-              </div>
-              <div className="relative grid grow place-items-center overflow-hidden p-6">
-                <div className="absolute right-4 z-10 line-clamp-1 max-w-full text-[100px] font-black text-primary opacity-20">
-                  Form Validation
-                </div>
-                <div className="pointer-events-none relative z-0">
-                  <FaWpforms size={320} />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </>
+        <Card>
+          {header}
+          <CustomCardContent
+            form={<AddFormValidation />}
+            label={"Form Validation"}
+            icon={<FaWpforms size={320} />}
+          />
+        </Card>
       ) : (
         <>
           <Card>{header}</Card>

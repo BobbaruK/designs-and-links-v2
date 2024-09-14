@@ -6,6 +6,8 @@ import { getFormValidationBySlug } from "@/lib/data/dl";
 import { FaWpforms } from "react-icons/fa6";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { EditFormValidation } from "./edit-form-validation";
+import { CustomCardContent } from "@/components/custom-card-content";
+import { ReactNode } from "react";
 
 interface Props {
   params: {
@@ -55,20 +57,11 @@ const EditFormValidationPage = async ({ params: { slug } }: Props) => {
             </CardHeader>
 
             {(user?.role === "EDITOR" || user?.role === "ADMIN") && (
-              // TODO: custom component for CardContent
-              <CardContent className="flex items-stretch p-0">
-                <div className="w-full max-w-[450px] border-e border-e-secondary p-6">
-                  <EditFormValidation formValidation={formValidation} />
-                </div>
-                <div className="relative grid grow place-items-center overflow-hidden p-6">
-                  <div className="absolute right-4 z-10 line-clamp-1 max-w-full text-[100px] font-black text-primary opacity-20">
-                    {formValidation.name}
-                  </div>
-                  <div className="pointer-events-none relative z-0">
-                    <FaWpforms size={320} />
-                  </div>
-                </div>
-              </CardContent>
+              <CustomCardContent
+                form={<EditFormValidation formValidation={formValidation} />}
+                label={formValidation.name}
+                icon={<FaWpforms size={320} />}
+              />
             )}
           </Card>
 
