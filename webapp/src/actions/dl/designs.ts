@@ -256,7 +256,7 @@ export const editSubDesign = async (
 
       return {
         success: "Sub Design updated!",
-        slug: newDesign.slug, // TODO: hmmmmmm
+        slug: newDesign.slug,
       };
     } else {
       const updatedDesign = await db.dL_SubDesign.update({
