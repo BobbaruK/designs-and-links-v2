@@ -9,6 +9,7 @@ import { Prisma } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import LanguageRowActions from "./language-row-actions";
+import { NameCell } from "@/components/data-table/name-cell";
 
 type Language = Prisma.DL_LanguageGetPayload<{
   include: {
@@ -46,22 +47,13 @@ export const columns: ColumnDef<Language>[] = [
       );
     },
     cell: ({ row }) => {
+      const slug = row.original.iso_639_1;
+      const name = row.original.englishName;
       const image = row.original.flag;
       const lps = row.original.LandingPages;
 
       return (
-        <>
-          <Button asChild variant={"link"} className={cn("text-foreground")}>
-            <Link
-              href={`/language/${row.original.iso_639_1}`}
-              className="flex items-center gap-2"
-            >
-              <CustomAvatar image={image} />
-              {row.original.englishName}
-              {lps && lps.length > 0 && ` (${lps.length})`}
-            </Link>
-          </Button>
-        </>
+        <NameCell link={`/language/${slug}`} name={name} length={lps.length} image={image} />
       );
     },
   },

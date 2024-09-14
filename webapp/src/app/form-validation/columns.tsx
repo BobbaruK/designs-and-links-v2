@@ -2,6 +2,7 @@
 
 import { CustomAvatar } from "@/components/custom-avatar";
 import { CustomHoverCard } from "@/components/custom-hover-card";
+import { NameCell } from "@/components/data-table/name-cell";
 import { SortingArrows } from "@/components/sorting-arrows";
 import { Button } from "@/components/ui/button";
 import { cn, returnFormattedDate } from "@/lib/utils";
@@ -46,18 +47,16 @@ export const columns: ColumnDef<FormValidation>[] = [
       );
     },
     cell: ({ row }) => {
+      const slug = row.original.slug;
+      const name = row.original.name;
       const lps = row.original.LandingPages;
 
       return (
-        <Button asChild variant={"link"} className={cn("text-foreground")}>
-          <Link
-            href={`/form-validation/${row.original.slug}`}
-            className="flex items-center gap-2"
-          >
-            {row.original.name}
-            {lps && lps.length > 0 && ` (${lps.length})`}
-          </Link>
-        </Button>
+        <NameCell
+          link={`/form-validation/${slug}`}
+          name={name}
+          length={lps.length}
+        />
       );
     },
   },

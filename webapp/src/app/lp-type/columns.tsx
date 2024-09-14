@@ -1,23 +1,15 @@
 "use client";
 
 import { CustomAvatar } from "@/components/custom-avatar";
+import { CustomHoverCard } from "@/components/custom-hover-card";
+import { NameCell } from "@/components/data-table/name-cell";
+import { SortingArrows } from "@/components/sorting-arrows";
 import { Button } from "@/components/ui/button";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 import { cn, returnFormattedDate } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
-import {
-  PiArrowBendRightDownDuotone,
-  PiArrowBendRightUpDuotone,
-} from "react-icons/pi";
 import LandingPageTypeRowActions from "./lp-type-row-actions";
-import { CustomHoverCard } from "@/components/custom-hover-card";
-import { SortingArrows } from "@/components/sorting-arrows";
 
 type Topic = Prisma.DL_TopicGetPayload<{
   include: {
@@ -55,15 +47,12 @@ export const columns: ColumnDef<Topic>[] = [
       );
     },
     cell: ({ row }) => {
+      const slug = row.original.slug;
+      const name = row.original.name;
       const lps = row.original.LandingPages;
 
       return (
-        <Button asChild variant={"link"} className={cn("text-foreground")}>
-          <Link href={`/lp-type/${row.original.slug}`}>
-            {row.original.name}
-            {lps && lps.length > 0 && ` (${lps.length})`}
-          </Link>
-        </Button>
+        <NameCell link={`/lp-type/${slug}`} name={name} length={lps.length} />
       );
     },
   },

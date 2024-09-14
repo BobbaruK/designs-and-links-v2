@@ -27,7 +27,6 @@ const FormValidationsPage = async () => {
             )}
           </div>
         </CardHeader>
-        <CardContent className="p-0"></CardContent>
       </Card>
       <DataTable
         columns={columns}

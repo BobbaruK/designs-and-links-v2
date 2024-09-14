@@ -2,6 +2,7 @@
 
 import { CustomAvatar } from "@/components/custom-avatar";
 import { CustomHoverCard } from "@/components/custom-hover-card";
+import { NameCell } from "@/components/data-table/name-cell";
 import { SortingArrows } from "@/components/sorting-arrows";
 import { Button } from "@/components/ui/button";
 import { cn, returnFormattedDate } from "@/lib/utils";
@@ -46,15 +47,12 @@ export const columns: ColumnDef<License>[] = [
       );
     },
     cell: ({ row }) => {
+      const slug = row.original.slug;
+      const name = row.original.name;
       const lps = row.original.LandingPages;
 
       return (
-        <Button asChild variant={"link"} className={cn("text-foreground")}>
-          <Link href={`/license/${row.original.slug}`}>
-            {row.original.name}
-            {lps && lps.length > 0 && ` (${lps.length})`}
-          </Link>
-        </Button>
+        <NameCell link={`/license/${slug}`} name={name} length={lps.length} />
       );
     },
   },
