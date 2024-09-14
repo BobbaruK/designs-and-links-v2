@@ -4,7 +4,7 @@ import db from "@/lib/db";
  * {@linkcode getFormValidationBySlug}
  *
  * @param {string} slug - search in the database by slug
- * 
+ *
  * It also includes `createdBy` and `updatedBy` and ommits the passwords
  * @yields a `Promise` that resolve in an formValidation `Object`
  */
@@ -20,6 +20,33 @@ export const getFormValidations = async () => {
         updatedBy: {
           omit: {
             password: true,
+          },
+        },
+        LandingPages: {
+          include: {
+            createdBy: {
+              omit: {
+                password: true,
+              },
+            },
+            updatedBy: {
+              omit: {
+                password: true,
+              },
+            },
+            brand: true,
+            design: true,
+            formValidation: true,
+            language: true,
+            license: true,
+            lpType: true,
+            requester: {
+              omit: {
+                password: true,
+              },
+            },
+            subDesign: true,
+            topic: true,
           },
         },
       },
@@ -46,6 +73,45 @@ export const getFormValidationById = async (id: string) => {
       where: {
         id,
       },
+      include: {
+        createdBy: {
+          omit: {
+            password: true,
+          },
+        },
+        updatedBy: {
+          omit: {
+            password: true,
+          },
+        },
+        LandingPages: {
+          include: {
+            createdBy: {
+              omit: {
+                password: true,
+              },
+            },
+            updatedBy: {
+              omit: {
+                password: true,
+              },
+            },
+            brand: true,
+            design: true,
+            formValidation: true,
+            language: true,
+            license: true,
+            lpType: true,
+            requester: {
+              omit: {
+                password: true,
+              },
+            },
+            subDesign: true,
+            topic: true,
+          },
+        },
+      },
     });
 
     return formValidation;
@@ -65,6 +131,45 @@ export const getFormValidationBySlug = async (slug: string) => {
     const formValidation = await db.dL_FormValidation.findUnique({
       where: {
         slug,
+      },
+      include: {
+        createdBy: {
+          omit: {
+            password: true,
+          },
+        },
+        updatedBy: {
+          omit: {
+            password: true,
+          },
+        },
+        LandingPages: {
+          include: {
+            createdBy: {
+              omit: {
+                password: true,
+              },
+            },
+            updatedBy: {
+              omit: {
+                password: true,
+              },
+            },
+            brand: true,
+            design: true,
+            formValidation: true,
+            language: true,
+            license: true,
+            lpType: true,
+            requester: {
+              omit: {
+                password: true,
+              },
+            },
+            subDesign: true,
+            topic: true,
+          },
+        },
       },
     });
 

@@ -3,6 +3,7 @@ import { IconButton } from "@/components/button-icon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { currentUser } from "@/lib/auth";
 import { getFormValidationBySlug } from "@/lib/data/dl";
+import { FaWpforms } from "react-icons/fa6";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { EditFormValidation } from "./edit-form-validation";
 
@@ -35,29 +36,38 @@ const EditFormValidationPage = async ({ params: { slug } }: Props) => {
           </Card>
           <CustomAlert
             title={"Error!"}
-            description={`Seems like the form validation that you are looking for does not exist.`}
+            asset="form validation"
             variant="destructive"
           />
         </>
       ) : (
         <>
           <Card>
-            <CardHeader>
+            <CardHeader className="border-b border-b-secondary">
               <div className="flex items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold">
-                  Edit form validation: {formValidation?.name}
-                </h1>
+                <h1 className="text-4xl font-bold">{formValidation?.name}</h1>
                 <IconButton
                   icon={<IoArrowBackCircleSharp size={25} />}
                   href={`/form-validation/${slug}`}
-                  label={`Back to form validation ${"cutare"}`}
+                  label={`Back to ${formValidation?.name}`}
                 />
               </div>
             </CardHeader>
 
             {(user?.role === "EDITOR" || user?.role === "ADMIN") && (
-              <CardContent>
-                <EditFormValidation formValidation={formValidation} />
+              // TODO: custom component for CardContent
+              <CardContent className="flex items-stretch p-0">
+                <div className="w-full max-w-[450px] border-e border-e-secondary p-6">
+                  <EditFormValidation formValidation={formValidation} />
+                </div>
+                <div className="relative grid grow place-items-center overflow-hidden p-6">
+                  <div className="absolute right-4 z-10 line-clamp-1 max-w-full text-[100px] font-black text-primary opacity-20">
+                    {formValidation.name}
+                  </div>
+                  <div className="pointer-events-none relative z-0">
+                    <FaWpforms size={320} />
+                  </div>
+                </div>
               </CardContent>
             )}
           </Card>
