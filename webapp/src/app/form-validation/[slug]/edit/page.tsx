@@ -20,22 +20,26 @@ const EditFormValidationPage = async ({ params: { slug } }: Props) => {
 
   const formValidation = await getFormValidationBySlug(slug);
 
+  const header: ReactNode = (
+    <CardHeader className="border-b border-b-secondary">
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-4xl font-bold">
+          {!formValidation ? `Form validation: ${slug}` : formValidation.name}
+        </h1>
+        <IconButton
+          icon={<IoArrowBackCircleSharp size={25} />}
+          href={"/form-validation"}
+          label={"Back to form validations"}
+        />
+      </div>
+    </CardHeader>
+  );
+
   return (
     <div className="container flex flex-col gap-6">
       {!formValidation ? (
         <>
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold">Form validation: {slug}</h1>
-                <IconButton
-                  icon={<IoArrowBackCircleSharp size={25} />}
-                  href={"/form-validation"}
-                  label={"Back to user avatars"}
-                />
-              </div>
-            </CardHeader>
-          </Card>
+          <Card>{header}</Card>
           <CustomAlert
             title={"Error!"}
             asset="form validation"
@@ -45,16 +49,7 @@ const EditFormValidationPage = async ({ params: { slug } }: Props) => {
       ) : (
         <>
           <Card>
-            <CardHeader className="border-b border-b-secondary">
-              <div className="flex items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold">{formValidation?.name}</h1>
-                <IconButton
-                  icon={<IoArrowBackCircleSharp size={25} />}
-                  href={`/form-validation/${slug}`}
-                  label={`Back to ${formValidation?.name}`}
-                />
-              </div>
-            </CardHeader>
+            {header}
 
             {(user?.role === "EDITOR" || user?.role === "ADMIN") && (
               <CustomCardContent

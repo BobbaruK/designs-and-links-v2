@@ -9,6 +9,7 @@ import { EditLanguage } from "./edit-language";
 import { HiMiniLanguage } from "react-icons/hi2";
 import Image from "next/image";
 import { CustomCardContent } from "@/components/custom-card-content";
+import { ReactNode } from "react";
 
 interface Props {
   params: {
@@ -22,22 +23,33 @@ const EditLanguagePage = async ({ params: { iso6391 } }: Props) => {
   const language = await getLanguageByIso(iso6391);
   const flags = await getFlags();
 
+  const header: ReactNode = (
+    <CardHeader className="border-b border-b-secondary">
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="flex items-center justify-start gap-4 text-4xl font-bold">
+          {!language ? (
+            `Language: ${iso6391}`
+          ) : (
+            <>
+              <CustomAvatar image={language.flag} />
+              {language.englishName}
+            </>
+          )}
+        </h1>
+        <IconButton
+          icon={<IoArrowBackCircleSharp size={25} />}
+          href={"/language"}
+          label={"Back to languages"}
+        />
+      </div>
+    </CardHeader>
+  );
+
   return (
     <div className="container flex flex-col gap-6">
       {!language ? (
         <>
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold">Language: {iso6391}</h1>
-                <IconButton
-                  icon={<IoArrowBackCircleSharp size={25} />}
-                  href={"/language"}
-                  label={"Back to languages"}
-                />
-              </div>
-            </CardHeader>
-          </Card>
+          <Card>{header}</Card>
           <CustomAlert
             title={"Error!"}
             asset="language"
@@ -47,19 +59,7 @@ const EditLanguagePage = async ({ params: { iso6391 } }: Props) => {
       ) : (
         <>
           <Card>
-            <CardHeader className="border-b border-b-secondary">
-              <div className="flex items-center justify-between gap-4">
-                <h1 className="flex items-center justify-start gap-4 text-4xl font-bold">
-                  <CustomAvatar image={language.flag} />
-                  {language.englishName}
-                </h1>
-                <IconButton
-                  icon={<IoArrowBackCircleSharp size={25} />}
-                  href={`/language/${iso6391}`}
-                  label={`Back to topic ${"cutare"}`}
-                />
-              </div>
-            </CardHeader>
+            {header}
 
             {(user?.role === "EDITOR" || user?.role === "ADMIN") && (
               <>
