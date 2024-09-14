@@ -139,7 +139,7 @@ model DL_Topic {
   createdUserId String?
   updatedBy     User?            @relation("topicUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
-  LandingPage   DL_LandingPage[]
+  LandingPages   DL_LandingPage[]
 
   @@unique([name, slug])
   @@index([id, slug])
@@ -156,7 +156,7 @@ model DL_FormValidation {
   createdUserId String?
   updatedBy     User?            @relation("formValidationUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
-  LandingPage   DL_LandingPage[]
+  LandingPages   DL_LandingPage[]
 
   @@unique([name, slug])
   @@index([id, slug])
@@ -173,7 +173,7 @@ model DL_License {
   createdUserId String?
   updatedBy     User?            @relation("licenseUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
-  LandingPage   DL_LandingPage[]
+  LandingPages   DL_LandingPage[]
 
   @@unique([name, slug])
   @@index([id, slug])
@@ -190,7 +190,7 @@ model DL_LandingPageType {
   createdUserId String?
   updatedBy     User?            @relation("lpTypeUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
-  LandingPage   DL_LandingPage[]
+  LandingPages   DL_LandingPage[]
 
   @@unique([name, slug])
   @@index([id, slug])
@@ -209,7 +209,7 @@ model DL_Language {
   createdUserId String?
   updatedBy     User?            @relation("languageUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
-  LandingPage   DL_LandingPage[]
+  LandingPages   DL_LandingPage[]
 
   @@index([id, iso_639_1, flag])
 }
@@ -225,7 +225,7 @@ model DL_Brand {
   createdUserId String?
   updatedBy     User?            @relation("brandUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
-  LandingPage   DL_LandingPage[]
+  LandingPages   DL_LandingPage[]
 
   @@index([id, slug, logo])
 }
@@ -242,7 +242,7 @@ model DL_Design {
   createdUserId String?
   updatedBy     User?            @relation("designUpdated", fields: [updateUserId], references: [id], onDelete: SetNull)
   updateUserId  String?
-  LandingPage   DL_LandingPage[]
+  LandingPages   DL_LandingPage[]
 
   @@index([id, slug, avatar])
 }
@@ -260,7 +260,7 @@ model DL_SubDesign {
   updateUserId  String?
   DL_Design     DL_Design?       @relation(fields: [DL_DesignId], references: [id])
   DL_DesignId   String?
-  LandingPage   DL_LandingPage[]
+  LandingPages   DL_LandingPage[]
 
   @@index([id, slug, avatar])
 }
