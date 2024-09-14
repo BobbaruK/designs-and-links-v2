@@ -1,9 +1,12 @@
-import { CustomAlert } from "@/components/alert-custom";
+import { CustomAlert } from "@/components/custom-alert";
 import { IconButton } from "@/components/button-icon";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { CustomCardContent } from "@/components/custom-card-content";
+import { Card, CardHeader } from "@/components/ui/card";
 import { currentUser } from "@/lib/auth";
 import { getTopicBySlug } from "@/lib/data/dl";
+import { ReactNode } from "react";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
+import { MdOutlineTopic } from "react-icons/md";
 import { EditTopic } from "./edit-topic";
 
 interface Props {
@@ -17,22 +20,26 @@ const EditTopicPage = async ({ params: { slug } }: Props) => {
 
   const topic = await getTopicBySlug(slug);
 
+  const header: ReactNode = (
+    <CardHeader className="border-b border-b-secondary">
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-4xl font-bold">
+          {!topic ? `Topic: ${slug}` : topic.name}
+        </h1>
+        <IconButton
+          icon={<IoArrowBackCircleSharp size={25} />}
+          href={"/topic"}
+          label={"Back to topics"}
+        />
+      </div>
+    </CardHeader>
+  );
+
   return (
     <div className="container flex flex-col gap-6">
       {!topic ? (
         <>
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold">Topic: {slug}</h1>
-                <IconButton
-                  icon={<IoArrowBackCircleSharp size={25} />}
-                  href={"/topic"}
-                  label={"Back to user avatars"}
-                />
-              </div>
-            </CardHeader>
-          </Card>
+          <Card>{header}</Card>
           <CustomAlert
             title={"Error!"}
             description={`Seems like the topic that you are looking for does not exist.`}
@@ -42,23 +49,14 @@ const EditTopicPage = async ({ params: { slug } }: Props) => {
       ) : (
         <>
           <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold">
-                  Edit topic: {topic?.name}
-                </h1>
-                <IconButton
-                  icon={<IoArrowBackCircleSharp size={25} />}
-                  href={`/topic/${slug}`}
-                  label={`Back to topic ${"cutare"}`}
-                />
-              </div>
-            </CardHeader>
+            {header}
 
             {(user?.role === "EDITOR" || user?.role === "ADMIN") && (
-              <CardContent>
-                <EditTopic topic={topic} />
-              </CardContent>
+              <CustomCardContent
+                form={<EditTopic topic={topic} />}
+                label={topic?.name}
+                icon={<MdOutlineTopic size={320} />}
+              />
             )}
           </Card>
 

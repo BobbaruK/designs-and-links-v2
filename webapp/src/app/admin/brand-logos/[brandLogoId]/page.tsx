@@ -1,4 +1,4 @@
-import { CustomAlert } from "@/components/alert-custom";
+import { CustomAlert } from "@/components/custom-alert";
 import { IconButton } from "@/components/button-icon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { getBrandLogoById } from "@/lib/data/dl";

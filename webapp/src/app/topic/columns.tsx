@@ -1,22 +1,14 @@
 "use client";
 
 import { CustomAvatar } from "@/components/custom-avatar";
+import { CustomHoverCard } from "@/components/custom-hover-card";
+import { SortingArrows } from "@/components/sorting-arrows";
 import { Button } from "@/components/ui/button";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 import { cn, returnFormattedDate } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
-import {
-  PiArrowBendRightDownDuotone,
-  PiArrowBendRightUpDuotone,
-} from "react-icons/pi";
 import TopicRowActions from "./topic-row-actions";
-import { CustomHoverCard } from "@/components/custom-hover-card";
 
 type Topic = Prisma.DL_TopicGetPayload<{
   include: {
@@ -30,6 +22,7 @@ type Topic = Prisma.DL_TopicGetPayload<{
         password: true;
       };
     };
+    LandingPages: true;
   };
 }>;
 
@@ -37,6 +30,8 @@ export const columns: ColumnDef<Topic>[] = [
   // Name
   {
     accessorKey: "name",
+    id: "name",
+    accessorFn: (originalRow) => originalRow.name,
     enableHiding: false,
     header: ({ column }) => {
       return (
@@ -46,25 +41,28 @@ export const columns: ColumnDef<Topic>[] = [
           onClick={() => column.toggleSorting()}
         >
           Name
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
-    cell: ({ row }) => (
-      <Button asChild variant={"link"} className={cn("text-foreground")}>
-        <Link href={`/topic/${row.original.slug}`}>{row.original.name}</Link>
-      </Button>
-    ),
+    cell: ({ row }) => {
+      const lps = row.original.LandingPages;
+
+      return (
+        <Button asChild variant={"link"} className={cn("text-foreground")}>
+          <Link href={`/topic/${row.original.slug}`}>
+            {row.original.name}
+            {lps && lps.length > 0 && ` (${lps.length})`}
+          </Link>
+        </Button>
+      );
+    },
   },
   // Slug
   {
     accessorKey: "slug",
     id: "slug",
+    accessorFn: (originalRow) => originalRow.slug,
     header: ({ column }) => {
       return (
         <Button
@@ -73,12 +71,7 @@ export const columns: ColumnDef<Topic>[] = [
           onClick={() => column.toggleSorting()}
         >
           Slug
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -92,6 +85,7 @@ export const columns: ColumnDef<Topic>[] = [
   {
     accessorKey: "description",
     id: "description",
+    accessorFn: (originalRow) => originalRow.description,
     enableSorting: false,
     header: ({ column }) => {
       return (
@@ -101,12 +95,7 @@ export const columns: ColumnDef<Topic>[] = [
           // onClick={() => column.toggleSorting()}
         >
           Description
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -121,6 +110,9 @@ export const columns: ColumnDef<Topic>[] = [
   // Created At
   {
     accessorKey: "createdAt",
+    id: "createdAt",
+    accessorFn: (originalRow) => originalRow.createdAt,
+    sortingFn: "datetime",
     sortDescFirst: false,
     header: ({ column }) => {
       return (
@@ -130,28 +122,18 @@ export const columns: ColumnDef<Topic>[] = [
           onClick={() => column.toggleSorting()}
         >
           Created At (UTC)
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row }) => returnFormattedDate(row.getValue("createdAt")),
-    sortingFn: "datetime",
   },
   // Created By
   {
     accessorKey: "createdBy",
-    // enableSorting: false,
-    sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.createdBy?.name!;
-      const rB_Username = rowB.original.createdBy?.name!;
-
-      return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
-    },
+    id: "createdBy",
+    accessorFn: (originalRow) => originalRow.createdBy?.name,
+    sortUndefined: "last",
     header: ({ column }) => {
       return (
         <Button
@@ -160,12 +142,7 @@ export const columns: ColumnDef<Topic>[] = [
           onClick={() => column.toggleSorting()}
         >
           Created By
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -223,6 +200,9 @@ export const columns: ColumnDef<Topic>[] = [
   // Updated At
   {
     accessorKey: "updatedAt",
+    id: "updatedAt",
+    accessorFn: (originalRow) => originalRow.updatedAt,
+    sortingFn: "datetime",
     header: ({ column }) => {
       return (
         <Button
@@ -231,28 +211,18 @@ export const columns: ColumnDef<Topic>[] = [
           onClick={() => column.toggleSorting()}
         >
           Updated At (UTC)
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row }) => returnFormattedDate(row.getValue("updatedAt")),
-    sortingFn: "datetime",
   },
   // Updated By
   {
     accessorKey: "updatedBy",
-    // enableSorting: false,
-    sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.updatedBy?.name!;
-      const rB_Username = rowB.original.updatedBy?.name!;
-
-      return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
-    },
+    id: "updatedBy",
+    accessorFn: (originalRow) => originalRow.updatedBy?.name,
+    sortUndefined: "last",
     header: ({ column }) => {
       return (
         <Button
@@ -261,12 +231,7 @@ export const columns: ColumnDef<Topic>[] = [
           onClick={() => column.toggleSorting()}
         >
           Updated By
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },

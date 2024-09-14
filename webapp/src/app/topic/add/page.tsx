@@ -1,16 +1,18 @@
-import { CustomAlert } from "@/components/alert-custom";
+import { CustomAlert } from "@/components/custom-alert";
 import { IconButton } from "@/components/button-icon";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { CustomCardContent } from "@/components/custom-card-content";
+import { Card, CardHeader } from "@/components/ui/card";
 import { currentUser } from "@/lib/auth";
-import { IoArrowBackCircleSharp } from "react-icons/io5";
-import { AddTopic } from "./add-topic";
 import { ReactNode } from "react";
+import { IoArrowBackCircleSharp } from "react-icons/io5";
+import { MdOutlineTopic } from "react-icons/md";
+import { AddTopic } from "./add-topic";
 
 const AddTopicPage = async () => {
   const user = await currentUser();
 
   const header: ReactNode = (
-    <CardHeader>
+    <CardHeader className="border-b border-b-secondary">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-4xl font-bold">Add Topic</h1>
         <IconButton
@@ -28,9 +30,11 @@ const AddTopicPage = async () => {
         <>
           <Card>
             {header}
-            <CardContent>
-              <AddTopic />
-            </CardContent>
+            <CustomCardContent
+              form={<AddTopic />}
+              label={"Topic"}
+              icon={<MdOutlineTopic size={320} />}
+            />
           </Card>
         </>
       ) : (

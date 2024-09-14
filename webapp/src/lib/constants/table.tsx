@@ -12,4 +12,4 @@ export const PAGINATION_ARR = [10, 25, 50, 75, 100];
  * Default items per page. The number must be
  * included in the {@linkcode PAGINATION_ARR}
  */
-export const PAGINATION_DEFAULT = 10;
+export const PAGINATION_DEFAULT = 25;

@@ -1,4 +1,4 @@
-import { CustomAlert } from "@/components/alert-custom";
+import { CustomAlert } from "@/components/custom-alert";
 import { IconButton } from "@/components/button-icon";
 import { DataTable } from "@/components/data-table";
 import { columns } from "@/components/data-table/landing-page-columns";

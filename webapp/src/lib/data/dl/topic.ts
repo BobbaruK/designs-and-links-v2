@@ -20,6 +20,33 @@ export const getTopics = async () => {
             password: true,
           },
         },
+        LandingPages: {
+          include: {
+            createdBy: {
+              omit: {
+                password: true,
+              },
+            },
+            updatedBy: {
+              omit: {
+                password: true,
+              },
+            },
+            brand: true,
+            design: true,
+            formValidation: true,
+            language: true,
+            license: true,
+            lpType: true,
+            requester: {
+              omit: {
+                password: true,
+              },
+            },
+            subDesign: true,
+            topic: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
@@ -44,6 +71,45 @@ export const getTopicById = async (id: string) => {
       where: {
         id,
       },
+      include: {
+        createdBy: {
+          omit: {
+            password: true,
+          },
+        },
+        updatedBy: {
+          omit: {
+            password: true,
+          },
+        },
+        LandingPages: {
+          include: {
+            createdBy: {
+              omit: {
+                password: true,
+              },
+            },
+            updatedBy: {
+              omit: {
+                password: true,
+              },
+            },
+            brand: true,
+            design: true,
+            formValidation: true,
+            language: true,
+            license: true,
+            lpType: true,
+            requester: {
+              omit: {
+                password: true,
+              },
+            },
+            subDesign: true,
+            topic: true,
+          },
+        },
+      },
     });
 
     return topic;
@@ -63,6 +129,45 @@ export const getTopicBySlug = async (slug: string) => {
     const topic = await db.dL_Topic.findUnique({
       where: {
         slug,
+      },
+      include: {
+        createdBy: {
+          omit: {
+            password: true,
+          },
+        },
+        updatedBy: {
+          omit: {
+            password: true,
+          },
+        },
+        LandingPages: {
+          include: {
+            createdBy: {
+              omit: {
+                password: true,
+              },
+            },
+            updatedBy: {
+              omit: {
+                password: true,
+              },
+            },
+            brand: true,
+            design: true,
+            formValidation: true,
+            language: true,
+            license: true,
+            lpType: true,
+            requester: {
+              omit: {
+                password: true,
+              },
+            },
+            subDesign: true,
+            topic: true,
+          },
+        },
       },
     });
 
