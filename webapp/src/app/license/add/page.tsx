@@ -5,18 +5,20 @@ import { currentUser } from "@/lib/auth";
 import { ReactNode } from "react";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { AddLicense } from "./add-license";
+import { CustomCardContent } from "@/components/custom-card-content";
+import { TbLicense } from "react-icons/tb";
 
 const AddLicensePage = async () => {
   const user = await currentUser();
 
   const header: ReactNode = (
-    <CardHeader>
+    <CardHeader className="border-b border-b-secondary">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-4xl font-bold">Add License</h1>
         <IconButton
           icon={<IoArrowBackCircleSharp size={25} />}
-          href={"/topic"}
-          label={"Back to topics"}
+          href={"/license"}
+          label={"Back to licenses"}
         />
       </div>
     </CardHeader>
@@ -28,9 +30,11 @@ const AddLicensePage = async () => {
         <>
           <Card>
             {header}
-            <CardContent>
-              <AddLicense />
-            </CardContent>
+            <CustomCardContent
+              form={<AddLicense />}
+              label={"License"}
+              icon={<TbLicense size={320} />}
+            />
           </Card>
         </>
       ) : (

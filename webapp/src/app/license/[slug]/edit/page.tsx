@@ -1,9 +1,11 @@
-import { CustomAlert } from "@/components/custom-alert";
 import { IconButton } from "@/components/button-icon";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { CustomAlert } from "@/components/custom-alert";
+import { CustomCardContent } from "@/components/custom-card-content";
+import { Card, CardHeader } from "@/components/ui/card";
 import { currentUser } from "@/lib/auth";
 import { getLicenseBySlug } from "@/lib/data/dl";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
+import { TbLicense } from "react-icons/tb";
 import { EditLicense } from "./edit-license";
 
 interface Props {
@@ -18,9 +20,11 @@ const EditLicensePage = async ({ params: { slug } }: Props) => {
   const license = await getLicenseBySlug(slug);
 
   const header = (
-    <CardHeader>
+    <CardHeader className="border-b border-b-secondary">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-4xl font-bold">License: {license?.name}</h1>
+        <h1 className="text-4xl font-bold">
+          {!license ? `License: ${slug}` : license?.name}
+        </h1>
         <IconButton
           icon={<IoArrowBackCircleSharp size={25} />}
           href={"/license"}
@@ -35,11 +39,7 @@ const EditLicensePage = async ({ params: { slug } }: Props) => {
       {!license ? (
         <>
           <Card>{header}</Card>
-          <CustomAlert
-            title={"Error!"}
-            description={`Seems like the license that you are looking for does not exist.`}
-            variant="destructive"
-          />
+          <CustomAlert title={"Error!"} asset="license" variant="destructive" />
         </>
       ) : (
         <>
@@ -47,9 +47,11 @@ const EditLicensePage = async ({ params: { slug } }: Props) => {
             {header}
 
             {(user?.role === "EDITOR" || user?.role === "ADMIN") && (
-              <CardContent>
-                <EditLicense license={license} />
-              </CardContent>
+              <CustomCardContent
+                form={<EditLicense license={license} />}
+                label={license?.name}
+                icon={<TbLicense size={320} />}
+              />
             )}
           </Card>
 
