@@ -20,6 +20,7 @@ export const getLanguages = async () => {
             password: true,
           },
         },
+        LandingPages: true,
       },
       orderBy: {
         createdAt: "desc",
@@ -83,6 +84,35 @@ export const getLanguageByIso = async (iso: string) => {
     const language = await db.dL_Language.findUnique({
       where: {
         iso_639_1: iso,
+      },
+      include: {
+        LandingPages: {
+          include: {
+            createdBy: {
+              omit: {
+                password: true,
+              },
+            },
+            updatedBy: {
+              omit: {
+                password: true,
+              },
+            },
+            brand: true,
+            design: true,
+            formValidation: true,
+            language: true,
+            license: true,
+            lpType: true,
+            requester: {
+              omit: {
+                password: true,
+              },
+            },
+            subDesign: true,
+            topic: true,
+          },
+        },
       },
     });
 

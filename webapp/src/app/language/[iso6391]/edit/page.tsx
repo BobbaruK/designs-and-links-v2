@@ -1,11 +1,13 @@
 import { CustomAlert } from "@/components/alert-custom";
 import { IconButton } from "@/components/button-icon";
+import { CustomAvatar } from "@/components/custom-avatar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { currentUser } from "@/lib/auth";
-import { getLanguageByIso, getTopicBySlug } from "@/lib/data/dl";
+import { getFlags, getLanguageByIso } from "@/lib/data/dl";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { EditLanguage } from "./edit-language";
-import { getFlags } from "@/lib/data/dl";
+import { HiMiniLanguage } from "react-icons/hi2";
+import Image from "next/image";
 
 interface Props {
   params: {
@@ -37,17 +39,18 @@ const EditLanguagePage = async ({ params: { iso6391 } }: Props) => {
           </Card>
           <CustomAlert
             title={"Error!"}
-            description={`Seems like the topic that you are looking for does not exist.`}
+            asset="language"
             variant="destructive"
           />
         </>
       ) : (
         <>
           <Card>
-            <CardHeader>
+            <CardHeader className="border-b border-b-secondary">
               <div className="flex items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold">
-                  Edit language: {language?.englishName}
+                <h1 className="flex items-center justify-start gap-4 text-4xl font-bold">
+                  <CustomAvatar image={language.flag} />
+                  {language.englishName}
                 </h1>
                 <IconButton
                   icon={<IoArrowBackCircleSharp size={25} />}
@@ -58,8 +61,30 @@ const EditLanguagePage = async ({ params: { iso6391 } }: Props) => {
             </CardHeader>
 
             {(user?.role === "EDITOR" || user?.role === "ADMIN") && (
-              <CardContent>
-                <EditLanguage language={language} flags={flags} />
+              <CardContent className="flex items-stretch p-0">
+                <div className="w-full max-w-[450px] border-e border-e-secondary p-6">
+                  <EditLanguage language={language} flags={flags} />
+                </div>
+                <div className="relative grid grow place-items-center overflow-hidden p-6">
+                  {language.flag ? (
+                    <div className="absolute right-[-235px] top-[-150px] z-0 h-[850px] w-[850px] overflow-hidden rounded-full border border-secondary">
+                      <Image
+                        src={language.flag}
+                        alt={language.name}
+                        unoptimized
+                        fill
+                        className="opacity-30"
+                      />
+                    </div>
+                  ) : (
+                    <div className="absolute right-4 z-10 line-clamp-1 max-w-full text-[100px] font-black text-primary opacity-20">
+                      {language.englishName}
+                    </div>
+                  )}
+                  <div className="pointer-events-none relative z-0">
+                    <HiMiniLanguage size={520} />
+                  </div>
+                </div>
               </CardContent>
             )}
           </Card>

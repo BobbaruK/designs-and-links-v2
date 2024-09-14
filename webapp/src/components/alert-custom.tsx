@@ -4,23 +4,36 @@ import { FaTerminal } from "react-icons/fa6";
 
 interface Props {
   title: string;
-  description: string;
+
   icon?: ReactNode;
   variant?: "default" | "destructive";
 }
+
+type ConditionalProps =
+  | {
+      description?: string;
+      asset?: never;
+    }
+  | { description?: never; asset?: string };
+
+type ComponentProps = Props & ConditionalProps;
 
 export const CustomAlert = ({
   description,
   title,
   icon,
+  asset,
   variant = "default",
-}: Props) => {
+}: ComponentProps) => {
   return (
     <Alert variant={variant}>
       {icon || <FaTerminal />}
       <AlertTitle>{title}</AlertTitle>
       {/* <AlertDescription dangerouslySetInnerHTML={{ __html: description }} /> */}
-      <AlertDescription>{description}</AlertDescription>
+      <AlertDescription>
+        {description ||
+          `Seems like the ${asset} that you are looking for does not exist.`}
+      </AlertDescription>
     </Alert>
   );
 };

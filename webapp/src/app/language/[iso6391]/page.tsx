@@ -1,11 +1,11 @@
 import { CustomAlert } from "@/components/alert-custom";
 import { IconButton } from "@/components/button-icon";
+import { CustomAvatar } from "@/components/custom-avatar";
 import { DataTable } from "@/components/data-table";
 import { columns } from "@/components/data-table/landing-page-columns";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { currentUser } from "@/lib/auth";
 import { getLanguageByIso } from "@/lib/data/dl";
-import db from "@/lib/db";
 import { CiEdit } from "react-icons/ci";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
 
@@ -18,37 +18,6 @@ interface Props {
 const LanguagePage = async ({ params: { iso6391 } }: Props) => {
   const language = await getLanguageByIso(iso6391);
   const user = await currentUser();
-
-  const landingPages = await db.dL_LandingPage.findMany({
-    where: {
-      languageId: language?.id,
-    },
-    include: {
-      createdBy: {
-        omit: {
-          password: true,
-        },
-      },
-      updatedBy: {
-        omit: {
-          password: true,
-        },
-      },
-      brand: true,
-      design: true,
-      formValidation: true,
-      language: true,
-      license: true,
-      lpType: true,
-      requester: {
-        omit: {
-          password: true,
-        },
-      },
-      subDesign: true,
-      topic: true,
-    },
-  });
 
   return (
     <div className="container flex flex-col gap-6">
@@ -68,7 +37,7 @@ const LanguagePage = async ({ params: { iso6391 } }: Props) => {
           </Card>
           <CustomAlert
             title={"Error!"}
-            description={`Seems like the topic that you are looking for does not exist.`}
+            asset="language"
             variant="destructive"
           />
         </>
@@ -77,8 +46,9 @@ const LanguagePage = async ({ params: { iso6391 } }: Props) => {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold">
-                  Language: {language.englishName}
+                <h1 className="flex items-center justify-start gap-4 text-4xl font-bold">
+                  <CustomAvatar image={language.flag} />
+                  {language.englishName}
                 </h1>
                 <div className="ms-auto flex items-center justify-center gap-4">
                   {(user?.role === "EDITOR" || user?.role === "ADMIN") && (
@@ -105,10 +75,11 @@ const LanguagePage = async ({ params: { iso6391 } }: Props) => {
           </Card>
           <DataTable
             columns={columns}
-            data={landingPages!}
+            data={language.LandingPages!}
             columnVisibilityObj={{
               slug: false,
               fxoroFooter: false,
+              language: false,
               requester: false,
               createdAt: false,
               createdBy: false,

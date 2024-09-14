@@ -1,22 +1,14 @@
 "use client";
 
 import { CustomAvatar } from "@/components/custom-avatar";
+import { CustomHoverCard } from "@/components/custom-hover-card";
+import { SortingArrows } from "@/components/sorting-arrows";
 import { Button } from "@/components/ui/button";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 import { cn, returnFormattedDate } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
-import {
-  PiArrowBendRightDownDuotone,
-  PiArrowBendRightUpDuotone,
-} from "react-icons/pi";
 import LanguageRowActions from "./language-row-actions";
-import { CustomHoverCard } from "@/components/custom-hover-card";
 
 type Language = Prisma.DL_LanguageGetPayload<{
   include: {
@@ -30,6 +22,7 @@ type Language = Prisma.DL_LanguageGetPayload<{
         password: true;
       };
     };
+    LandingPages: true;
   };
 }>;
 
@@ -38,6 +31,7 @@ export const columns: ColumnDef<Language>[] = [
   {
     accessorKey: "englishName",
     id: "englishName",
+    accessorFn: (originalRow) => originalRow.englishName,
     enableHiding: false,
     header: ({ column }) => {
       return (
@@ -47,28 +41,27 @@ export const columns: ColumnDef<Language>[] = [
           onClick={() => column.toggleSorting()}
         >
           English name
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row }) => {
       const image = row.original.flag;
+      const lps = row.original.LandingPages;
 
       return (
-        <Button asChild variant={"link"} className={cn("text-foreground")}>
-          <Link
-            href={`/language/${row.original.iso_639_1}`}
-            className="flex items-center gap-2"
-          >
-            <CustomAvatar image={image} />
-            {row.original.englishName}
-          </Link>
-        </Button>
+        <>
+          <Button asChild variant={"link"} className={cn("text-foreground")}>
+            <Link
+              href={`/language/${row.original.iso_639_1}`}
+              className="flex items-center gap-2"
+            >
+              <CustomAvatar image={image} />
+              {row.original.englishName}
+              {lps && lps.length > 0 && ` (${lps.length})`}
+            </Link>
+          </Button>
+        </>
       );
     },
   },
@@ -76,6 +69,7 @@ export const columns: ColumnDef<Language>[] = [
   {
     accessorKey: "name",
     id: "name",
+    accessorFn: (originalRow) => originalRow.name,
     header: ({ column }) => {
       return (
         <Button
@@ -84,19 +78,14 @@ export const columns: ColumnDef<Language>[] = [
           onClick={() => column.toggleSorting()}
         >
           Name
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row }) => (
       <Button asChild variant={"link"} className={cn("text-foreground")}>
         <Link href={`/language/${row.original.iso_639_1}`}>
-          {row.original.name}
+          {row.original.name}{" "}
         </Link>
       </Button>
     ),
@@ -105,6 +94,7 @@ export const columns: ColumnDef<Language>[] = [
   {
     accessorKey: "iso_639_1",
     id: "iso_639_1",
+    accessorFn: (originalRow) => originalRow.iso_639_1,
     header: ({ column }) => {
       return (
         <Button
@@ -113,12 +103,7 @@ export const columns: ColumnDef<Language>[] = [
           onClick={() => column.toggleSorting()}
         >
           ISO 639-1
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -130,6 +115,9 @@ export const columns: ColumnDef<Language>[] = [
   {
     accessorKey: "iso_3166_1",
     id: "iso_3166_1",
+    // TODO: nullish bullish
+    // sortUndefined not working because accessorFn returns null not undefined
+    accessorFn: (originalRow) => originalRow?.iso_3166_1,
     sortUndefined: "last",
     header: ({ column }) => {
       return (
@@ -139,12 +127,7 @@ export const columns: ColumnDef<Language>[] = [
           onClick={() => column.toggleSorting()}
         >
           ISO 3166-1
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -155,6 +138,9 @@ export const columns: ColumnDef<Language>[] = [
   // Created At
   {
     accessorKey: "createdAt",
+    id: "createdAt",
+    accessorFn: (originalRow) => originalRow.createdAt,
+    sortingFn: "datetime",
     sortDescFirst: false,
     header: ({ column }) => {
       return (
@@ -164,28 +150,18 @@ export const columns: ColumnDef<Language>[] = [
           onClick={() => column.toggleSorting()}
         >
           Created At (UTC)
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row }) => returnFormattedDate(row.getValue("createdAt")),
-    sortingFn: "datetime",
   },
   // Created By
   {
     accessorKey: "createdBy",
-    // enableSorting: false,
-    sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.createdBy?.name!;
-      const rB_Username = rowB.original.createdBy?.name!;
-
-      return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
-    },
+    id: "createdBy",
+    accessorFn: (originalRow) => originalRow?.createdBy?.name,
+    sortUndefined: "last",
     header: ({ column }) => {
       return (
         <Button
@@ -194,12 +170,7 @@ export const columns: ColumnDef<Language>[] = [
           onClick={() => column.toggleSorting()}
         >
           Created By
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -257,6 +228,9 @@ export const columns: ColumnDef<Language>[] = [
   // Updated At
   {
     accessorKey: "updatedAt",
+    id: "updatedAt",
+    accessorFn: (originalRow) => originalRow?.updatedAt,
+    sortingFn: "datetime",
     header: ({ column }) => {
       return (
         <Button
@@ -265,28 +239,18 @@ export const columns: ColumnDef<Language>[] = [
           onClick={() => column.toggleSorting()}
         >
           Updated At (UTC)
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row }) => returnFormattedDate(row.getValue("updatedAt")),
-    sortingFn: "datetime",
   },
   // Updated By
   {
     accessorKey: "updatedBy",
-    // enableSorting: false,
-    sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.updatedBy?.name!;
-      const rB_Username = rowB.original.updatedBy?.name!;
-
-      return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
-    },
+    id: "updatedBy",
+    accessorFn: (originalRow) => originalRow?.updatedBy?.name,
+    sortUndefined: "last",
     header: ({ column }) => {
       return (
         <Button
@@ -295,12 +259,7 @@ export const columns: ColumnDef<Language>[] = [
           onClick={() => column.toggleSorting()}
         >
           Updated By
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
