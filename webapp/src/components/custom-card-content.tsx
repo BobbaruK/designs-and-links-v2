@@ -1,10 +1,12 @@
 import { CardContent } from "@/components/ui/card";
 import { ReactNode } from "react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 interface Props {
   form: ReactNode;
   icon: ReactNode;
+  formWidth?: number;
 }
 
 type ConditionalProps =
@@ -30,15 +32,21 @@ export const CustomCardContent = ({
   flag,
   flagImgAlt,
   flagFallBack,
+  formWidth = 450,
 }: ComponentProps) => {
   return (
     <CardContent className="flex items-stretch p-0">
-      <div className="w-full max-w-[450px] border-e border-e-secondary p-6">
+      <div
+        className={cn(`w-full border-e border-e-secondary p-6`)}
+        style={{
+          maxWidth: formWidth,
+        }}
+      >
         {form}
       </div>
       <div className="relative grid grow place-items-center overflow-hidden p-6">
         {label && (
-          <div className="absolute right-4 z-10 line-clamp-1 max-w-full text-[100px] font-black text-primary opacity-50">
+          <div className="absolute right-4 z-10 ms-4 line-clamp-1 max-w-full text-[100px] font-black text-primary opacity-50">
             {label}
           </div>
         )}

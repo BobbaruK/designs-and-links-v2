@@ -532,7 +532,6 @@ export const columns: ColumnDef<LandingPage>[] = [
   // Brand
   {
     accessorKey: "brand",
-    enableHiding: false,
     accessorFn: (originalRow) => originalRow?.brand?.name,
     sortUndefined: "last",
     header: ({ column }) => {

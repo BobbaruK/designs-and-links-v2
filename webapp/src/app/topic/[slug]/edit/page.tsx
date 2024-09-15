@@ -40,11 +40,7 @@ const EditTopicPage = async ({ params: { slug } }: Props) => {
       {!topic ? (
         <>
           <Card>{header}</Card>
-          <CustomAlert
-            title={"Error!"}
-            description={`Seems like the topic that you are looking for does not exist.`}
-            variant="destructive"
-          />
+          <CustomAlert title={"Error!"} asset="topic" variant="destructive" />
         </>
       ) : (
         <>
