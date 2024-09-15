@@ -6,6 +6,8 @@ import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { AddBrand } from "./add-brand";
 import { ReactNode } from "react";
 import { getBrandLogos } from "@/lib/data/dl";
+import { CustomCardContent } from "@/components/custom-card-content";
+import { TbBrandAirtable } from "react-icons/tb";
 
 const AddBrandPage = async () => {
   const user = await currentUser();
@@ -13,7 +15,7 @@ const AddBrandPage = async () => {
   const brandLogos = await getBrandLogos();
 
   const header: ReactNode = (
-    <CardHeader>
+    <CardHeader className="border-b border-b-secondary">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-4xl font-bold">Add Brand</h1>
         <IconButton
@@ -31,9 +33,12 @@ const AddBrandPage = async () => {
         <>
           <Card>
             {header}
-            <CardContent>
-              <AddBrand logos={brandLogos} />
-            </CardContent>
+            <CustomCardContent
+              form={<AddBrand logos={brandLogos} />}
+              label={"Brand"}
+              icon={<TbBrandAirtable size={320} />}
+              formWidth={700}
+            />
           </Card>
         </>
       ) : (
