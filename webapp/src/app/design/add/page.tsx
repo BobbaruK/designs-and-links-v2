@@ -1,10 +1,12 @@
-import { CustomAlert } from "@/components/custom-alert";
 import { IconButton } from "@/components/button-icon";
+import { CustomAlert } from "@/components/custom-alert";
+import { CustomCardContent } from "@/components/custom-card-content";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { currentUser } from "@/lib/auth";
 import { getDesignAvatars, getDesigns } from "@/lib/data/dl";
 import { ReactNode } from "react";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
+import { MdDesignServices } from "react-icons/md";
 import { AddDesign } from "./add-design";
 
 const AddDesignPage = async () => {
@@ -14,7 +16,7 @@ const AddDesignPage = async () => {
   const designs = await getDesigns();
 
   const header: ReactNode = (
-    <CardHeader>
+    <CardHeader className="border-b border-b-secondary">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-4xl font-bold">Add Design</h1>
         <IconButton
@@ -32,9 +34,14 @@ const AddDesignPage = async () => {
         <>
           <Card>
             {header}
-            <CardContent>
-              <AddDesign designAvatars={designAvatars} designs={designs} />
-            </CardContent>
+            <CustomCardContent
+              form={
+                <AddDesign designAvatars={designAvatars} designs={designs} />
+              }
+              label={"Design"}
+              icon={<MdDesignServices size={320} />}
+              formWidth={750}
+            />
           </Card>
         </>
       ) : (

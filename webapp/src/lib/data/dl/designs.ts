@@ -32,6 +32,60 @@ export const getDesigns = async () => {
                 password: true,
               },
             },
+            LandingPages: {
+              include: {
+                createdBy: {
+                  omit: {
+                    password: true,
+                  },
+                },
+                updatedBy: {
+                  omit: {
+                    password: true,
+                  },
+                },
+                brand: true,
+                design: true,
+                formValidation: true,
+                language: true,
+                license: true,
+                lpType: true,
+                requester: {
+                  omit: {
+                    password: true,
+                  },
+                },
+                subDesign: true,
+                topic: true,
+              },
+            },
+          },
+        },
+        LandingPages: {
+          include: {
+            createdBy: {
+              omit: {
+                password: true,
+              },
+            },
+            updatedBy: {
+              omit: {
+                password: true,
+              },
+            },
+            brand: true,
+            design: true,
+            formValidation: true,
+            language: true,
+            license: true,
+            lpType: true,
+            requester: {
+              omit: {
+                password: true,
+              },
+            },
+            subDesign: true,
+            topic: true,
           },
         },
       },
@@ -65,6 +119,33 @@ export const getSubDesigns = async () => {
             password: true,
           },
         },
+        LandingPages: {
+          include: {
+            createdBy: {
+              omit: {
+                password: true,
+              },
+            },
+            updatedBy: {
+              omit: {
+                password: true,
+              },
+            },
+            brand: true,
+            design: true,
+            formValidation: true,
+            language: true,
+            license: true,
+            lpType: true,
+            requester: {
+              omit: {
+                password: true,
+              },
+            },
+            subDesign: true,
+            topic: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
@@ -89,6 +170,86 @@ export const getDesignById = async (id: string) => {
       where: {
         id,
       },
+      include: {
+        createdBy: {
+          omit: {
+            password: true,
+          },
+        },
+        updatedBy: {
+          omit: {
+            password: true,
+          },
+        },
+        LandingPages: {
+          include: {
+            createdBy: {
+              omit: {
+                password: true,
+              },
+            },
+            updatedBy: {
+              omit: {
+                password: true,
+              },
+            },
+            brand: true,
+            design: true,
+            formValidation: true,
+            language: true,
+            license: true,
+            lpType: true,
+            requester: {
+              omit: {
+                password: true,
+              },
+            },
+            subDesign: true,
+            topic: true,
+          },
+        },
+        subDesigns: {
+          include: {
+            createdBy: {
+              omit: {
+                password: true,
+              },
+            },
+            updatedBy: {
+              omit: {
+                password: true,
+              },
+            },
+            LandingPages: {
+              include: {
+                createdBy: {
+                  omit: {
+                    password: true,
+                  },
+                },
+                updatedBy: {
+                  omit: {
+                    password: true,
+                  },
+                },
+                brand: true,
+                design: true,
+                formValidation: true,
+                language: true,
+                license: true,
+                lpType: true,
+                requester: {
+                  omit: {
+                    password: true,
+                  },
+                },
+                subDesign: true,
+                topic: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     return design;
@@ -108,6 +269,45 @@ export const getSubDesignById = async (id: string) => {
     const design = await db.dL_SubDesign.findUnique({
       where: {
         id,
+      },
+      include: {
+        createdBy: {
+          omit: {
+            password: true,
+          },
+        },
+        updatedBy: {
+          omit: {
+            password: true,
+          },
+        },
+        LandingPages: {
+          include: {
+            createdBy: {
+              omit: {
+                password: true,
+              },
+            },
+            updatedBy: {
+              omit: {
+                password: true,
+              },
+            },
+            brand: true,
+            design: true,
+            formValidation: true,
+            language: true,
+            license: true,
+            lpType: true,
+            requester: {
+              omit: {
+                password: true,
+              },
+            },
+            subDesign: true,
+            topic: true,
+          },
+        },
       },
     });
 
@@ -129,6 +329,59 @@ export const getDesignBySlug = async (slug: string) => {
       where: {
         slug,
       },
+      include: {
+        createdBy: {
+          omit: {
+            password: true,
+          },
+        },
+        updatedBy: {
+          omit: {
+            password: true,
+          },
+        },
+        LandingPages: {
+          include: {
+            createdBy: {
+              omit: {
+                password: true,
+              },
+            },
+            updatedBy: {
+              omit: {
+                password: true,
+              },
+            },
+            brand: true,
+            design: true,
+            formValidation: true,
+            language: true,
+            license: true,
+            lpType: true,
+            requester: {
+              omit: {
+                password: true,
+              },
+            },
+            subDesign: true,
+            topic: true,
+          },
+        },
+        subDesigns: {
+          include: {
+            createdBy: {
+              omit: {
+                password: true,
+              },
+            },
+            updatedBy: {
+              omit: {
+                password: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     return design;
@@ -148,6 +401,45 @@ export const getSubDesignBySlug = async (slug: string) => {
     const design = await db.dL_SubDesign.findUnique({
       where: {
         slug,
+      },
+      include: {
+        createdBy: {
+          omit: {
+            password: true,
+          },
+        },
+        updatedBy: {
+          omit: {
+            password: true,
+          },
+        },
+        LandingPages: {
+          include: {
+            createdBy: {
+              omit: {
+                password: true,
+              },
+            },
+            updatedBy: {
+              omit: {
+                password: true,
+              },
+            },
+            brand: true,
+            design: true,
+            formValidation: true,
+            language: true,
+            license: true,
+            lpType: true,
+            requester: {
+              omit: {
+                password: true,
+              },
+            },
+            subDesign: true,
+            topic: true,
+          },
+        },
       },
     });
 

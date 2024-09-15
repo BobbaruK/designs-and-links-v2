@@ -1,6 +1,6 @@
 import { IconButton } from "@/components/button-icon";
 import { DataTable } from "@/components/data-table";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardHeader } from "@/components/ui/card";
 import { currentUser } from "@/lib/auth";
 import { getDesigns } from "@/lib/data/dl";
 import { IoAddCircleSharp } from "react-icons/io5";
@@ -27,7 +27,6 @@ const DesignsPage = async () => {
             )}
           </div>
         </CardHeader>
-        <CardContent className="p-0"></CardContent>
       </Card>
       <DataTable
         columns={columns}

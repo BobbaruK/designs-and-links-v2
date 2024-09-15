@@ -39,7 +39,12 @@ import { useCurrentRole } from "@/hooks/use-current-role";
 import { DesignSchema } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { DL_Design, DL_SubDesign, Prisma } from "@prisma/client";
+import {
+  DL_Design,
+  DL_DesignAvatar,
+  DL_SubDesign,
+  Prisma,
+} from "@prisma/client";
 import { Check, ChevronsUpDown } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -50,23 +55,7 @@ import { z } from "zod";
 interface Props {
   design?: DL_Design;
   subDesign?: DL_SubDesign;
-  designAvatars:
-    | Prisma.DL_DesignAvatarGetPayload<{
-        include: {
-          createdBy: {
-            omit: {
-              password: false;
-            };
-          };
-          updatedBy: {
-            omit: {
-              password: false;
-            };
-          };
-        };
-      }>[]
-    | null;
-
+  designAvatars: DL_DesignAvatar[] | null;
   designs: DL_Design[] | null;
 }
 
@@ -81,6 +70,7 @@ export const EditDesign = ({
   const [error, setError] = useState<string | undefined>();
   const [isPending, startTransition] = useTransition();
   const userRole = useCurrentRole();
+  const [subDesignAvatar, setSubDesignAvatar] = useState<string | null>();
 
   const form = useForm<z.infer<typeof DesignSchema>>({
     resolver: zodResolver(DesignSchema),
@@ -383,6 +373,7 @@ export const EditDesign = ({
                                     key={leDesign.id}
                                     onSelect={() => {
                                       form.setValue("isSubDesign", leDesign.id);
+                                      setSubDesignAvatar(leDesign.avatar);
                                     }}
                                     className="flex items-center gap-0"
                                   >
@@ -412,17 +403,27 @@ export const EditDesign = ({
                   <FormDescription
                     className={cn("flex h-auto items-center gap-4")}
                   >
-                    {/* <CustomAvatar image={form.getValues("logo")} /> */}
-
+                    {subDesignAvatar && (
+                      <>
+                        <Image
+                          src={subDesignAvatar}
+                          alt={`Logo`}
+                          className="object-cover"
+                          unoptimized
+                          width={150}
+                          height={10}
+                        />
+                      </>
+                    )}
                     {form.getValues("isSubDesign") && (
                       <Button
                         size={"sm"}
                         variant={"link"}
                         className="text-foreground"
-                        onClick={onResetDesign}
+                        onClick={() => form.setValue("isSubDesign", "")}
                         type="button"
                       >
-                        Remove design
+                        Remove sub design avatar
                       </Button>
                     )}
                   </FormDescription>

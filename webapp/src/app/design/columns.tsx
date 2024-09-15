@@ -15,6 +15,8 @@ import {
 import DesignRowActions from "./design-row-actions";
 import { FaCaretRight } from "react-icons/fa6";
 import { FaCaretDown } from "react-icons/fa6";
+import { SortingArrows } from "@/components/sorting-arrows";
+import { NameCell } from "@/components/data-table/name-cell";
 
 type Design = Prisma.DL_DesignGetPayload<{
   include: {
@@ -40,8 +42,10 @@ type Design = Prisma.DL_DesignGetPayload<{
             password: true;
           };
         };
+        LandingPages: true;
       };
     };
+    LandingPages: true;
   };
 }>;
 
@@ -57,6 +61,7 @@ type SubDesign = Prisma.DL_SubDesignGetPayload<{
         password: true;
       };
     };
+    LandingPages: true;
   };
 }>;
 
@@ -111,9 +116,9 @@ export const columns: ColumnDef<Design>[] = [
   {
     accessorKey: "name",
     id: "name",
+    accessorFn: (originalRow) => originalRow.name,
     enableHiding: false,
-    sortingFn: "text",
-    header: ({ column, table }) => {
+    header: ({ column }) => {
       return (
         <Button
           variant="ghost"
@@ -121,19 +126,15 @@ export const columns: ColumnDef<Design>[] = [
           onClick={() => column.toggleSorting()}
         >
           Name
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row, getValue }) => {
-      const id = row.original.slug;
+      const slug = row.original.slug;
       const name = row.original.name;
       const image = row.original.avatar || "";
+      const lps = row.original.LandingPages;
 
       return (
         <div
@@ -148,13 +149,17 @@ export const columns: ColumnDef<Design>[] = [
           <CustomHoverCard
             triggerAsChild
             trigger={
-              <Link href={`/design/${id}`} className="flex items-center gap-2">
-                <CustomAvatar
-                  image={image}
-                  className="h-[110px] w-[100px] overflow-hidden rounded-md bg-black"
-                />
-                {name}
-              </Link>
+              <NameCell
+                link={`/design/${slug}`}
+                name={name}
+                length={lps ? lps.length : 0}
+                image={
+                  <CustomAvatar
+                    image={image}
+                    className="h-[110px] w-[130px] overflow-hidden rounded-md bg-black"
+                  />
+                }
+              />
             }
           >
             {image ? (
@@ -183,6 +188,9 @@ export const columns: ColumnDef<Design>[] = [
   // Created At
   {
     accessorKey: "createdAt",
+    id: "createdAt",
+    accessorFn: (originalRow) => originalRow.createdAt,
+    sortingFn: "datetime",
     sortDescFirst: false,
     header: ({ column }) => {
       return (
@@ -192,28 +200,18 @@ export const columns: ColumnDef<Design>[] = [
           onClick={() => column.toggleSorting()}
         >
           Created At (UTC)
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row }) => returnFormattedDate(row.getValue("createdAt")),
-    sortingFn: "datetime",
   },
   // Created By
   {
     accessorKey: "createdBy",
-    // enableSorting: false,
-    sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.createdBy?.name!;
-      const rB_Username = rowB.original.createdBy?.name!;
-
-      return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
-    },
+    id: "createdBy",
+    accessorFn: (originalRow) => originalRow.createdBy?.name,
+    sortUndefined: "last",
     header: ({ column }) => {
       return (
         <Button
@@ -222,12 +220,7 @@ export const columns: ColumnDef<Design>[] = [
           onClick={() => column.toggleSorting()}
         >
           Created By
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -285,6 +278,9 @@ export const columns: ColumnDef<Design>[] = [
   // Updated At
   {
     accessorKey: "updatedAt",
+    id: "updatedAt",
+    accessorFn: (originalRow) => originalRow.updatedAt,
+    sortingFn: "datetime",
     header: ({ column }) => {
       return (
         <Button
@@ -293,28 +289,18 @@ export const columns: ColumnDef<Design>[] = [
           onClick={() => column.toggleSorting()}
         >
           Updated At (UTC)
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row }) => returnFormattedDate(row.getValue("updatedAt")),
-    sortingFn: "datetime",
   },
   // Updated By
   {
     accessorKey: "updatedBy",
-    // enableSorting: false,
-    sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.updatedBy?.name!;
-      const rB_Username = rowB.original.updatedBy?.name!;
-
-      return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
-    },
+    id: "updatedBy",
+    accessorFn: (originalRow) => originalRow.updatedBy?.name,
+    sortUndefined: "last",
     header: ({ column }) => {
       return (
         <Button
@@ -323,12 +309,7 @@ export const columns: ColumnDef<Design>[] = [
           onClick={() => column.toggleSorting()}
         >
           Updated By
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -342,42 +323,37 @@ export const columns: ColumnDef<Design>[] = [
       return (
         <>
           {updatedBy ? (
-            <>
-              <CustomHoverCard
-                triggerAsChild
-                trigger={
-                  <Link href={`/profile/${id}`}>
-                    <CustomAvatar image={image} />
-                    {name}
-                  </Link>
-                }
-              >
-                <p>
-                  User:{" "}
-                  <Link
-                    className={cn("hover:underline")}
-                    href={`/profile/${id}`}
-                  >
-                    <strong>{name}</strong>
-                  </Link>
-                </p>
-                <p>
-                  Email:{" "}
-                  <Link
-                    className={cn("hover:underline")}
-                    href={`mailto:${email}`}
-                  >
-                    <strong>{email}</strong>
-                  </Link>
-                </p>
-                <p>
-                  Created at:{" "}
-                  <strong>
-                    {returnFormattedDate(row.original.updatedAt)} (UTC)
-                  </strong>
-                </p>
-              </CustomHoverCard>
-            </>
+            <CustomHoverCard
+              triggerAsChild
+              trigger={
+                <Link href={`/profile/${id}`}>
+                  <CustomAvatar image={image} />
+                  {name}
+                </Link>
+              }
+            >
+              <p>
+                User:{" "}
+                <Link className={cn("hover:underline")} href={`/profile/${id}`}>
+                  <strong>{name}</strong>
+                </Link>
+              </p>
+              <p>
+                Email:{" "}
+                <Link
+                  className={cn("hover:underline")}
+                  href={`mailto:${email}`}
+                >
+                  <strong>{email}</strong>
+                </Link>
+              </p>
+              <p>
+                Created at:{" "}
+                <strong>
+                  {returnFormattedDate(row.original.updatedAt)} (UTC)
+                </strong>
+              </p>
+            </CustomHoverCard>
           ) : (
             <div className="flex items-center gap-4">
               <CustomAvatar image={null} />

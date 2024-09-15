@@ -66,6 +66,7 @@ export const AddDesign = ({ designAvatars, designs }: Props) => {
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const [isPending, startTransition] = useTransition();
+  const [subDesignAvatar, setSubDesignAvatar] = useState<string | null>();
 
   const form = useForm<z.infer<typeof DesignSchema>>({
     resolver: zodResolver(DesignSchema),
@@ -112,14 +113,6 @@ export const AddDesign = ({ designAvatars, designs }: Props) => {
         })
         .catch(() => setError("Something went wrong!"));
     });
-  };
-
-  const onResetAvatar = () => {
-    form.setValue("avatar", "");
-  };
-
-  const onResetDesign = () => {
-    form.setValue("isSubDesign", "");
   };
 
   return (
@@ -251,26 +244,25 @@ export const AddDesign = ({ designAvatars, designs }: Props) => {
                   >
                     {/* <CustomAvatar image={form.getValues("logo")} /> */}
                     {form.getValues("avatar") && (
-                      <Image
-                        src={form.getValues("avatar")!}
-                        alt={`'s Logo`}
-                        className="object-cover"
-                        unoptimized
-                        width={150}
-                        height={10}
-                      />
-                    )}
-
-                    {form.getValues("avatar") && (
-                      <Button
-                        size={"sm"}
-                        variant={"link"}
-                        className="text-foreground"
-                        onClick={onResetAvatar}
-                        type="button"
-                      >
-                        Remove design avatar
-                      </Button>
+                      <>
+                        <Image
+                          src={form.getValues("avatar")!}
+                          alt={`Logo`}
+                          className="object-cover"
+                          unoptimized
+                          width={150}
+                          height={10}
+                        />
+                        <Button
+                          size={"sm"}
+                          variant={"link"}
+                          className="text-foreground"
+                          onClick={() => form.setValue("avatar", "")}
+                          type="button"
+                        >
+                          Remove design avatar
+                        </Button>
+                      </>
                     )}
                   </FormDescription>
                 </div>
@@ -330,6 +322,7 @@ export const AddDesign = ({ designAvatars, designs }: Props) => {
                                   key={design.id}
                                   onSelect={() => {
                                     form.setValue("isSubDesign", design.id);
+                                    setSubDesignAvatar(design.avatar);
                                   }}
                                   className="flex items-center gap-0"
                                 >
@@ -358,16 +351,26 @@ export const AddDesign = ({ designAvatars, designs }: Props) => {
                   <FormDescription
                     className={cn("flex h-auto items-center gap-4")}
                   >
-                    {form.getValues("isSubDesign") && (
-                      <Button
-                        size={"sm"}
-                        variant={"link"}
-                        className="text-foreground"
-                        onClick={onResetDesign}
-                        type="button"
-                      >
-                        Remove design
-                      </Button>
+                    {subDesignAvatar && (
+                      <>
+                        <Image
+                          src={subDesignAvatar}
+                          alt={`Logo`}
+                          className="object-cover"
+                          unoptimized
+                          width={150}
+                          height={10}
+                        />
+                        <Button
+                          size={"sm"}
+                          variant={"link"}
+                          className="text-foreground"
+                          onClick={() => form.setValue("isSubDesign", "")}
+                          type="button"
+                        >
+                          Remove sub design avatar
+                        </Button>
+                      </>
                     )}
                   </FormDescription>
                 </div>
