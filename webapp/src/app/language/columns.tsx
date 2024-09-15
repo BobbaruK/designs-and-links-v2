@@ -53,7 +53,12 @@ export const columns: ColumnDef<Language>[] = [
       const lps = row.original.LandingPages;
 
       return (
-        <NameCell link={`/language/${slug}`} name={name} length={lps.length} image={image} />
+        <NameCell
+          link={`/language/${slug}`}
+          name={name}
+          length={lps.length}
+          image={<CustomAvatar image={image} />}
+        />
       );
     },
   },
