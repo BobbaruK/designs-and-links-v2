@@ -1,25 +1,18 @@
 "use client";
 
 import { CustomAvatar } from "@/components/custom-avatar";
+import { CustomHoverCard } from "@/components/custom-hover-card";
 import { Button } from "@/components/ui/button";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+import { columnId } from "@/lib/constants";
 import { cn, returnFormattedDate } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
+import Image from "next/image";
 import Link from "next/link";
-import {
-  PiArrowBendRightDownDuotone,
-  PiArrowBendRightUpDuotone,
-} from "react-icons/pi";
-import LandingPageRowActions from "./landing-page-row-actions";
-import { CustomHoverCard } from "@/components/custom-hover-card";
 import { BsCheckCircle } from "react-icons/bs";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import Image from "next/image";
+import { SortingArrows } from "../sorting-arrows";
+import LandingPageRowActions from "./landing-page-row-actions";
 
 type LandingPage = Prisma.DL_LandingPageGetPayload<{
   include: {
@@ -52,7 +45,7 @@ type LandingPage = Prisma.DL_LandingPageGetPayload<{
 export const columns: ColumnDef<LandingPage>[] = [
   // Name
   {
-    accessorKey: "name",
+    ...columnId({ id: "name" }),
     enableHiding: false,
     accessorFn: (originalRow) => originalRow?.name,
     header: ({ column }) => {
@@ -63,16 +56,11 @@ export const columns: ColumnDef<LandingPage>[] = [
           onClick={() => column.toggleSorting()}
         >
           Name
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
-    cell: ({ row, getValue }) => {
+    cell: ({ row }) => {
       const slug =
         row.original.subDesign?.slug || row.original.design?.slug || "";
       const name = row.original.name;
@@ -133,9 +121,9 @@ export const columns: ColumnDef<LandingPage>[] = [
   },
   // Slug
   {
-    accessorKey: "slug",
-    id: "slug",
+    ...columnId({ id: "slug" }),
     accessorFn: (originalRow) => originalRow?.slug,
+    sortUndefined: "last",
     header: ({ column }) => {
       return (
         <Button
@@ -144,30 +132,25 @@ export const columns: ColumnDef<LandingPage>[] = [
           onClick={() => column.toggleSorting()}
         >
           Slug
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const slug =
-        row.original.subDesign?.slug || row.original.design?.slug || "";
+      const slug = row.original.slug || "-";
+
       return (
         <Button asChild variant={"link"} className={cn("text-foreground")}>
-          <Link href={`/design/${slug}`}>{slug}</Link>
+          {slug && <Link href={`/landing-page/${slug}`}>{slug}</Link>}
         </Button>
       );
     },
   },
   // WhatsApp
   {
-    accessorKey: "whatsapp",
-    // enableSorting: false,
+    ...columnId({ id: "whatsapp" }),
     accessorFn: (originalRow) => originalRow?.whatsapp,
+    sortDescFirst: false,
     header: ({ column }) => {
       return (
         <div className="grid w-full place-items-center">
@@ -177,12 +160,7 @@ export const columns: ColumnDef<LandingPage>[] = [
             onClick={() => column.toggleSorting()}
           >
             WhatsApp
-            {column.getIsSorted() === "asc" && (
-              <PiArrowBendRightUpDuotone size={20} />
-            )}
-            {column.getIsSorted() === "desc" && (
-              <PiArrowBendRightDownDuotone size={20} />
-            )}
+            <SortingArrows sort={column.getIsSorted()} />
           </Button>
         </div>
       );
@@ -199,9 +177,9 @@ export const columns: ColumnDef<LandingPage>[] = [
   },
   // FXORO Footer
   {
-    accessorKey: "fxoroFooter",
-    // enableSorting: false,
+    ...columnId({ id: "fxoroFooter" }),
     accessorFn: (originalRow) => originalRow?.fxoroFooter,
+    sortDescFirst: false,
     header: ({ column }) => {
       return (
         <div className="grid w-full place-items-center">
@@ -211,12 +189,7 @@ export const columns: ColumnDef<LandingPage>[] = [
             onClick={() => column.toggleSorting()}
           >
             FXORO Footer
-            {column.getIsSorted() === "asc" && (
-              <PiArrowBendRightUpDuotone size={20} />
-            )}
-            {column.getIsSorted() === "desc" && (
-              <PiArrowBendRightDownDuotone size={20} />
-            )}
+            <SortingArrows sort={column.getIsSorted()} />
           </Button>
         </div>
       );
@@ -233,15 +206,9 @@ export const columns: ColumnDef<LandingPage>[] = [
   },
   // Requester
   {
-    accessorKey: "requester",
-    // enableSorting: false,
+    ...columnId({ id: "requester" }),
     accessorFn: (originalRow) => originalRow.requester?.name,
-    sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.requester?.name!;
-      const rB_Username = rowB.original.requester?.name!;
-
-      return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
-    },
+    sortDescFirst: false,
     sortUndefined: "last",
     header: ({ column }) => {
       return (
@@ -251,12 +218,7 @@ export const columns: ColumnDef<LandingPage>[] = [
           onClick={() => column.toggleSorting()}
         >
           Requester
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -313,17 +275,9 @@ export const columns: ColumnDef<LandingPage>[] = [
   },
   // Topic
   {
-    accessorKey: "topic",
-    // enableSorting: false,
+    ...columnId({ id: "topic" }),
     accessorFn: (originalRow) => originalRow.topic?.name,
-    sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.topic?.name!;
-      const rB_Username = rowB.original.topic?.name!;
-
-      return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
-    },
     sortUndefined: "last",
-    enableMultiSort: true,
     header: ({ column }) => {
       return (
         <Button
@@ -332,12 +286,7 @@ export const columns: ColumnDef<LandingPage>[] = [
           onClick={() => column.toggleSorting()}
         >
           Topic
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -359,8 +308,7 @@ export const columns: ColumnDef<LandingPage>[] = [
   },
   // License
   {
-    accessorKey: "license",
-    // enableSorting: false,
+    ...columnId({ id: "license" }),
     accessorFn: (originalRow) => originalRow?.license?.name,
     sortUndefined: "last",
     header: ({ column }) => {
@@ -371,12 +319,7 @@ export const columns: ColumnDef<LandingPage>[] = [
           onClick={() => column.toggleSorting()}
         >
           License
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -398,8 +341,7 @@ export const columns: ColumnDef<LandingPage>[] = [
   },
   // Landing Page Type
   {
-    accessorKey: "lpType",
-    // enableSorting: false,
+    ...columnId({ id: "lpType" }),
     accessorFn: (originalRow) => originalRow?.lpType?.name,
     sortUndefined: "last",
     header: ({ column }) => {
@@ -410,12 +352,7 @@ export const columns: ColumnDef<LandingPage>[] = [
           onClick={() => column.toggleSorting()}
         >
           Landing Page Type
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -437,8 +374,7 @@ export const columns: ColumnDef<LandingPage>[] = [
   },
   // Form Validation
   {
-    accessorKey: "formValidation",
-    // enableSorting: false,
+    ...columnId({ id: "formValidation" }),
     accessorFn: (originalRow) => originalRow?.formValidation?.name,
     sortUndefined: "last",
     header: ({ column }) => {
@@ -449,12 +385,7 @@ export const columns: ColumnDef<LandingPage>[] = [
           onClick={() => column.toggleSorting()}
         >
           Form Validation
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -476,16 +407,9 @@ export const columns: ColumnDef<LandingPage>[] = [
   },
   // Language
   {
-    accessorKey: "language",
-    // enableSorting: false,
+    ...columnId({ id: "language" }),
     accessorFn: (originalRow) => originalRow?.language?.englishName,
     sortUndefined: "last",
-    sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.language?.englishName!;
-      const rB_Username = rowB.original.language?.englishName!;
-
-      return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
-    },
     header: ({ column }) => {
       return (
         <Button
@@ -494,12 +418,7 @@ export const columns: ColumnDef<LandingPage>[] = [
           onClick={() => column.toggleSorting()}
         >
           Language
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -531,7 +450,7 @@ export const columns: ColumnDef<LandingPage>[] = [
   },
   // Brand
   {
-    accessorKey: "brand",
+    ...columnId({ id: "brand" }),
     accessorFn: (originalRow) => originalRow?.brand?.name,
     sortUndefined: "last",
     header: ({ column }) => {
@@ -542,12 +461,7 @@ export const columns: ColumnDef<LandingPage>[] = [
           onClick={() => column.toggleSorting()}
         >
           Brand
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -604,7 +518,9 @@ export const columns: ColumnDef<LandingPage>[] = [
   },
   // Created At
   {
-    accessorKey: "createdAt",
+    ...columnId({ id: "createdAt" }),
+    accessorFn: (originalRow) => originalRow.createdAt,
+    sortingFn: "datetime",
     sortDescFirst: false,
     header: ({ column }) => {
       return (
@@ -614,30 +530,18 @@ export const columns: ColumnDef<LandingPage>[] = [
           onClick={() => column.toggleSorting()}
         >
           Created At (UTC)
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row }) => returnFormattedDate(row.getValue("createdAt")),
-    sortingFn: "datetime",
   },
   // Created By
   {
-    accessorKey: "createdBy",
-    // enableSorting: false,
-    accessorFn: (originalRow) => originalRow?.createdBy?.name,
+    ...columnId({ id: "createdBy" }),
+    accessorFn: (originalRow) => originalRow.createdBy?.name,
     sortUndefined: "last",
-    sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.createdBy?.name!;
-      const rB_Username = rowB.original.createdBy?.name!;
-
-      return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
-    },
+    sortDescFirst: false,
     header: ({ column }) => {
       return (
         <Button
@@ -646,12 +550,7 @@ export const columns: ColumnDef<LandingPage>[] = [
           onClick={() => column.toggleSorting()}
         >
           Created By
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -708,7 +607,10 @@ export const columns: ColumnDef<LandingPage>[] = [
   },
   // Updated At
   {
-    accessorKey: "updatedAt",
+    ...columnId({ id: "updatedAt" }),
+    sortingFn: "datetime",
+    sortDescFirst: false,
+    accessorFn: (originalRow) => originalRow.updatedAt,
     header: ({ column }) => {
       return (
         <Button
@@ -717,30 +619,18 @@ export const columns: ColumnDef<LandingPage>[] = [
           onClick={() => column.toggleSorting()}
         >
           Updated At (UTC)
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row }) => returnFormattedDate(row.getValue("updatedAt")),
-    sortingFn: "datetime",
   },
   // Updated By
   {
-    accessorKey: "updatedBy",
-    // enableSorting: false,
-    accessorFn: (originalRow) => originalRow?.updatedBy?.name,
+    ...columnId({ id: "updatedBy" }),
+    accessorFn: (originalRow) => originalRow.updatedBy?.name,
     sortUndefined: "last",
-    sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.updatedBy?.name!;
-      const rB_Username = rowB.original.updatedBy?.name!;
-
-      return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
-    },
+    sortDescFirst: false,
     header: ({ column }) => {
       return (
         <Button
@@ -749,12 +639,7 @@ export const columns: ColumnDef<LandingPage>[] = [
           onClick={() => column.toggleSorting()}
         >
           Updated By
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -811,8 +696,11 @@ export const columns: ColumnDef<LandingPage>[] = [
   },
   // Actions
   {
-    id: "actions",
+    ...columnId({ id: "actions" }),
     enableHiding: false,
+    header: () => {
+      return " ";
+    },
     cell: ({ row }) => {
       const landingPage = row.original;
 

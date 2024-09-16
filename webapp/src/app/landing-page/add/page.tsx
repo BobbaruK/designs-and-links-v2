@@ -16,6 +16,8 @@ import { getUsers } from "@/lib/data/user";
 import { ReactNode } from "react";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { AddLandingPage } from "./add-landing-page";
+import { CustomCardContent } from "@/components/custom-card-content";
+import { ImPagebreak } from "react-icons/im";
 
 const AddLandingPagePage = async () => {
   const user = await currentUser();
@@ -31,9 +33,9 @@ const AddLandingPagePage = async () => {
   const brands = await getBrands();
 
   const header: ReactNode = (
-    <CardHeader>
+    <CardHeader className="border-b border-b-secondary">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-4xl font-bold">Add Landing Page</h1>
+        <h1 className="text-4xl font-bold">Add landing page</h1>
         <IconButton
           icon={<IoArrowBackCircleSharp size={25} />}
           href={"/landing-page"}
@@ -49,19 +51,24 @@ const AddLandingPagePage = async () => {
         <>
           <Card>
             {header}
-            <CardContent>
-              <AddLandingPage
-                users={users}
-                topics={topics}
-                designs={designs}
-                subDesigns={subDesigns}
-                formValidations={formValidation}
-                licenses={licenses}
-                lpTypes={lpTypes}
-                languages={languages}
-                brands={brands}
-              />
-            </CardContent>
+            <CustomCardContent
+              form={
+                <AddLandingPage
+                  users={users}
+                  topics={topics}
+                  designs={designs}
+                  subDesigns={subDesigns}
+                  formValidations={formValidation}
+                  licenses={licenses}
+                  lpTypes={lpTypes}
+                  languages={languages}
+                  brands={brands}
+                />
+              }
+              label={"Landing Page"}
+              icon={<ImPagebreak size={320} />}
+              formWidth={700}
+            />
           </Card>
         </>
       ) : (

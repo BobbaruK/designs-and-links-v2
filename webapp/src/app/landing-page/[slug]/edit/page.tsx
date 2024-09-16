@@ -1,6 +1,7 @@
-import { CustomAlert } from "@/components/custom-alert";
 import { IconButton } from "@/components/button-icon";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { CustomAlert } from "@/components/custom-alert";
+import { CustomCardContent } from "@/components/custom-card-content";
+import { Card, CardHeader } from "@/components/ui/card";
 import { currentUser } from "@/lib/auth";
 import {
   getBrands,
@@ -14,6 +15,8 @@ import {
   getTopics,
 } from "@/lib/data/dl";
 import { getUsers } from "@/lib/data/user";
+import { ReactNode } from "react";
+import { ImPagebreak } from "react-icons/im";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { EditLandingPage } from "./edit-landing-page";
 
@@ -37,59 +40,57 @@ const EditLandingPagePage = async ({ params: { slug } }: Props) => {
   const languages = await getLanguages();
   const brands = await getBrands();
 
+  const header: ReactNode = (
+    <CardHeader className="border-b border-b-secondary">
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-4xl font-bold">
+          {!landingPage ? `Landing page: ${slug}` : landingPage.name}
+        </h1>
+        <IconButton
+          icon={<IoArrowBackCircleSharp size={25} />}
+          href={"/landing-page"}
+          label={"Back to landing pages"}
+        />
+      </div>
+    </CardHeader>
+  );
+
   return (
     <div className="container flex flex-col gap-6">
       {!landingPage ? (
         <>
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold">Landing page: {slug}</h1>
-                <IconButton
-                  icon={<IoArrowBackCircleSharp size={25} />}
-                  href={"/landing-page"}
-                  label={"Back to landing pages"}
-                />
-              </div>
-            </CardHeader>
-          </Card>
+          <Card>{header}</Card>
           <CustomAlert
             title={"Error!"}
-            description={`Seems like the design that you are looking for does not exist.`}
+            asset="landing page"
             variant="destructive"
           />
         </>
       ) : (
         <>
           <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between gap-4">
-                <h1 className="text-4xl font-bold">
-                  Edit landing page: {landingPage.name}
-                </h1>
-                <IconButton
-                  icon={<IoArrowBackCircleSharp size={25} />}
-                  href={`/landing-page/${slug}`}
-                  label={`Back to design ${landingPage.name}`}
-                />
-              </div>
-            </CardHeader>
+            {header}
 
             {(user?.role === "EDITOR" || user?.role === "ADMIN") && (
-              <CardContent>
-                <EditLandingPage
-                  landingPage={landingPage}
-                  users={users}
-                  topics={topics}
-                  designs={designs}
-                  subDesigns={subDesigns}
-                  formValidations={formValidation}
-                  licenses={licenses}
-                  lpTypes={lpTypes}
-                  languages={languages}
-                  brands={brands}
-                />
-              </CardContent>
+              <CustomCardContent
+                form={
+                  <EditLandingPage
+                    landingPage={landingPage}
+                    users={users}
+                    topics={topics}
+                    designs={designs}
+                    subDesigns={subDesigns}
+                    formValidations={formValidation}
+                    licenses={licenses}
+                    lpTypes={lpTypes}
+                    languages={languages}
+                    brands={brands}
+                  />
+                }
+                label={landingPage?.name}
+                icon={<ImPagebreak size={320} />}
+                formWidth={700}
+              />
             )}
           </Card>
 
