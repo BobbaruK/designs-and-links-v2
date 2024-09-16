@@ -2,16 +2,14 @@
 
 import { CustomAvatar } from "@/components/custom-avatar";
 import { CustomHoverCard } from "@/components/custom-hover-card";
+import { SortingArrows } from "@/components/sorting-arrows";
 import { Button } from "@/components/ui/button";
+import { columnId } from "@/lib/constants";
 import { cn, returnFormattedDate } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  PiArrowBendRightDownDuotone,
-  PiArrowBendRightUpDuotone,
-} from "react-icons/pi";
 import AdminBrandLogosRowActions from "./admin-brand-logos-row-actions";
 
 type DB_BrandLogos = Prisma.DL_BrandLogoGetPayload<{
@@ -32,10 +30,9 @@ type DB_BrandLogos = Prisma.DL_BrandLogoGetPayload<{
 export const columns: ColumnDef<DB_BrandLogos>[] = [
   // Name
   {
-    accessorKey: "name",
-    id: "name",
+    ...columnId({ id: "name" }),
+    accessorFn: (originalRow) => originalRow.name.toLowerCase(),
     enableHiding: false,
-    sortingFn: "text",
     header: ({ column }) => {
       return (
         <Button
@@ -44,12 +41,7 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
           onClick={() => column.toggleSorting()}
         >
           Name
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -93,8 +85,9 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
   },
   // Created At
   {
-    accessorKey: "createdAt",
-    id: "createdAt",
+    ...columnId({ id: "createdAt" }),
+    accessorFn: (originalRow) => originalRow.createdAt,
+    sortingFn: "datetime",
     sortDescFirst: false,
     header: ({ column }) => {
       return (
@@ -104,28 +97,18 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
           onClick={() => column.toggleSorting()}
         >
           Created At (UTC)
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row }) => returnFormattedDate(row.getValue("createdAt")),
-    sortingFn: "datetime",
   },
   // Created By
   {
-    accessorKey: "createdBy",
-    // enableSorting: false,
-    sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.createdBy?.name!;
-      const rB_Username = rowB.original.createdBy?.name!;
-
-      return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
-    },
+    ...columnId({ id: "createdBy" }),
+    accessorFn: (originalRow) => originalRow.createdBy?.name.toLowerCase(),
+    sortUndefined: "last",
+    sortDescFirst: false,
     header: ({ column }) => {
       return (
         <Button
@@ -134,12 +117,7 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
           onClick={() => column.toggleSorting()}
         >
           Created By
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -180,7 +158,7 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
               <p>
                 Created at:{" "}
                 <strong>
-                  {returnFormattedDate(row.original.createdAt)} (UTC)
+                  {returnFormattedDate(row.original.updatedAt)} (UTC)
                 </strong>
               </p>
             </CustomHoverCard>
@@ -196,8 +174,10 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
   },
   // Updated At
   {
-    accessorKey: "updatedAt",
-    id: "updatedAt",
+    ...columnId({ id: "updatedAt" }),
+    sortingFn: "datetime",
+    sortDescFirst: false,
+    accessorFn: (originalRow) => originalRow.updatedAt,
     header: ({ column }) => {
       return (
         <Button
@@ -206,28 +186,18 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
           onClick={() => column.toggleSorting()}
         >
           Updated At (UTC)
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row }) => returnFormattedDate(row.getValue("updatedAt")),
-    sortingFn: "datetime",
   },
   // Updated By
   {
-    accessorKey: "updatedBy",
-    // enableSorting: false,
-    sortingFn: (rowA, rowB, columnId) => {
-      const rA_Username = rowA.original.updatedBy?.name!;
-      const rB_Username = rowB.original.updatedBy?.name!;
-
-      return rA_Username > rB_Username ? 1 : rA_Username < rB_Username ? -1 : 0;
-    },
+    ...columnId({ id: "updatedBy" }),
+    accessorFn: (originalRow) => originalRow.updatedBy?.name.toLowerCase(),
+    sortUndefined: "last",
+    sortDescFirst: false,
     header: ({ column }) => {
       return (
         <Button
@@ -236,12 +206,7 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
           onClick={() => column.toggleSorting()}
         >
           Updated By
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -298,8 +263,11 @@ export const columns: ColumnDef<DB_BrandLogos>[] = [
   },
   // Actions
   {
-    id: "actions",
+    ...columnId({ id: "actions" }),
     enableHiding: false,
+    header: () => {
+      return " ";
+    },
     cell: ({ row }) => {
       const avatars = row.original;
 

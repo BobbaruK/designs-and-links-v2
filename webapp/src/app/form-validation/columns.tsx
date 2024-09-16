@@ -5,6 +5,7 @@ import { CustomHoverCard } from "@/components/custom-hover-card";
 import { NameCell } from "@/components/data-table/name-cell";
 import { SortingArrows } from "@/components/sorting-arrows";
 import { Button } from "@/components/ui/button";
+import { columnId } from "@/lib/constants";
 import { cn, returnFormattedDate } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
@@ -30,9 +31,8 @@ type FormValidation = Prisma.DL_FormValidationGetPayload<{
 export const columns: ColumnDef<FormValidation>[] = [
   // Name
   {
-    accessorKey: "name",
-    id: "name",
-    accessorFn: (originalRow) => originalRow.name,
+    ...columnId({ id: "name" }),
+    accessorFn: (originalRow) => originalRow.name.toLowerCase(),
     enableHiding: false,
     header: ({ column }) => {
       return (
@@ -62,8 +62,7 @@ export const columns: ColumnDef<FormValidation>[] = [
   },
   // Slug
   {
-    accessorKey: "slug",
-    id: "slug",
+    ...columnId({ id: "slug" }),
     accessorFn: (originalRow) => originalRow.slug,
     header: ({ column }) => {
       return (
@@ -87,8 +86,7 @@ export const columns: ColumnDef<FormValidation>[] = [
   },
   // Description
   {
-    accessorKey: "description",
-    id: "description",
+    ...columnId({ id: "description" }),
     accessorFn: (originalRow) => originalRow.description,
     enableSorting: false,
     header: ({ column }) => {
@@ -112,8 +110,7 @@ export const columns: ColumnDef<FormValidation>[] = [
   },
   // Created At
   {
-    accessorKey: "createdAt",
-    id: "createdAt",
+    ...columnId({ id: "createdAt" }),
     accessorFn: (originalRow) => originalRow.createdAt,
     sortingFn: "datetime",
     sortDescFirst: false,
@@ -133,10 +130,10 @@ export const columns: ColumnDef<FormValidation>[] = [
   },
   // Created By
   {
-    accessorKey: "createdBy",
-    id: "createdBy",
-    accessorFn: (originalRow) => originalRow.createdBy?.name,
+    ...columnId({ id: "createdBy" }),
+    accessorFn: (originalRow) => originalRow.createdBy?.name.toLowerCase(),
     sortUndefined: "last",
+    sortDescFirst: false,
     header: ({ column }) => {
       return (
         <Button
@@ -202,10 +199,10 @@ export const columns: ColumnDef<FormValidation>[] = [
   },
   // Updated At
   {
-    accessorKey: "updatedAt",
-    id: "updatedAt",
-    accessorFn: (originalRow) => originalRow.updatedAt,
+    ...columnId({ id: "updatedAt" }),
     sortingFn: "datetime",
+    sortDescFirst: false,
+    accessorFn: (originalRow) => originalRow.updatedAt,
     header: ({ column }) => {
       return (
         <Button
@@ -222,10 +219,10 @@ export const columns: ColumnDef<FormValidation>[] = [
   },
   // Updated By
   {
-    accessorKey: "updatedBy",
-    id: "updatedBy",
-    accessorFn: (originalRow) => originalRow.updatedBy?.name,
+    ...columnId({ id: "updatedBy" }),
+    accessorFn: (originalRow) => originalRow.updatedBy?.name.toLowerCase(),
     sortUndefined: "last",
+    sortDescFirst: false,
     header: ({ column }) => {
       return (
         <Button
@@ -291,8 +288,11 @@ export const columns: ColumnDef<FormValidation>[] = [
   },
   // Actions
   {
-    id: "actions",
+    ...columnId({ id: "actions" }),
     enableHiding: false,
+    header: () => {
+      return " ";
+    },
     cell: ({ row }) => {
       const formValidation = row.original;
 

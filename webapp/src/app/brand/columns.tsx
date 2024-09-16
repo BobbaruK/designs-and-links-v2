@@ -2,19 +2,16 @@
 
 import { CustomAvatar } from "@/components/custom-avatar";
 import { CustomHoverCard } from "@/components/custom-hover-card";
+import { NameCell } from "@/components/data-table/name-cell";
+import { SortingArrows } from "@/components/sorting-arrows";
 import { Button } from "@/components/ui/button";
+import { columnId } from "@/lib/constants";
 import { cn, returnFormattedDate } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  PiArrowBendRightDownDuotone,
-  PiArrowBendRightUpDuotone,
-} from "react-icons/pi";
 import BrandRowActions from "./brand-row-actions";
-import { SortingArrows } from "@/components/sorting-arrows";
-import { NameCell } from "@/components/data-table/name-cell";
 
 type Brand = Prisma.DL_BrandGetPayload<{
   include: {
@@ -35,9 +32,8 @@ type Brand = Prisma.DL_BrandGetPayload<{
 export const columns: ColumnDef<Brand>[] = [
   // Name
   {
-    accessorKey: "name",
-    id: "name",
-    accessorFn: (originalRow) => originalRow.name,
+    ...columnId({ id: "name" }),
+    accessorFn: (originalRow) => originalRow.name.toLowerCase(),
     enableHiding: false,
     header: ({ column }) => {
       return (
@@ -94,8 +90,7 @@ export const columns: ColumnDef<Brand>[] = [
   },
   // Slug
   {
-    accessorKey: "slug",
-    id: "slug",
+    ...columnId({ id: "slug" }),
     accessorFn: (originalRow) => originalRow.slug,
     header: ({ column }) => {
       return (
@@ -117,8 +112,7 @@ export const columns: ColumnDef<Brand>[] = [
   },
   // Created At
   {
-    accessorKey: "createdAt",
-    id: "createdAt",
+    ...columnId({ id: "createdAt" }),
     accessorFn: (originalRow) => originalRow.createdAt,
     sortingFn: "datetime",
     sortDescFirst: false,
@@ -138,10 +132,10 @@ export const columns: ColumnDef<Brand>[] = [
   },
   // Created By
   {
-    accessorKey: "createdBy",
-    id: "createdBy",
+    ...columnId({ id: "createdBy" }),
     accessorFn: (originalRow) => originalRow.createdBy?.name,
     sortUndefined: "last",
+    sortDescFirst: false,
     header: ({ column }) => {
       return (
         <Button
@@ -207,10 +201,10 @@ export const columns: ColumnDef<Brand>[] = [
   },
   // Updated At
   {
-    accessorKey: "updatedAt",
-    id: "updatedAt",
-    accessorFn: (originalRow) => originalRow.updatedAt,
+    ...columnId({ id: "updatedAt" }),
     sortingFn: "datetime",
+    sortDescFirst: false,
+    accessorFn: (originalRow) => originalRow.updatedAt,
     header: ({ column }) => {
       return (
         <Button
@@ -227,10 +221,10 @@ export const columns: ColumnDef<Brand>[] = [
   },
   // Updated By
   {
-    accessorKey: "updatedBy",
-    id: "updatedBy",
+    ...columnId({ id: "updatedBy" }),
     accessorFn: (originalRow) => originalRow.updatedBy?.name,
     sortUndefined: "last",
+    sortDescFirst: false,
     header: ({ column }) => {
       return (
         <Button
@@ -296,8 +290,11 @@ export const columns: ColumnDef<Brand>[] = [
   },
   // Actions
   {
-    id: "actions",
+    ...columnId({ id: "actions" }),
     enableHiding: false,
+    header: () => {
+      return " ";
+    },
     cell: ({ row }) => {
       const brand = row.original;
 

@@ -1,23 +1,16 @@
 "use client";
 
 import { CustomAvatar } from "@/components/custom-avatar";
+import { SortingArrows } from "@/components/sorting-arrows";
 import { Button } from "@/components/ui/button";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+import { columnId } from "@/lib/constants";
 import { cn, returnFormattedDate } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
-import {
-  PiArrowBendRightDownDuotone,
-  PiArrowBendRightUpDuotone,
-} from "react-icons/pi";
-import AdminUsersRowActions from "./admin-users-row-actions";
 import { BsCheckCircle } from "react-icons/bs";
 import { IoIosCloseCircleOutline } from "react-icons/io";
+import AdminUsersRowActions from "./admin-users-row-actions";
 
 type DB_User = Prisma.UserGetPayload<{
   omit: {
@@ -44,8 +37,8 @@ type DB_User = Prisma.UserGetPayload<{
 export const columns: ColumnDef<DB_User>[] = [
   // Name
   {
-    accessorKey: "name",
-    id: "name",
+    ...columnId({ id: "name" }),
+    accessorFn: (originalRow) => originalRow.name.toLowerCase(),
     enableHiding: false,
     header: ({ column }) => {
       return (
@@ -55,12 +48,7 @@ export const columns: ColumnDef<DB_User>[] = [
           onClick={() => column.toggleSorting()}
         >
           Name
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -82,8 +70,8 @@ export const columns: ColumnDef<DB_User>[] = [
   },
   // Email
   {
-    accessorKey: "email",
-    id: "email",
+    ...columnId({ id: "email" }),
+    accessorFn: (originalRow) => originalRow.email,
     enableHiding: false,
     header: ({ column }) => {
       return (
@@ -93,12 +81,7 @@ export const columns: ColumnDef<DB_User>[] = [
           onClick={() => column.toggleSorting()}
         >
           Email
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -117,9 +100,11 @@ export const columns: ColumnDef<DB_User>[] = [
   },
   // Email verified at
   {
-    accessorKey: "emailVerified",
-    id: "emailVerified",
+    ...columnId({ id: "emailVerified" }),
+    accessorFn: (originalRow) => originalRow.emailVerified,
     sortDescFirst: false,
+    sortingFn: "datetime",
+    sortUndefined: "last",
     header: ({ column }) => {
       return (
         <Button
@@ -128,23 +113,16 @@ export const columns: ColumnDef<DB_User>[] = [
           onClick={() => column.toggleSorting()}
         >
           Email verified At (UTC)
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row }) => returnFormattedDate(row.getValue("emailVerified")),
-    sortUndefined: "last",
-    sortingFn: "datetime",
   },
   // Role
   {
-    accessorKey: "role",
-    id: "role",
+    ...columnId({ id: "role" }),
+    accessorFn: (originalRow) => originalRow.role.toLowerCase(),
     enableHiding: false,
     header: ({ column }) => {
       return (
@@ -154,12 +132,7 @@ export const columns: ColumnDef<DB_User>[] = [
           onClick={() => column.toggleSorting()}
         >
           Role
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
@@ -169,24 +142,19 @@ export const columns: ColumnDef<DB_User>[] = [
   },
   // 2FA
   {
-    accessorKey: "twoFactorAuth",
-    id: "twoFactorAuth",
-    enableSorting: false,
+    ...columnId({ id: "twoFactorAuth" }),
+    accessorFn: (originalRow) => originalRow.isTwoFactorEnabled,
+    sortDescFirst: false,
     header: ({ column }) => {
       return (
         <div className="grid h-full w-full place-items-center">
           <Button
             variant="ghost"
             className="flex gap-2"
-            // onClick={() => column.toggleSorting()}
+            onClick={() => column.toggleSorting()}
           >
             2FA
-            {column.getIsSorted() === "asc" && (
-              <PiArrowBendRightUpDuotone size={20} />
-            )}
-            {column.getIsSorted() === "desc" && (
-              <IoIosCloseCircleOutline size={20} />
-            )}
+            <SortingArrows sort={column.getIsSorted()} />
           </Button>
         </div>
       );
@@ -205,24 +173,19 @@ export const columns: ColumnDef<DB_User>[] = [
   },
   // Is Oauth
   {
-    accessorKey: "isOauth",
-    id: "isOauth",
-    enableSorting: false,
+    ...columnId({ id: "isOauth" }),
+    accessorFn: (originalRow) => originalRow.accounts.length,
+    sortDescFirst: false,
     header: ({ column }) => {
       return (
         <div className="grid h-full w-full place-items-center">
           <Button
             variant="ghost"
             className="flex gap-2"
-            // onClick={() => column.toggleSorting()}
+            onClick={() => column.toggleSorting()}
           >
             Is Oauth
-            {column.getIsSorted() === "asc" && (
-              <PiArrowBendRightUpDuotone size={20} />
-            )}
-            {column.getIsSorted() === "desc" && (
-              <IoIosCloseCircleOutline size={20} />
-            )}
+            <SortingArrows sort={column.getIsSorted()} />
           </Button>
         </div>
       );
@@ -241,8 +204,9 @@ export const columns: ColumnDef<DB_User>[] = [
   },
   // Created At
   {
-    accessorKey: "createdAt",
-    id: "createdAt",
+    ...columnId({ id: "createdAt" }),
+    accessorFn: (originalRow) => originalRow.createdAt,
+    sortingFn: "datetime",
     sortDescFirst: false,
     header: ({ column }) => {
       return (
@@ -252,22 +216,18 @@ export const columns: ColumnDef<DB_User>[] = [
           onClick={() => column.toggleSorting()}
         >
           Created At (UTC)
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row }) => returnFormattedDate(row.getValue("createdAt")),
-    sortingFn: "datetime",
   },
   // Updated At
   {
-    accessorKey: "updatedAt",
-    id: "updatedAt",
+    ...columnId({ id: "updatedAt" }),
+    sortingFn: "datetime",
+    sortDescFirst: false,
+    accessorFn: (originalRow) => originalRow.updatedAt,
     header: ({ column }) => {
       return (
         <Button
@@ -276,22 +236,19 @@ export const columns: ColumnDef<DB_User>[] = [
           onClick={() => column.toggleSorting()}
         >
           Updated At (UTC)
-          {column.getIsSorted() === "asc" && (
-            <PiArrowBendRightUpDuotone size={20} />
-          )}
-          {column.getIsSorted() === "desc" && (
-            <PiArrowBendRightDownDuotone size={20} />
-          )}
+          <SortingArrows sort={column.getIsSorted()} />
         </Button>
       );
     },
     cell: ({ row }) => returnFormattedDate(row.getValue("updatedAt")),
-    sortingFn: "datetime",
   },
   // Actions
   {
-    id: "actions",
+    ...columnId({ id: "actions" }),
     enableHiding: false,
+    header: () => {
+      return " ";
+    },
     cell: ({ row }) => {
       const user = row.original;
 

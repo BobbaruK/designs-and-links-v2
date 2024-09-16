@@ -2,21 +2,17 @@
 
 import { CustomAvatar } from "@/components/custom-avatar";
 import { CustomHoverCard } from "@/components/custom-hover-card";
+import { NameCell } from "@/components/data-table/name-cell";
+import { SortingArrows } from "@/components/sorting-arrows";
 import { Button } from "@/components/ui/button";
+import { columnId } from "@/lib/constants";
 import { cn, returnFormattedDate } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  PiArrowBendRightDownDuotone,
-  PiArrowBendRightUpDuotone,
-} from "react-icons/pi";
+import { FaCaretDown, FaCaretRight } from "react-icons/fa6";
 import DesignRowActions from "./design-row-actions";
-import { FaCaretRight } from "react-icons/fa6";
-import { FaCaretDown } from "react-icons/fa6";
-import { SortingArrows } from "@/components/sorting-arrows";
-import { NameCell } from "@/components/data-table/name-cell";
 
 type Design = Prisma.DL_DesignGetPayload<{
   include: {
@@ -68,10 +64,9 @@ type SubDesign = Prisma.DL_SubDesignGetPayload<{
 export const columns: ColumnDef<Design>[] = [
   // Expand
   {
-    accessorKey: "expand",
-    id: "expand",
+    ...columnId({ id: "expand" }),
     enableHiding: false,
-    header: ({ column, table }) => {
+    header: ({ table }) => {
       return (
         <>
           <div className="flex w-full items-center justify-start gap-2">
@@ -92,7 +87,7 @@ export const columns: ColumnDef<Design>[] = [
         </>
       );
     },
-    cell: ({ row, getValue }) => {
+    cell: ({ row }) => {
       return (
         <>
           {row.getCanExpand() && (
@@ -114,9 +109,8 @@ export const columns: ColumnDef<Design>[] = [
   },
   // Name
   {
-    accessorKey: "name",
-    id: "name",
-    accessorFn: (originalRow) => originalRow.name,
+    ...columnId({ id: "name" }),
+    accessorFn: (originalRow) => originalRow.name.toLowerCase(),
     enableHiding: false,
     header: ({ column }) => {
       return (
@@ -130,7 +124,7 @@ export const columns: ColumnDef<Design>[] = [
         </Button>
       );
     },
-    cell: ({ row, getValue }) => {
+    cell: ({ row }) => {
       const slug = row.original.slug;
       const name = row.original.name;
       const image = row.original.avatar || "";
@@ -187,8 +181,7 @@ export const columns: ColumnDef<Design>[] = [
   },
   // Created At
   {
-    accessorKey: "createdAt",
-    id: "createdAt",
+    ...columnId({ id: "createdAt" }),
     accessorFn: (originalRow) => originalRow.createdAt,
     sortingFn: "datetime",
     sortDescFirst: false,
@@ -208,10 +201,10 @@ export const columns: ColumnDef<Design>[] = [
   },
   // Created By
   {
-    accessorKey: "createdBy",
-    id: "createdBy",
-    accessorFn: (originalRow) => originalRow.createdBy?.name,
+    ...columnId({ id: "createdBy" }),
+    accessorFn: (originalRow) => originalRow.createdBy?.name.toLowerCase(),
     sortUndefined: "last",
+    sortDescFirst: false,
     header: ({ column }) => {
       return (
         <Button
@@ -277,10 +270,10 @@ export const columns: ColumnDef<Design>[] = [
   },
   // Updated At
   {
-    accessorKey: "updatedAt",
-    id: "updatedAt",
-    accessorFn: (originalRow) => originalRow.updatedAt,
+    ...columnId({ id: "updatedAt" }),
     sortingFn: "datetime",
+    sortDescFirst: false,
+    accessorFn: (originalRow) => originalRow.updatedAt,
     header: ({ column }) => {
       return (
         <Button
@@ -297,10 +290,10 @@ export const columns: ColumnDef<Design>[] = [
   },
   // Updated By
   {
-    accessorKey: "updatedBy",
-    id: "updatedBy",
-    accessorFn: (originalRow) => originalRow.updatedBy?.name,
+    ...columnId({ id: "updatedBy" }),
+    accessorFn: (originalRow) => originalRow.updatedBy?.name.toLowerCase(),
     sortUndefined: "last",
+    sortDescFirst: false,
     header: ({ column }) => {
       return (
         <Button
@@ -366,8 +359,11 @@ export const columns: ColumnDef<Design>[] = [
   },
   // Actions
   {
-    id: "actions",
+    ...columnId({ id: "actions" }),
     enableHiding: false,
+    header: () => {
+      return " ";
+    },
     cell: ({ row }) => {
       const design = row.original;
 

@@ -19,10 +19,12 @@ import {
   VERIFICATION_TOKEN_EXPIRATION,
 } from "@/lib/constants/tokens";
 import { userRoles } from "@/lib/constants/user-roles";
+import { columnId } from "./column-id";
 
 export {
   apiAuthPrefix,
   authRoutes,
+  columnId,
   DEFAULT_LOGIN_REDIRECT,
   MAX_DESCRIPTION,
   MAX_PASSWORD,
@@ -36,5 +38,5 @@ export {
   TOAST_DURATION,
   TWO_FACTOR_TOKEN_EXPIRATION,
   userRoles,
-  VERIFICATION_TOKEN_EXPIRATION,
+  VERIFICATION_TOKEN_EXPIRATION
 };

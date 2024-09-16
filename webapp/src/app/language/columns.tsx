@@ -2,14 +2,15 @@
 
 import { CustomAvatar } from "@/components/custom-avatar";
 import { CustomHoverCard } from "@/components/custom-hover-card";
+import { NameCell } from "@/components/data-table/name-cell";
 import { SortingArrows } from "@/components/sorting-arrows";
 import { Button } from "@/components/ui/button";
+import { columnId } from "@/lib/constants";
 import { cn, returnFormattedDate } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import LanguageRowActions from "./language-row-actions";
-import { NameCell } from "@/components/data-table/name-cell";
 
 type Language = Prisma.DL_LanguageGetPayload<{
   include: {
@@ -30,8 +31,7 @@ type Language = Prisma.DL_LanguageGetPayload<{
 export const columns: ColumnDef<Language>[] = [
   // English name
   {
-    accessorKey: "englishName",
-    id: "englishName",
+    ...columnId({ id: "englishName" }),
     accessorFn: (originalRow) => originalRow.englishName,
     enableHiding: false,
     header: ({ column }) => {
@@ -64,9 +64,8 @@ export const columns: ColumnDef<Language>[] = [
   },
   // Name
   {
-    accessorKey: "name",
-    id: "name",
-    accessorFn: (originalRow) => originalRow.name,
+    ...columnId({ id: "name" }),
+    accessorFn: (originalRow) => originalRow.name.toLowerCase(),
     header: ({ column }) => {
       return (
         <Button
@@ -89,8 +88,7 @@ export const columns: ColumnDef<Language>[] = [
   },
   // ISO 639-1
   {
-    accessorKey: "iso_639_1",
-    id: "iso_639_1",
+    ...columnId({ id: "iso_639_1" }),
     accessorFn: (originalRow) => originalRow.iso_639_1,
     header: ({ column }) => {
       return (
@@ -110,8 +108,7 @@ export const columns: ColumnDef<Language>[] = [
   },
   // ISO 3166-1
   {
-    accessorKey: "iso_3166_1",
-    id: "iso_3166_1",
+    ...columnId({ id: "iso_3166_1" }),
     // TODO: nullish bullish
     // sortUndefined not working because accessorFn returns null not undefined
     accessorFn: (originalRow) => originalRow?.iso_3166_1,
@@ -134,8 +131,7 @@ export const columns: ColumnDef<Language>[] = [
   },
   // Created At
   {
-    accessorKey: "createdAt",
-    id: "createdAt",
+    ...columnId({ id: "createdAt" }),
     accessorFn: (originalRow) => originalRow.createdAt,
     sortingFn: "datetime",
     sortDescFirst: false,
@@ -155,10 +151,10 @@ export const columns: ColumnDef<Language>[] = [
   },
   // Created By
   {
-    accessorKey: "createdBy",
-    id: "createdBy",
-    accessorFn: (originalRow) => originalRow?.createdBy?.name,
+    ...columnId({ id: "createdBy" }),
+    accessorFn: (originalRow) => originalRow.createdBy?.name.toLowerCase(),
     sortUndefined: "last",
+    sortDescFirst: false,
     header: ({ column }) => {
       return (
         <Button
@@ -224,10 +220,10 @@ export const columns: ColumnDef<Language>[] = [
   },
   // Updated At
   {
-    accessorKey: "updatedAt",
-    id: "updatedAt",
-    accessorFn: (originalRow) => originalRow?.updatedAt,
+    ...columnId({ id: "updatedAt" }),
     sortingFn: "datetime",
+    sortDescFirst: false,
+    accessorFn: (originalRow) => originalRow.updatedAt,
     header: ({ column }) => {
       return (
         <Button
@@ -244,10 +240,10 @@ export const columns: ColumnDef<Language>[] = [
   },
   // Updated By
   {
-    accessorKey: "updatedBy",
-    id: "updatedBy",
-    accessorFn: (originalRow) => originalRow?.updatedBy?.name,
+    ...columnId({ id: "updatedBy" }),
+    accessorFn: (originalRow) => originalRow.updatedBy?.name.toLowerCase(),
     sortUndefined: "last",
+    sortDescFirst: false,
     header: ({ column }) => {
       return (
         <Button
@@ -270,42 +266,37 @@ export const columns: ColumnDef<Language>[] = [
       return (
         <>
           {updatedBy ? (
-            <>
-              <CustomHoverCard
-                triggerAsChild
-                trigger={
-                  <Link href={`/profile/${id}`}>
-                    <CustomAvatar image={image} />
-                    {name}
-                  </Link>
-                }
-              >
-                <p>
-                  User:{" "}
-                  <Link
-                    className={cn("hover:underline")}
-                    href={`/profile/${id}`}
-                  >
-                    <strong>{name}</strong>
-                  </Link>
-                </p>
-                <p>
-                  Email:{" "}
-                  <Link
-                    className={cn("hover:underline")}
-                    href={`mailto:${email}`}
-                  >
-                    <strong>{email}</strong>
-                  </Link>
-                </p>
-                <p>
-                  Created at:{" "}
-                  <strong>
-                    {returnFormattedDate(row.original.updatedAt)} (UTC)
-                  </strong>
-                </p>
-              </CustomHoverCard>
-            </>
+            <CustomHoverCard
+              triggerAsChild
+              trigger={
+                <Link href={`/profile/${id}`}>
+                  <CustomAvatar image={image} />
+                  {name}
+                </Link>
+              }
+            >
+              <p>
+                User:{" "}
+                <Link className={cn("hover:underline")} href={`/profile/${id}`}>
+                  <strong>{name}</strong>
+                </Link>
+              </p>
+              <p>
+                Email:{" "}
+                <Link
+                  className={cn("hover:underline")}
+                  href={`mailto:${email}`}
+                >
+                  <strong>{email}</strong>
+                </Link>
+              </p>
+              <p>
+                Created at:{" "}
+                <strong>
+                  {returnFormattedDate(row.original.updatedAt)} (UTC)
+                </strong>
+              </p>
+            </CustomHoverCard>
           ) : (
             <div className="flex items-center gap-4">
               <CustomAvatar image={null} />
@@ -318,8 +309,11 @@ export const columns: ColumnDef<Language>[] = [
   },
   // Actions
   {
-    id: "actions",
+    ...columnId({ id: "actions" }),
     enableHiding: false,
+    header: () => {
+      return " ";
+    },
     cell: ({ row }) => {
       const language = row.original;
 
