@@ -1,11 +1,13 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -17,18 +19,20 @@ import {
 import { PAGINATION_DEFAULT } from "@/lib/constants";
 import {
   ColumnDef,
+  ColumnFiltersState,
   SortingState,
   VisibilityState,
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  getExpandedRowModel,
 } from "@tanstack/react-table";
-import { useState } from "react";
-import { Button } from "../ui/button";
+import { useRef, useState } from "react";
 import { DataTablePagination } from "./pagination";
+import { IoIosCloseCircleOutline } from "react-icons/io";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -43,10 +47,13 @@ export function DataTable<TData, TValue>({
   columnVisibilityObj,
   subRows,
 }: DataTableProps<TData, TValue>) {
+  // Table related states
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
     columnVisibilityObj || {},
   );
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = useState<any>([]);
 
   const table = useReactTable({
     data,
@@ -58,9 +65,16 @@ export function DataTable<TData, TValue>({
     onColumnVisibilityChange: setColumnVisibility,
     getExpandedRowModel: getExpandedRowModel(),
     getSubRows: (row) => row[subRows as keyof TData] as TData[],
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    globalFilterFn: "auto", // built-in filter function
+    onGlobalFilterChange: setGlobalFilter,
+    filterFromLeafRows: true,
     state: {
       sorting,
       columnVisibility,
+      columnFilters,
+      globalFilter,
     },
     initialState: {
       pagination: {
@@ -70,9 +84,45 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  // Other states
+  const searchElRef = useRef<HTMLInputElement>(null);
+  const [isSearchRefEmpty, setIsSearchRefEmpty] = useState<boolean>(true);
+
   return (
     <div className="w-full rounded-md">
-      <div className="flex items-center py-4">
+      <div className="flex items-center gap-4 py-4">
+        <div className="relative">
+          <Input
+            placeholder="Search in all columns..."
+            onChange={(e) => {
+              table.setGlobalFilter(String(e.target.value));
+
+              if (e.target.value) {
+                setIsSearchRefEmpty(false);
+                return;
+              }
+
+              setIsSearchRefEmpty(true);
+            }}
+            ref={searchElRef}
+            className="max-w-sm"
+          />
+          {!isSearchRefEmpty && (
+            <button
+              className="absolute right-2 top-1/2 -translate-y-1/2"
+              onClick={() => {
+                const el = searchElRef.current as HTMLInputElement;
+                el.value = "";
+                el.focus();
+
+                table.setGlobalFilter("");
+                setIsSearchRefEmpty(true);
+              }}
+            >
+              <IoIosCloseCircleOutline size={20} />
+            </button>
+          )}
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -100,6 +150,7 @@ export function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
       <div className="flex flex-col overflow-hidden rounded-md border">
         <div className="border-b">
           <Table>

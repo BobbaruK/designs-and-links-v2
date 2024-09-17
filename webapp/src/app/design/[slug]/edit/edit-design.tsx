@@ -213,7 +213,7 @@ export const EditDesign = ({
             name="avatar"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel className="self-start">Logo</FormLabel>
+                <FormLabel className="self-start">Avatar</FormLabel>
                 <div className="flex flex-row items-center gap-4">
                   <Popover>
                     <PopoverTrigger asChild>

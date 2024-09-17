@@ -71,7 +71,7 @@ export const Navbar = () => {
         </div>
         <UserButton />
       </div>
-      {role === "ADMIN" && <AdminNavigation />}
+      {/* {role === "ADMIN" && <AdminNavigation />} */}
     </nav>
   );
 };

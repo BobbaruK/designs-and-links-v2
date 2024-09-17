@@ -352,25 +352,28 @@ export const AddDesign = ({ designAvatars, designs }: Props) => {
                     className={cn("flex h-auto items-center gap-4")}
                   >
                     {subDesignAvatar && (
-                      <>
-                        <Image
-                          src={subDesignAvatar}
-                          alt={`Logo`}
-                          className="object-cover"
-                          unoptimized
-                          width={150}
-                          height={10}
-                        />
-                        <Button
-                          size={"sm"}
-                          variant={"link"}
-                          className="text-foreground"
-                          onClick={() => form.setValue("isSubDesign", "")}
-                          type="button"
-                        >
-                          Remove sub design avatar
-                        </Button>
-                      </>
+                      <Image
+                        src={subDesignAvatar}
+                        alt={`Logo`}
+                        className="object-cover"
+                        unoptimized
+                        width={150}
+                        height={10}
+                      />
+                    )}
+                    {form.getValues("isSubDesign") && (
+                      <Button
+                        size={"sm"}
+                        variant={"link"}
+                        className="text-foreground"
+                        onClick={() => {
+                          form.setValue("isSubDesign", "");
+                          setSubDesignAvatar(null);
+                        }}
+                        type="button"
+                      >
+                        Remove sub design avatar
+                      </Button>
                     )}
                   </FormDescription>
                 </div>
