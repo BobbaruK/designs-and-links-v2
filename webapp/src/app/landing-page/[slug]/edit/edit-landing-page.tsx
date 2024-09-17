@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  deleteDesign,
-  deleteLandingPage,
-  deleteSubDesign,
-  editDesign,
-  editLandingPage,
-  editSubDesign,
-} from "@/actions/dl";
+import { deleteLandingPage, editLandingPage } from "@/actions/dl";
 import { revalidate } from "@/actions/reavalidate";
 import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
@@ -42,13 +35,29 @@ import { useCurrentRole } from "@/hooks/use-current-role";
 import { LandingPageSchema } from "@/lib/schemas";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { DL_Design, DL_SubDesign, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { Check, ChevronsUpDown } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
+type SubDesign =
+  | Prisma.DL_SubDesignGetPayload<{
+      include: {
+        createdBy: {
+          omit: {
+            password: true;
+          };
+        };
+        updatedBy: {
+          omit: {
+            password: true;
+          };
+        };
+      };
+    }>[]
+  | null;
 
 interface Props {
   landingPage: Prisma.DL_LandingPageGetPayload<{
@@ -147,22 +156,7 @@ interface Props {
         };
       }>[]
     | null;
-  subDesigns:
-    | Prisma.DL_SubDesignGetPayload<{
-        include: {
-          createdBy: {
-            omit: {
-              password: true;
-            };
-          };
-          updatedBy: {
-            omit: {
-              password: true;
-            };
-          };
-        };
-      }>[]
-    | null;
+  subDesigns: SubDesign;
   formValidations:
     | Prisma.DL_FormValidationGetPayload<{
         include: {
@@ -261,6 +255,7 @@ export const EditLandingPage = ({
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const [isPending, startTransition] = useTransition();
+  const [leSubDesigns, setLeSubDesigns] = useState<SubDesign>();
   const [requesterAvatar, setRequesterAvatar] = useState<string | null>(
     landingPage.requester?.image || null,
   );
@@ -674,6 +669,7 @@ export const EditLandingPage = ({
                                     setDesignAvatar(design.avatar);
                                     form.setValue("subDesign", "");
                                     setSubDesignAvatar(null);
+                                    setLeSubDesigns(design.subDesigns);
                                   }}
                                   className="flex items-center gap-0"
                                 >
@@ -701,26 +697,26 @@ export const EditLandingPage = ({
                   </Popover>
                   <FormDescription className="flex items-center gap-4">
                     {designAvatar && (
-                      <>
-                        <CustomAvatar
-                          image={designAvatar}
-                          className="size-20 rounded-md"
-                        />
-                        <Button
-                          size={"sm"}
-                          variant={"link"}
-                          className="text-foreground"
-                          onClick={() => {
-                            form.setValue("design", "");
-                            form.setValue("subDesign", "");
-                            setDesignAvatar(null);
-                            setSubDesignAvatar(null);
-                          }}
-                          type="button"
-                        >
-                          Remove design avatar
-                        </Button>
-                      </>
+                      <CustomAvatar
+                        image={designAvatar}
+                        className="size-20 rounded-md"
+                      />
+                    )}
+                    {form.getValues("design") && (
+                      <Button
+                        size={"sm"}
+                        variant={"link"}
+                        className="px-0 text-foreground"
+                        onClick={() => {
+                          form.setValue("design", "");
+                          form.setValue("subDesign", "");
+                          setDesignAvatar(null);
+                          setSubDesignAvatar(null);
+                        }}
+                        type="button"
+                      >
+                        Remove design avatar
+                      </Button>
                     )}
                   </FormDescription>
                 </div>
@@ -761,7 +757,7 @@ export const EditLandingPage = ({
                         <CommandList>
                           <CommandEmpty>No sub design found.</CommandEmpty>
                           <CommandGroup>
-                            {subDesigns
+                            {leSubDesigns
                               ?.sort((a, b) => {
                                 const nameA = a.name.toLowerCase();
                                 const nameB = b.name.toLowerCase();
@@ -813,24 +809,25 @@ export const EditLandingPage = ({
                   </Popover>
                   <FormDescription className="flex items-center gap-4">
                     {subDesignAvatar && (
-                      <>
-                        <CustomAvatar
-                          image={subDesignAvatar}
-                          className="size-20 rounded-md"
-                        />
-                        <Button
-                          size={"sm"}
-                          variant={"link"}
-                          className="text-foreground"
-                          onClick={() => {
-                            form.setValue("subDesign", "");
-                            setSubDesignAvatar(null);
-                          }}
-                          type="button"
-                        >
-                          Remove sub design avatar
-                        </Button>
-                      </>
+                      <CustomAvatar
+                        image={subDesignAvatar}
+                        className="size-20 rounded-md"
+                      />
+                    )}
+
+                    {form.getValues("subDesign") && (
+                      <Button
+                        size={"sm"}
+                        variant={"link"}
+                        className="px-0 text-foreground"
+                        onClick={() => {
+                          form.setValue("subDesign", "");
+                          setSubDesignAvatar(null);
+                        }}
+                        type="button"
+                      >
+                        Remove sub design avatar
+                      </Button>
                     )}
                   </FormDescription>
                 </div>

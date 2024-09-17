@@ -40,6 +40,23 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+type SubDesign =
+  | Prisma.DL_SubDesignGetPayload<{
+      include: {
+        createdBy: {
+          omit: {
+            password: true;
+          };
+        };
+        updatedBy: {
+          omit: {
+            password: true;
+          };
+        };
+      };
+    }>[]
+  | null;
+
 interface Props {
   users:
     | Prisma.UserGetPayload<{
@@ -110,22 +127,7 @@ interface Props {
         };
       }>[]
     | null;
-  subDesigns:
-    | Prisma.DL_SubDesignGetPayload<{
-        include: {
-          createdBy: {
-            omit: {
-              password: true;
-            };
-          };
-          updatedBy: {
-            omit: {
-              password: true;
-            };
-          };
-        };
-      }>[]
-    | null;
+  subDesigns: SubDesign;
   formValidations:
     | Prisma.DL_FormValidationGetPayload<{
         include: {
@@ -223,6 +225,7 @@ export const AddLandingPage = ({
   const [success, setSuccess] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
   const [isPending, startTransition] = useTransition();
+  const [leSubDesigns, setLeSubDesigns] = useState<SubDesign>();
   const [requesterAvatar, setRequesterAvatar] = useState<string | null>(null);
   const [designAvatar, setDesignAvatar] = useState<string | null>(null);
   const [subDesignAvatar, setSubDesignAvatar] = useState<string | null>(null);
@@ -577,7 +580,9 @@ export const AddLandingPage = ({
                         >
                           {field.value
                             ? designs?.find(
-                                (design) => design.id === field.value,
+                                (design) =>
+                                  design.id.toLowerCase() ===
+                                  field.value?.toLowerCase(),
                               )?.name
                             : "Select design"}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -609,9 +614,10 @@ export const AddLandingPage = ({
                                   key={design.id}
                                   onSelect={() => {
                                     form.setValue("design", design.id);
-                                    setDesignAvatar(design.avatar);
                                     form.setValue("subDesign", "");
+                                    setDesignAvatar(design.avatar);
                                     setSubDesignAvatar(null);
+                                    setLeSubDesigns(design.subDesigns);
                                   }}
                                   className="flex items-center gap-0"
                                 >
@@ -639,26 +645,26 @@ export const AddLandingPage = ({
                   </Popover>
                   <FormDescription className="flex items-center gap-4">
                     {designAvatar && (
-                      <>
-                        <CustomAvatar
-                          image={designAvatar}
-                          className="size-20 rounded-md"
-                        />
-                        <Button
-                          size={"sm"}
-                          variant={"link"}
-                          className="text-foreground"
-                          onClick={() => {
-                            form.setValue("design", "");
-                            form.setValue("subDesign", "");
-                            setDesignAvatar(null);
-                            setSubDesignAvatar(null);
-                          }}
-                          type="button"
-                        >
-                          Remove design avatar
-                        </Button>
-                      </>
+                      <CustomAvatar
+                        image={designAvatar}
+                        className="size-20 rounded-md"
+                      />
+                    )}
+                    {form.getValues("design") && (
+                      <Button
+                        size={"sm"}
+                        variant={"link"}
+                        className="px-0 text-foreground"
+                        onClick={() => {
+                          form.setValue("design", "");
+                          form.setValue("subDesign", "");
+                          setDesignAvatar(null);
+                          setSubDesignAvatar(null);
+                        }}
+                        type="button"
+                      >
+                        Remove design avatar
+                      </Button>
                     )}
                   </FormDescription>
                 </div>
@@ -699,7 +705,12 @@ export const AddLandingPage = ({
                         <CommandList>
                           <CommandEmpty>No sub design found.</CommandEmpty>
                           <CommandGroup>
-                            {subDesigns
+                            {leSubDesigns
+                              ?.filter(
+                                (subDesign) =>
+                                  subDesign.DL_DesignId ===
+                                  form.getValues("design"),
+                              )
                               ?.sort((a, b) => {
                                 const nameA = a.name.toLowerCase();
                                 const nameB = b.name.toLowerCase();
@@ -712,11 +723,6 @@ export const AddLandingPage = ({
 
                                 return 0;
                               })
-                              .filter(
-                                (design) =>
-                                  design.DL_DesignId ===
-                                  form.getValues("design"),
-                              )
                               .map((subDesign) => (
                                 <CommandItem
                                   value={subDesign.name}
@@ -759,7 +765,7 @@ export const AddLandingPage = ({
                         <Button
                           size={"sm"}
                           variant={"link"}
-                          className="text-foreground"
+                          className="px-0 text-foreground"
                           onClick={() => {
                             form.setValue("subDesign", "");
                             setSubDesignAvatar(null);
