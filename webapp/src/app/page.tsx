@@ -1,9 +1,20 @@
 import { LoginButton } from "@/components/auth/login-button";
+import { CustomChart } from "@/components/custom-chart";
 import { Button } from "@/components/ui/button";
 import { currentUser } from "@/lib/auth";
+import db from "@/lib/db";
 
 export default async function Home() {
   const user = await currentUser();
+
+  const formValidations = await db.dL_FormValidation.count();
+  const topics = await db.dL_Topic.count();
+  const licenses = await db.dL_License.count();
+  const landingPageTypes = await db.dL_LandingPageType.count();
+  const languages = await db.dL_Language.count();
+  const brands = await db.dL_Language.count();
+  const designs = await db.dL_Design.count();
+  const landingPages = await db.dL_LandingPage.count();
 
   return (
     <div className="container flex h-full flex-col items-center justify-center">
@@ -20,6 +31,20 @@ export default async function Home() {
             </LoginButton>
           </div>
         )}
+        <div>
+          <CustomChart
+            counters={{
+              formValidations,
+              topics,
+              licenses,
+              landingPageTypes,
+              languages,
+              brands,
+              designs,
+              landingPages,
+            }}
+          />
+        </div>
       </div>
     </div>
   );
