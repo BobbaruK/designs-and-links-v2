@@ -97,7 +97,7 @@ const DesignRowActions = ({ design }: Props) => {
         toast.error(
           <div className="">
             Could not delete design
-            <code>{design.name}</code>.
+            <code>{design.name}</code> or it&apos;s designs.
           </div>,
         );
       }
@@ -106,7 +106,7 @@ const DesignRowActions = ({ design }: Props) => {
           <div>
             Design
             <code>{design.name}</code>
-            deleted!
+            deleted and it&apos;s subdesigns.
           </div>,
         );
       }

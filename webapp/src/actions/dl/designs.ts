@@ -294,16 +294,25 @@ export const deleteDesign = async (id: string) => {
   if (!dbUser || (user.role !== "ADMIN" && user.role !== "EDITOR"))
     return { error: "Unauthorized!" };
 
+  // TODO: make this better
+  // maybe when design is deleted its subdesigns will be moved
+  // to designs ?? we'll see
   try {
     await db.dL_Design.delete({
       where: { id },
     });
 
+    await db.dL_SubDesign.deleteMany({
+      where: {
+        DL_DesignId: null, // should not exist a subdesign that has not have a design parent
+      },
+    });
+
     return {
-      success: "Design deleted!",
+      success: "Design and SubDesigns(if any) deleted!",
     };
   } catch (error) {
-    return { error: "Could not delete design!" };
+    return { error: "Could not delete design or SubDesigns(if any)!" };
   }
 };
 
