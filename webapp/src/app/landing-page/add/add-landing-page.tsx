@@ -35,6 +35,7 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Prisma } from "@prisma/client";
 import { Check, ChevronsUpDown } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -247,8 +248,8 @@ export const AddLandingPage = ({
       formValidation: "",
       license: "",
       language: "",
-      brand: "",
       lpType: "",
+      brand: "",
     },
   });
 
@@ -296,6 +297,16 @@ export const AddLandingPage = ({
                     disabled={isPending}
                   />
                 </FormControl>
+                <FormDescription>
+                  <Link
+                    href={
+                      "https://www.fantasynamegenerators.com/dragon-names.php"
+                    }
+                    target="_blank"
+                  >
+                    https://www.fantasynamegenerators.com/dragon-names.php
+                  </Link>
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

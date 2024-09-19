@@ -328,6 +328,14 @@ const LandingPagePage = async ({ params: { slug } }: Props) => {
                     )}
                   </TableCell>
                 </TableRow>
+                <TableRow>
+                  <TableCell className="font-bold">URL</TableCell>
+                  <TableCell>
+                    <Link href={landingPage.url} target="_blank">
+                      {landingPage.url}
+                    </Link>
+                  </TableCell>
+                </TableRow>
               </TableBody>
             </Table>
           </CardContent>

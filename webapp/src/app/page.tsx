@@ -14,6 +14,7 @@ export default async function Home() {
   const languages = await db.dL_Language.count();
   const brands = await db.dL_Language.count();
   const designs = await db.dL_Design.count();
+  const subDesigns = await db.dL_SubDesign.count();
   const landingPages = await db.dL_LandingPage.count();
 
   return (
@@ -40,7 +41,7 @@ export default async function Home() {
               landingPageTypes,
               languages,
               brands,
-              designs,
+              designs: designs + subDesigns,
               landingPages,
             }}
           />

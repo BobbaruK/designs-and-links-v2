@@ -37,6 +37,7 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Prisma } from "@prisma/client";
 import { Check, ChevronsUpDown } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -289,6 +290,7 @@ export const EditLandingPage = ({
       license: landingPage?.license?.id || undefined,
       language: landingPage?.language?.id || undefined,
       lpType: landingPage?.lpType?.id || undefined,
+      brand: landingPage?.brand?.id || undefined,
     },
   });
 
@@ -333,26 +335,40 @@ export const EditLandingPage = ({
           <FormField
             control={form.control}
             name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl
-                  onKeyUp={(e) => {
-                    form.setValue(
-                      "slug",
-                      field.value.toLowerCase().replaceAll(/[^A-Z0-9]/gi, "-"),
-                    );
-                  }}
-                >
-                  <Input
-                    {...field}
-                    placeholder="Landing Page Name"
-                    disabled={isPending}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl
+                    onKeyUp={(e) => {
+                      form.setValue(
+                        "slug",
+                        field.value
+                          .toLowerCase()
+                          .replaceAll(/[^A-Z0-9]/gi, "-"),
+                      );
+                    }}
+                  >
+                    <Input
+                      {...field}
+                      placeholder="Landing Page Name"
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    <Link
+                      href={
+                        "https://www.fantasynamegenerators.com/dragon-names.php"
+                      }
+                      target="_blank"
+                    >
+                      https://www.fantasynamegenerators.com/dragon-names.php
+                    </Link>
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
           <FormField
             control={form.control}
