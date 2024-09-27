@@ -24,6 +24,7 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       RESEND_API_KEY: ${RESEND_API_KEY}
       NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
+      NEXTAUTH_URL: ${NEXT_PUBLIC_APP_URL}
 
     # Set environment variables based on the .env file
     # env_file:
