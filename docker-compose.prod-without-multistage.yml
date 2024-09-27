@@ -1,6 +1,6 @@
 services:
   webapp-prod-no-multi:
-    container_name: webapp-prod-no-multi
+    container_name: webapp-dl-prod-no-multi
     build:
       context: ./webapp
       dockerfile: /docker/prod-without-multistage.Dockerfile
@@ -42,17 +42,17 @@ services:
       NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
     restart: always
     ports:
-      - 3000:3000
+      - 3001:3000
 
   db:
     image: postgres:16-alpine
-    container_name: postgres
+    container_name: postgres-dl
     restart: always
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       TZ: Europe/Bucharest
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - ./db:/var/lib/postgresql/data

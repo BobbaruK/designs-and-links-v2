@@ -1,6 +1,6 @@
 services:
   webapp-dev:
-    container_name: webapp-dev
+    container_name: webapp-dl-dev
     build:
       context: ./webapp
       dockerfile: /docker/dev.Dockerfile
@@ -30,7 +30,7 @@ services:
     #   - .env
     restart: always
     ports:
-      - 3000:3000
+      - 3001:3000
     develop:
       watch:
         - action: sync
@@ -38,18 +38,21 @@ services:
           target: /app/src
           ignore:
             - node_modules/
+        - action: sync
+          path: ./webapp/tailwind.config.ts
+          target: /app/tailwind.config.ts
         - action: rebuild
           path: package.json
 
   db:
     image: postgres:16-alpine
-    container_name: postgres
+    container_name: postgres-dl
     restart: always
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       TZ: Europe/Bucharest
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - ./db:/var/lib/postgresql/data
